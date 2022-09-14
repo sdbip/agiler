@@ -1,5 +1,6 @@
 'use strict';
 module.exports = function (grunt) {
+  const lintableFiles = ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -22,11 +23,16 @@ module.exports = function (grunt) {
         quotmark: 'single',
         node: true
       },
-      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js']
+      all: lintableFiles
+    },
+    watch: {
+      files: lintableFiles,
+      tasks: ['jshint']
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', [ 'jshint' ]);
+  grunt.registerTask('default', [ 'jshint', 'watch' ]);
 };
