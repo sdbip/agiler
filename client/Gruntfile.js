@@ -5,6 +5,10 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       options: {
+        globals: {
+          describe: true,
+          it: true,
+        },
         bitwise: true,
         curly: false,
         eqeqeq: true,
@@ -28,11 +32,16 @@ module.exports = function (grunt) {
     watch: {
       files: lintableFiles,
       tasks: ['jshint']
+    },
+    mochaTest: {
+      options: { reporter: 'dot' },
+    src: ['test/**/*.js']
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', [ 'jshint', 'watch' ]);
+  grunt.registerTask('default', [ 'jshint', 'mochaTest', 'watch' ]);
 };
