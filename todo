@@ -1,0 +1,13 @@
+# Features
+
+- Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
+- Stories (business value, show progress to a stakeholder)
+- Features (business goals, marketable/testable/usable/lovable)
+
+# Stories
+
+# Engineering Tasks
+
+* Automated build using Grunt
+- Linting
+- Testing
