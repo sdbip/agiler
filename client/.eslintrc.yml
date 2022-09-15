@@ -1,0 +1,6 @@
+parserOptions:
+  ecmaVersion: latest
+env:
+  es6: true
+rules:
+  eqeqeq: 2

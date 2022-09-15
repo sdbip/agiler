@@ -3,31 +3,8 @@ module.exports = function (grunt) {
   const lintableFiles = ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    jshint: {
-      options: {
-        globals: {
-          describe: true,
-          it: true,
-        },
-        bitwise: true,
-        curly: false,
-        eqeqeq: true,
-        forin: true,
-        immed: true,
-        latedef: false,
-        newcap: true,
-        noarg: true,
-        noempty: true,
-        nonew: true,
-        regexp: true,
-        undef: true,
-        strict: true,
-        trailing: true,
-        esversion: 6,
-        quotmark: 'single',
-        node: true
-      },
-      all: lintableFiles
+    eslint: {
+      target: lintableFiles
     },
     watch: {
       files: lintableFiles,
@@ -35,13 +12,14 @@ module.exports = function (grunt) {
     },
     mochaTest: {
       options: { reporter: 'dot' },
-    src: ['test/**/*.js']
+      src: ['test/**/*.js']
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', [ 'jshint', 'mochaTest', 'watch' ]);
+  grunt.registerTask('default', [ 'eslint', 'mochaTest' ]);
+  grunt.registerTask('scan', [ 'eslint', 'mochaTest', 'watch' ]);
 };
