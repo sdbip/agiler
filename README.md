@@ -2,6 +2,18 @@
 
 Agiler is a planning tool for agile development
 
+## Building the Application
+
+This command lints and tests the JavaScript code:
+
+```shell
+cd client
+./build [scan]
+```
+
+The optional `scan` argument starts a watch that will lint and test whenever a
+JavaScript file is saved.
+
 ## the Domain
 
 YAGNI teaches that you should never produce anything that isn't motivated by a
@@ -45,3 +57,17 @@ is something you can just do now without further ado.
 Tasks also don't have to be programming effort. Booking a meeting with another
 team to get help with an integration is a valid task. So is emailing a user for
 more information about a bug. Etc.
+
+### Status Changes
+
+You shouldn't mark a feature “in progress.” Instead it should be implicitly in
+progress when any story is started. Similarly, the story should be considered
+in progress when the first task is started.
+
+Finishing the last task of a story should automatically finish the story. And
+finishing the last story should finish the feature.
+
+There is, however, a contradicting thought: in Scrum we need features and
+stories to be “ready” before we can plan them in a sprint. There might be need
+for such a moniker in our case too. And it might be possible that we can start
+a task before the parent feature is ready. This is a thing to think about.
