@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     },
     watch: {
       files: lintableFiles,
-      tasks: ['jshint'],
+      tasks: ['default'],
     },
     mochaTest: {
       options: { reporter: 'dot' },
