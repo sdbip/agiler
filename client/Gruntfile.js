@@ -4,16 +4,16 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     eslint: {
-      target: lintableFiles
+      target: lintableFiles,
     },
     watch: {
       files: lintableFiles,
-      tasks: ['jshint']
+      tasks: ['jshint'],
     },
     mochaTest: {
       options: { reporter: 'dot' },
-      src: ['test/**/*.js']
-    }
+      src: ['test/**/*.js'],
+    },
   });
 
   grunt.loadNpmTasks('grunt-eslint');
