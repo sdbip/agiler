@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function (grunt) {
-  const lintableFiles = ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'];
+  const lintableFiles = [ 'Gruntfile.js', 'lib/**/*.js', 'test/**/*.js' ];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     eslint: {
@@ -8,11 +8,11 @@ module.exports = function (grunt) {
     },
     watch: {
       files: lintableFiles,
-      tasks: ['default'],
+      tasks: [ 'default' ],
     },
     mochaTest: {
       options: { reporter: 'dot' },
-      src: ['test/**/*.js'],
+      src: [ 'test/**/*.js' ],
     },
   });
 
@@ -21,5 +21,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('default', [ 'eslint', 'mochaTest' ]);
-  grunt.registerTask('scan', [ 'eslint', 'mochaTest', 'watch' ]);
+  grunt.registerTask('scan', [ 'watch' ]);
 };
