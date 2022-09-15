@@ -1,0 +1,2 @@
+#!/bin/zsh
+./node_modules/.bin/grunt $*
