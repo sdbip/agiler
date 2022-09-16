@@ -1,4 +1,6 @@
 const http = require('http')
+const fs = require('fs')
+
 let server
 module.exports = {
   listenAtPort: (port) => {
@@ -6,7 +8,9 @@ module.exports = {
 
     server = http.createServer()
     server.on('request', (request, response) => {
-      response.end('foo')
+      fs.readFile('index.html', (err, data) => {
+        response.end(data)
+      })
     })
     server.listen(port)
   },
