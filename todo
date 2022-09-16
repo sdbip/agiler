@@ -5,11 +5,8 @@
 - Objectives and goals?
 
 # Stories
-* Serve a simple client page
-  - something to serve
 - Allow user to define a task
 - Allow user to complete a task
 
 # Engineering Tasks
-- Switch to async/await (finish story first?)
 - Add .env to .gitignore when we need configuration
