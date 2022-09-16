@@ -1,12 +1,13 @@
 # Features
-
 - Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 - Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 
 # Stories
-- Serve a simple client page
+* Serve a simple client page
+  - http server
+  - something to serve
 - Allow user to define a task
 - Allow user to complete a task
 

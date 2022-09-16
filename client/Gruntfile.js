@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function (grunt) {
-  const lintableFiles = [ 'Gruntfile.js', 'lib/**/*.js', 'test/**/*.js' ];
+  const lintableFiles = [ 'Gruntfile.js', 'src/**/*.js', 'test/**/*.js' ];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     eslint: {
@@ -11,7 +11,7 @@ module.exports = function (grunt) {
       tasks: [ 'default' ],
     },
     mochaTest: {
-      options: { reporter: 'dot' },
+      options: { reporter: 'min' },
       src: [ 'test/**/*.js' ],
     },
   });
