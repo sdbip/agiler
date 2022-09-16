@@ -12,4 +12,5 @@
 - Allow user to complete a task
 
 # Engineering Tasks
+- Switch to async/await (finish story first?)
 - Add .env to .gitignore when we need configuration
