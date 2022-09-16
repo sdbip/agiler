@@ -6,7 +6,6 @@
 
 # Stories
 * Serve a simple client page
-  - http server
   - something to serve
 - Allow user to define a task
 - Allow user to complete a task
