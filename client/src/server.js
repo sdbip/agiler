@@ -1,10 +1,14 @@
 const http = require('http')
+let server
 module.exports = {
-  start: (port) => {
-    const server = http.createServer()
+  listenAtPort: (port) => {
+    server = http.createServer()
     server.on('request', (request, response) => {
       response.end('foo')
     })
     server.listen(port)
+  },
+  stopListening: () => {
+    server?.close()
   },
 }
