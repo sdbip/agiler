@@ -14,17 +14,24 @@ describe('server', () => {
     server.stopListening()
   })
 
-  it('responds to get', async () => {
+  it('responds to get /', async () => {
     const response = await get('http://localhost:8080')
     expect(response.statusCode).to.equal(200)
     assert.isOk(response.content)
 
   })
 
-  it('responds to post', async () => {
-    const response = await post('http://localhost:8080', {
+  it('responds to post /tasks', async () => {
+    const response = await post('http://localhost:8080/tasks', {
       title: 'Get Shit Done',
     })
+
+    expect(response.statusCode).to.equal(200)
+    assert.isOk(response.content)
+  })
+
+  it('responds to get /tasks', async () => {
+    const response = await get('http://localhost:8080/tasks')
 
     expect(response.statusCode).to.equal(200)
     assert.isOk(response.content)

@@ -10,7 +10,6 @@
 - Allow user to complete a task
 
 # Engineering Tasks
-* Add a post entry-point
 - Add a repository and add a task to it
 - Allow listing added tasks
 - Add .env to .gitignore when we need configuration
