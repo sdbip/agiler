@@ -1,21 +1,31 @@
 'use strict'
 
 const { expect, assert } = require('chai')
-const { get } = require('../src/http.js')
+const { get, post } = require('../src/http.js')
 const server = require('../src/server')
 
 describe('server', () => {
 
-  before(() => {
+  beforeEach(() => {
     server.listenAtPort(8080)
   })
 
-  after(() => {
+  afterEach(async () => {
     server.stopListening()
   })
 
-  it('responds', async () => {
+  it('responds to get', async () => {
     const response = await get('http://localhost:8080')
+    expect(response.statusCode).to.equal(200)
+    assert.isOk(response.content)
+
+  })
+
+  it('responds to post', async () => {
+    const response = await post('http://localhost:8080', {
+      title: 'Get Shit Done',
+    })
+
     expect(response.statusCode).to.equal(200)
     assert.isOk(response.content)
   })
@@ -24,9 +34,9 @@ describe('server', () => {
     try {
       await server.stopListening()
       await server.stopListening()
+      assert.fail('No error thrown')
     }
     catch (error) {
-      if (!error) assert.fail()
     }
   })
 
@@ -36,7 +46,7 @@ describe('server', () => {
 
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
-      server.stopListening()
+      await server.stopListening()
       server.listenAtPort(8080)
       const response = await get('http://localhost:8080')
       expect(response.statusCode).to.equal(200)

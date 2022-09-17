@@ -10,5 +10,8 @@
     "grunt-contrib-watch": "^1.1.0",
     "grunt-eslint": "^24.0.0",
     "grunt-mocha-test": "^0.13.3"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
   }
 }
