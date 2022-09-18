@@ -1,34 +1,34 @@
 const http = require('http')
+const { join } = require('path')
 
-module.exports.get = (url) => {
-  return new Promise((resolve) => {
-    http.get(url, async response => {
-      const result = await readResponse(response)
-      resolve(result)
-    })
-  })
+module.exports.get = async (url) => {
+  return await send('GET', url)
 }
 
-module.exports.post = (url, data) => {
+module.exports.post = async (url, data) => {
+  const json = JSON.stringify(data)
+  return await send('POST', url, json)
+}
+
+function send(method, url, body) {
   const { hostname, port, path } = require('url').parse(url)
+  const options = {
+    hostname,
+    port,
+    path,
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': body?.length ?? 0,
+    },
+  }
   return new Promise((resolve) => {
-    const json = JSON.stringify(data)
-    const options = {
-      hostname,
-      port,
-      path,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': json.length,
-      },
-    }
     const request = http.request(options, async response => {
       const result = await readResponse(response)
       resolve(result)
     })
 
-    request.write(json)
+    request.end(body)
   })
 }
 
