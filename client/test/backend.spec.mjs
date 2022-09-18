@@ -1,22 +1,22 @@
 'use strict'
 
-const { expect, assert } = require('chai')
-const { get, post } = require('../src/http.js')
-const backend = require('../src/backend')
-const InMem = require('../src/inmem')
+import { expect, assert } from 'chai'
+import { get, post } from '../src/http.js'
+import { setRepository, listenAtPort, stopListening } from '../src/backend.js'
+import InMem from '../src/inmem.js'
 
 const inmem = new InMem()
-backend.setRepository(inmem)
+setRepository(inmem)
 
 describe('backend', () => {
 
   beforeEach(() => {
     inmem.items = []
-    backend.listenAtPort(8080)
+    listenAtPort(8080)
   })
 
   afterEach(() => {
-    backend.stopListening()
+    stopListening()
   })
 
   it('adds tasks to repository [post /tasks]', async () => {
@@ -38,8 +38,8 @@ describe('backend', () => {
 
   it('yields an error if stopping twice', async () => {
     try {
-      await backend.stopListening()
-      await backend.stopListening()
+      await stopListening()
+      await stopListening()
       assert.fail('No error thrown')
     }
     catch (error) {
@@ -47,13 +47,13 @@ describe('backend', () => {
   })
 
   it('throws if port number is missing', () => {
-    expect(() => backend.listenAtPort()).to.throw()
+    expect(() => listenAtPort()).to.throw()
   })
 
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
-      await backend.stopListening()
-      backend.listenAtPort(8080)
+      await stopListening()
+      listenAtPort(8080)
       const response = await get('http://localhost:8080/tasks')
       expect(response.statusCode).to.equal(200)
     }

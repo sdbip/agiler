@@ -14,11 +14,9 @@ server.post('/tasks', async (request, response) => {
 })
 
 const s = server.finalize()
-module.exports = {
-  setRepository: r => {repository = r},
-  listenAtPort: s.listenAtPort.bind(s),
-  stopListening: s.stopListening.bind(s),
-}
+module.exports.setRepository = r => {repository = r}
+module.exports.listenAtPort = s.listenAtPort.bind(s)
+module.exports.stopListening = s.stopListening.bind(s)
 
 function readBody(request) {
   return new Promise((resolve, reject) => {

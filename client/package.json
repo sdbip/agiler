@@ -4,12 +4,15 @@
   "main": "index.js",
   "author": "Johan Segerfeldt",
   "license": "ISC",
+  "scripts": {
+    "lint": "eslint",
+    "build": "eslint && mocha -R dot && echo 'Test OK'",
+    "test": "mocha"
+  },
   "devDependencies": {
     "chai": "^4.3.6",
-    "grunt": "^1.5.3",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-eslint": "^24.0.0",
-    "grunt-mocha-test": "^0.13.3"
+    "eslint": "^8.23.1",
+    "mocha": "^10.0.0"
   },
   "dependencies": {
     "express": "^4.18.1"
