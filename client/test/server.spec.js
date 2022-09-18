@@ -10,7 +10,7 @@ describe('server', () => {
     server.listenAtPort(8080)
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     server.stopListening()
   })
 
@@ -19,22 +19,6 @@ describe('server', () => {
     expect(response.statusCode).to.equal(200)
     assert.isOk(response.content)
     expect(response.content[0]).to.equal('<')
-  })
-
-  it('responds to post /tasks', async () => {
-    const response = await post('http://localhost:8080/tasks', {
-      title: 'Get Shit Done',
-    })
-
-    expect(response.statusCode).to.equal(200)
-    assert.isOk(response.content)
-  })
-
-  it('responds to get /tasks', async () => {
-    const response = await get('http://localhost:8080/tasks')
-
-    expect(response.statusCode).to.equal(200)
-    assert.isOk(response.content)
   })
 
   it('yields an error if stopping twice', async () => {
