@@ -10,12 +10,12 @@ app.get('/', async (_, response) => {
 })
 
 app.get('/tasks', async (_, response) => {
-  response.end('[]')
+  setBody(response, [])
 })
 
 app.post('/tasks', async (request, response) => {
   const taskDTO = await readBody(request)
-  response.end(taskDTO.title)
+  setBody(response, taskDTO)
 })
 
 let server
@@ -44,5 +44,9 @@ function readBody(request) {
     request.on('data', data => { body += data })
     request.on('end', () => resolve(JSON.parse(body)))
   })
+}
+
+function setBody(response, object) {
+  response.end(JSON.stringify(object))
 }
 

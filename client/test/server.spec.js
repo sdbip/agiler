@@ -18,7 +18,7 @@ describe('server', () => {
     const response = await get('http://localhost:8080')
     expect(response.statusCode).to.equal(200)
     assert.isOk(response.content)
-
+    expect(response.content[0]).to.equal('<')
   })
 
   it('responds to post /tasks', async () => {
