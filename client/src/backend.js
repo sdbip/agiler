@@ -21,11 +21,17 @@ module.exports = {
 }
 
 function readBody(request) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     request.setEncoding('utf-8')
     let body = ''
     request.on('data', data => { body += data })
-    request.on('end', () => resolve(JSON.parse(body)))
+    request.on('end', () => {
+      try {
+        resolve(JSON.parse(body))
+      } catch (error) {
+        reject({ error: error.toString() })
+      }
+    })
   })
 }
 

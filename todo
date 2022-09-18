@@ -10,7 +10,6 @@
 - Allow user to complete a task
 
 # Engineering Tasks
-- Uh-oh! ./run.sh exits on error
 - Uh-oh! ./run.sh uses same port as tests
 - Allow listing added tasks
 - Add a PostgreSQL repository

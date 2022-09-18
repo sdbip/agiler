@@ -1,12 +1,8 @@
 const http = require('http')
 
 module.exports.get = (url) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     http.get(url, async response => {
-      if (response.statusCode !== 200) return reject({
-        statusCode: response.statusCode,
-      })
-
       const result = await readResponse(response)
       resolve(result)
     })
@@ -15,7 +11,7 @@ module.exports.get = (url) => {
 
 module.exports.post = (url, data) => {
   const { hostname, port, path } = require('url').parse(url)
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const json = JSON.stringify(data)
     const options = {
       hostname,
@@ -28,10 +24,6 @@ module.exports.post = (url, data) => {
       },
     }
     const request = http.request(options, async response => {
-      if (response.statusCode !== 200) return reject({
-        statusCode: response.statusCode,
-      })
-
       const result = await readResponse(response)
       resolve(result)
     })

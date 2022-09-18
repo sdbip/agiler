@@ -4,8 +4,26 @@ const http = require('http')
 module.exports.setupServer = () => {
   const app = express()
   return {
-    get: app.get.bind(app),
-    post: app.post.bind(app),
+    get: (path, handler) => {
+      app.get(path, async (request, response) => {
+        try {
+          await handler(request, response)
+        } catch (error) {
+          response.statusCode = 500
+          response.end(JSON.stringify({ error }))
+        }
+      })
+    },
+    post: (path, handler) => {
+      app.post(path, async (request, response) => {
+        try {
+          await handler(request, response)
+        } catch (error) {
+          response.statusCode = 500
+          response.end(JSON.stringify({ error }))
+        }
+      })
+    },
     finalize: () => new Server(app),
   }
 }
