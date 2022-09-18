@@ -1,15 +1,17 @@
 # Features
-- Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
+* Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 - Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 
 # Stories
-* Allow user to define a task
+* Allow user to define a task (backend)
 - UI for operating tasks
 - Allow user to complete a task
 
 # Engineering Tasks
-- Add a repository and add a task to it
+- Uh-oh! ./run.sh exits on error
+- Uh-oh! ./run.sh uses same port as tests
 - Allow listing added tasks
+- Add a PostgreSQL repository
 - Add .env to .gitignore when we need configuration

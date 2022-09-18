@@ -3,10 +3,15 @@
 const { expect, assert } = require('chai')
 const { get, post } = require('../src/http.js')
 const backend = require('../src/backend')
+const InMem = require('../src/inmem')
+
+const inmem = new InMem()
+backend.setRepository(inmem)
 
 describe('backend', () => {
 
   beforeEach(() => {
+    inmem.items = []
     backend.listenAtPort(8080)
   })
 
@@ -14,20 +19,21 @@ describe('backend', () => {
     backend.stopListening()
   })
 
-  it('responds to post /tasks', async () => {
+  it('adds tasks to repository [post /tasks]', async () => {
     const response = await post('http://localhost:8080/tasks', {
       title: 'Get Shit Done',
     })
 
     expect(response.statusCode).to.equal(200)
-    assert.isOk(response.content)
+    expect(inmem.getAll()).to.eql([ { title: 'Get Shit Done' } ])
   })
 
-  it('responds to get /tasks', async () => {
+  it('returns stored tasks [get /tasks]', async () => {
+    inmem.items = [ { title:'Make GET work' } ]
     const response = await get('http://localhost:8080/tasks')
 
     expect(response.statusCode).to.equal(200)
-    assert.isOk(response.content)
+    expect(response.content).to.equal('[{"title":"Make GET work"}]')
   })
 
   it('yields an error if stopping twice', async () => {
