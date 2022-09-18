@@ -1,6 +1,5 @@
-const http = require('http')
 const express = require('express')
-const fs = require('fs').promises
+const { Server } = require('./server')
 
 const app = express()
 
@@ -13,24 +12,7 @@ app.post('/tasks', async (request, response) => {
   setBody(response, taskDTO)
 })
 
-let server
-module.exports.listenAtPort = (port) => {
-  if (!port) throw new Error('called without port number')
-  
-  server = http.createServer(app)
-  server.listen(port)
-}
-
-module.exports.stopListening = () => {
-  return new Promise((resolve, reject) => {
-    if (!server) return reject('no server started')
-    server.close((error) => {
-      if (error) return reject(error)
-
-      resolve()
-    })
-  })
-}
+module.exports = new Server(app)
 
 function readBody(request) {
   return new Promise((resolve) => {

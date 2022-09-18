@@ -1,29 +1,26 @@
 const http = require('http')
-const express = require('express')
-const fs = require('fs').promises
 
-const app = express()
+class Server {
+  constructor(app) {
+    this.app = app
+  }
 
-app.get('/', async (_, response) => {
-  const data = await fs.readFile('index.html')
-  response.end(data)
-})
+  listenAtPort(port) {
+    if (!port) throw new Error('called without port number')
+    
+    this.server = http.createServer(this.app)
+    this.server.listen(port)
+  }
 
-let server
-module.exports.listenAtPort = (port) => {
-  if (!port) throw new Error('called without port number')
+  stopListening() {
+    return new Promise((resolve, reject) => {
+      if (!this.server) return reject('no server started')
+      this.server.close((error) => {
+        if (error) return reject(error)
   
-  server = http.createServer(app)
-  server.listen(port)
-}
-
-module.exports.stopListening = () => {
-  return new Promise((resolve, reject) => {
-    if (!server) return reject('no server started')
-    server.close((error) => {
-      if (error) return reject(error)
-
-      resolve()
+        resolve()
+      })
     })
-  })
+  }
 }
+module.exports.Server = Server

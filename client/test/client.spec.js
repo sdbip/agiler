@@ -1,8 +1,8 @@
 'use strict'
 
 const { expect, assert } = require('chai')
-const { get, post } = require('../src/http.js')
-const server = require('../src/server')
+const { get } = require('../src/http.js')
+const server = require('../src/client')
 
 describe('server', () => {
 
