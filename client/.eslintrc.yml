@@ -8,6 +8,7 @@ rules:
   comma-spacing: error
   eol-last: [error, always]
   eqeqeq: error
+  no-var: error
   object-curly-spacing: [error, always]
   quotes:
     - error

@@ -1,11 +1,11 @@
 const http = require('http')
-var express = require('express')
-const fs = require('fs')
+const express = require('express')
+const fs = require('fs').promises
 
 const app = express()
 
 app.get('/', async (_, response) => {
-  const data = await fs.promises.readFile('index.html')
+  const data = await fs.readFile('index.html')
   response.end(data)
 })
 
@@ -40,7 +40,7 @@ module.exports.stopListening = () => {
 function readBody(request) {
   return new Promise((resolve) => {
     request.setEncoding('utf-8')
-    var body = ''
+    let body = ''
     request.on('data', data => { body += data })
     request.on('end', () => resolve(JSON.parse(body)))
   })
