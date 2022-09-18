@@ -1,18 +1,17 @@
-const express = require('express')
-const { Server } = require('./server')
+const { setupServer } = require('./server')
 
-const app = express()
+const server = setupServer()
 
-app.get('/tasks', async (_, response) => {
+server.get('/tasks', async (_, response) => {
   setBody(response, [])
 })
 
-app.post('/tasks', async (request, response) => {
+server.post('/tasks', async (request, response) => {
   const taskDTO = await readBody(request)
   setBody(response, taskDTO)
 })
 
-module.exports = new Server(app)
+module.exports = server.finalize()
 
 function readBody(request) {
   return new Promise((resolve) => {

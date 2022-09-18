@@ -1,4 +1,14 @@
+const express = require('express')
 const http = require('http')
+
+module.exports.setupServer = () => {
+  const app = express()
+  return {
+    get: app.get.bind(app),
+    post: app.post.bind(app),
+    finalize: () => new Server(app),
+  }
+}
 
 class Server {
   constructor(app) {
@@ -23,4 +33,3 @@ class Server {
     })
   }
 }
-module.exports.Server = Server
