@@ -1,7 +1,7 @@
-const express = require('express')
-const http = require('http')
+import express from 'express'
+import { createServer } from 'http'
 
-module.exports.setupServer = () => {
+export const setupServer = () => {
   const app = express()
   return {
     get: (path, handler) => {
@@ -36,7 +36,7 @@ class Server {
   listenAtPort(port) {
     if (!port) throw new Error('called without port number')
     
-    this.server = http.createServer(this.app)
+    this.server = createServer(this.app)
     this.server.listen(port)
   }
 

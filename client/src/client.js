@@ -1,5 +1,5 @@
-const fs = require('fs').promises
-const { setupServer } = require('./server')
+import { promises as fs } from 'fs'
+import { setupServer } from './server.js'
 
 const server = setupServer()
 
@@ -8,4 +8,4 @@ server.get('/', async (_, response) => {
   response.end(data)
 })
 
-module.exports = server.finalize()
+export default server.finalize()

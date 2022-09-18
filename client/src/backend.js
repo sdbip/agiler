@@ -1,4 +1,4 @@
-const { setupServer } = require('./server')
+import { setupServer } from './server.js'
 
 const server = setupServer()
 let repository
@@ -14,9 +14,15 @@ server.post('/tasks', async (request, response) => {
 })
 
 const s = server.finalize()
-module.exports.setRepository = r => {repository = r}
-module.exports.listenAtPort = s.listenAtPort.bind(s)
-module.exports.stopListening = s.stopListening.bind(s)
+export function setRepository(r) {repository = r}
+export const listenAtPort = s.listenAtPort.bind(s)
+export const stopListening = s.stopListening.bind(s)
+
+export default {
+  listenAtPort,
+  stopListening,
+  setRepository,
+}
 
 function readBody(request) {
   return new Promise((resolve, reject) => {

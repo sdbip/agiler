@@ -1,17 +1,17 @@
-const http = require('http')
-const { join } = require('path')
+import http from 'http'
+import urlParser from 'url'
 
-module.exports.get = async (url) => {
+export const get = async (url) => {
   return await send('GET', url)
 }
 
-module.exports.post = async (url, data) => {
+export const post = async (url, data) => {
   const json = JSON.stringify(data)
   return await send('POST', url, json)
 }
 
 function send(method, url, body) {
-  const { hostname, port, path } = require('url').parse(url)
+  const { hostname, port, path } = urlParser.parse(url)
   const options = {
     hostname,
     port,

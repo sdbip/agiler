@@ -5,4 +5,4 @@ class InMem {
   add(item) { this.items.push(item) }
 }
 
-module.exports = InMem
+export default InMem

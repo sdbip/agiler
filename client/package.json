@@ -1,10 +1,12 @@
 {
   "name": "agiler",
+  "type": "module",
   "version": "0.0.0",
   "main": "index.js",
   "author": "Johan Segerfeldt",
   "license": "ISC",
   "scripts": {
+    "start": "node run.js",
     "lint": "eslint",
     "build": "eslint && mocha -R dot && echo 'Test OK'",
     "test": "mocha"

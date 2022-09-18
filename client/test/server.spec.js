@@ -1,7 +1,8 @@
 'use strict'
 
-const { expect, assert } = require('chai')
-const { get, post } = require('../src/http.js')
+import { expect } from 'chai'
+import { get, post } from '../src/http.js'
+import { setupServer } from '../src/server.js'
 
 let server
 let serverSetup
@@ -9,7 +10,7 @@ let serverSetup
 describe('get', () => {
 
   beforeEach(() => {
-    serverSetup = require('../src/server').setupServer()
+    serverSetup = setupServer()
     server = serverSetup.finalize()
     server.listenAtPort(8080)
   })
@@ -41,7 +42,7 @@ describe('get', () => {
 describe('post', () => {
 
   beforeEach(() => {
-    serverSetup = require('../src/server').setupServer()
+    serverSetup = setupServer()
     server = serverSetup.finalize()
     server.listenAtPort(8080)
   })

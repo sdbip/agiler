@@ -1,17 +1,17 @@
 'use strict'
 
-const { expect, assert } = require('chai')
-const { get } = require('../src/http.js')
-const server = require('../src/client')
+import { expect, assert } from 'chai'
+import { get } from '../src/http.js'
+import client from '../src/client.js'
 
 describe('server', () => {
 
   beforeEach(() => {
-    server.listenAtPort(8080)
+    client.listenAtPort(8080)
   })
 
   afterEach(() => {
-    server.stopListening()
+    client.stopListening()
   })
 
   it('responds to get /', async () => {
@@ -23,8 +23,8 @@ describe('server', () => {
 
   it('yields an error if stopping twice', async () => {
     try {
-      await server.stopListening()
-      await server.stopListening()
+      await client.stopListening()
+      await client.stopListening()
       assert.fail('No error thrown')
     }
     catch (error) {
@@ -32,13 +32,13 @@ describe('server', () => {
   })
 
   it('throws if port number is missing', () => {
-    expect(() => server.listenAtPort()).to.throw()
+    expect(() => client.listenAtPort()).to.throw()
   })
 
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
-      await server.stopListening()
-      server.listenAtPort(8080)
+      await client.stopListening()
+      client.listenAtPort(8080)
       const response = await get('http://localhost:8080')
       expect(response.statusCode).to.equal(200)
     }
