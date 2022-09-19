@@ -31,10 +31,6 @@ describe('server', () => {
     }
   })
 
-  it('throws if port number is missing', () => {
-    expect(() => client.listenAtPort()).to.throw()
-  })
-
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
       await client.stopListening()

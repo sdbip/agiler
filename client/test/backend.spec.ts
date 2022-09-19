@@ -46,10 +46,6 @@ describe('backend', () => {
     }
   })
 
-  it('throws if port number is missing', () => {
-    expect(() => listenAtPort()).to.throw()
-  })
-
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
       await stopListening()
