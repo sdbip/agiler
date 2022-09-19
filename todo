@@ -14,5 +14,4 @@
 - List unstarted tasks
 
 # Tasks
-* Add a PostgreSQL repository
 - Add .env to .gitignore when we need configuration
