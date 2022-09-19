@@ -3,12 +3,13 @@
 - Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
+- Higher purpose of the product?
 
 # Stories
-* Allow user to define a task (backend)
+* Persist tasks
 - UI for operating tasks
 - Allow user to complete a task
 
 # Engineering Tasks
-- Add a PostgreSQL repository
+* Add a PostgreSQL repository
 - Add .env to .gitignore when we need configuration
