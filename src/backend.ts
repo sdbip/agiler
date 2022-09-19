@@ -1,21 +1,23 @@
 import { Request, Response } from 'express'
+import { Task } from './domain/task.js'
 import { setupServer } from './server.js'
 
 export interface TaskRepository {
-  getAll(): Promise<any>
-  add(task: any): Promise<void>
+  getAll(): Promise<Task[]>
+  add(task: Task): Promise<void>
 }
 
 const server = setupServer()
 let repository: TaskRepository
 
 server.get('/tasks', async (_, response) => {
-  setBody(response, await repository.getAll())
+  const tasks = await repository.getAll()
+  setBody(response, tasks.map(t => ({ title: t.title })))
 })
 
 server.post('/tasks', async (request, response) => {
   const taskDTO = await readBody(request)
-  repository.add(taskDTO)
+  repository.add(new Task(taskDTO.title))
   setBody(response, taskDTO)
 })
 
@@ -30,7 +32,7 @@ export default {
   setRepository,
 }
 
-function readBody(request: Request) {
+function readBody(request: Request): Promise<any> {
   return new Promise((resolve, reject) => {
     request.setEncoding('utf-8')
     let body = ''
