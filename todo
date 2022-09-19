@@ -9,7 +9,10 @@
 * Persist tasks
 - UI for operating tasks
 - Allow user to complete a task
+- Allow user to start a task
+- List uncompleted tasks
+- List unstarted tasks
 
-# Engineering Tasks
+# Tasks
 * Add a PostgreSQL repository
 - Add .env to .gitignore when we need configuration
