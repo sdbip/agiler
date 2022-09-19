@@ -32,7 +32,7 @@ function send(method, url, body) {
   })
 }
 
-function readResponse(response, resolve) {
+function readResponse(response) {
   return new Promise((resolve) => {
     let result = ''
     response.setEncoding('utf-8')
