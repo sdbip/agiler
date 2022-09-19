@@ -1,11 +1,11 @@
 'use strict'
 
 import { expect } from 'chai'
-import { get, post } from '../src/http.js'
-import { setupServer } from '../src/server.js'
+import { get, post } from '../src/http'
+import { setupServer } from '../src/server'
 
-let server
-let serverSetup
+let server: any
+let serverSetup: any
 
 describe('get', () => {
 
@@ -20,7 +20,7 @@ describe('get', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.get('/path', (_, response) => {
+    serverSetup.get('/path', (_: any, response: any) => {
       response.end('foo')
     })
     const response = await get('http://localhost:8080/path')
@@ -52,7 +52,7 @@ describe('post', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.post('/path', (_, response) => {
+    serverSetup.post('/path', (_: any, response: any) => {
       response.end('foo')
     })
     const response = await post('http://localhost:8080/path', {})

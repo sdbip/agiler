@@ -1,8 +1,8 @@
 'use strict'
 
 import { expect, assert } from 'chai'
-import { get } from '../src/http.js'
-import client from '../src/frontend.js'
+import { get } from '../src/http'
+import client from '../src/frontend'
 
 describe('server', () => {
 

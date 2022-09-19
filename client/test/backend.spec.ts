@@ -1,9 +1,9 @@
 'use strict'
 
 import { expect, assert } from 'chai'
-import { get, post } from '../src/http.js'
-import { setRepository, listenAtPort, stopListening } from '../src/backend.js'
-import InMem from '../src/inmem.js'
+import { get, post } from '../src/http'
+import { setRepository, listenAtPort, stopListening } from '../src/backend'
+import InMem from '../src/inmem'
 
 const inmem = new InMem()
 setRepository(inmem)
