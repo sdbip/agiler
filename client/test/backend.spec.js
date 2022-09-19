@@ -25,7 +25,7 @@ describe('backend', () => {
     })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.getAll()).to.eql([ { title: 'Get Shit Done' } ])
+    expect(inmem.items).to.eql([ { title: 'Get Shit Done' } ])
   })
 
   it('returns stored tasks [get /tasks]', async () => {

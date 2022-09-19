@@ -4,7 +4,7 @@ const server = setupServer()
 let repository
 
 server.get('/tasks', async (_, response) => {
-  setBody(response, repository.getAll())
+  setBody(response, await repository.getAll())
 })
 
 server.post('/tasks', async (request, response) => {
