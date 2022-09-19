@@ -13,4 +13,7 @@
 - List unstarted tasks
 
 # Tasks
+* Add id to Task
+- Add `async get(id)` to repository
+- Add endpoint for completing a task
 - Add .env to .gitignore when we need configuration
