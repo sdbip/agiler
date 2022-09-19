@@ -4,6 +4,22 @@ Agiler is a planning tool for agile development
 
 ## Building the Application
 
+Use the yarn package manager
+
+```shell
+node install -g yarn
+yarn install
+```
+
+Run npm scripts using `yarn «script»`:
+
+```shell
+yarn start # start backend & frontend servers
+yarn lint  # check code standards
+yarn test  # run Mocha tests
+yarn build # lint and test
+```
+
 This command lints and tests the JavaScript code:
 
 ```shell
