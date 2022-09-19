@@ -2,7 +2,7 @@
 
 import { expect, assert } from 'chai'
 import { get } from '../src/http.js'
-import client from '../src/client.js'
+import client from '../src/frontend.js'
 
 describe('server', () => {
 
