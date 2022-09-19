@@ -9,7 +9,7 @@
     "start": "node run.js",
     "lint": "eslint",
     "build": "eslint && mocha -R dot && echo 'Test OK'",
-    "test": "mocha"
+    "test": "mocha -R dot"
   },
   "devDependencies": {
     "chai": "^4.3.6",
