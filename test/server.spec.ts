@@ -10,7 +10,7 @@ describe('get', () => {
   beforeEach(() => {
     serverSetup = setupServer()
     server = serverSetup.finalize()
-    server.listenAtPort(8080)
+    server.listenAtPort(9090)
   })
 
   afterEach(() => {
@@ -21,7 +21,7 @@ describe('get', () => {
     serverSetup.get('/path', (_: any, response: any) => {
       response.end('foo')
     })
-    const response = await get('http://localhost:8080/path')
+    const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(200)
     expect(response.content).to.equal('foo')
@@ -31,7 +31,7 @@ describe('get', () => {
     serverSetup.get('/path', async () => {
       throw new Error('foo')
     })
-    const response = await get('http://localhost:8080/path')
+    const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(500)
   })
@@ -42,7 +42,7 @@ describe('post', () => {
   beforeEach(() => {
     serverSetup = setupServer()
     server = serverSetup.finalize()
-    server.listenAtPort(8080)
+    server.listenAtPort(9090)
   })
 
   afterEach(() => {
@@ -53,7 +53,7 @@ describe('post', () => {
     serverSetup.post('/path', (_: any, response: any) => {
       response.end('foo')
     })
-    const response = await post('http://localhost:8080/path', {})
+    const response = await post('http://localhost:9090/path', {})
 
     expect(response.statusCode).to.equal(200)
     expect(response.content).to.equal('foo')
@@ -63,7 +63,7 @@ describe('post', () => {
     serverSetup.post('/path', async () => {
       throw new Error('foo')
     })
-    const response = await post('http://localhost:8080/path', {})
+    const response = await post('http://localhost:9090/path', {})
 
     expect(response.statusCode).to.equal(500)
   })

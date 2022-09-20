@@ -13,5 +13,5 @@
 - List unstarted tasks
 
 # Tasks
-- Add id to output DTO
 - Add endpoint for completing a task
+- Use event-sourcing?

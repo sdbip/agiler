@@ -11,7 +11,7 @@ describe('backend', () => {
 
   beforeEach(() => {
     inmem.items = []
-    listenAtPort(8080)
+    listenAtPort(9090)
   })
 
   afterEach(() => {
@@ -19,7 +19,7 @@ describe('backend', () => {
   })
 
   it('adds tasks to repository [post /tasks]', async () => {
-    const response = await post('http://localhost:8080/tasks', {
+    const response = await post('http://localhost:9090/tasks', {
       title: 'Get Shit Done',
     })
 
@@ -27,12 +27,29 @@ describe('backend', () => {
     expect(inmem.items.map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
   })
 
-  it('returns stored tasks [get /tasks]', async () => {
-    inmem.items = [ new Task('Make GET work') ]
-    const response = await get('http://localhost:8080/tasks')
+  it('returns task details [post /tasks]', async () => {
+    const response = await post('http://localhost:9090/tasks', {
+      title: 'Get Shit Done',
+    })
 
     expect(response.statusCode).to.equal(200)
-    expect(response.content).to.equal('[{"title":"Make GET work"}]')
+    const dto = JSON.parse(response.content)
+    expect(dto.title).to.equal('Get Shit Done')
+    assert.ok(dto.id)
+  })
+
+  it('returns stored tasks [get /tasks]', async () => {
+    inmem.items = [ new Task('Make GET work') ]
+    const response = await get('http://localhost:9090/tasks')
+
+    expect(response.statusCode).to.equal(200)
+    
+    const dtos = JSON.parse(response.content)
+    expect(dtos?.length).to.equal(1)
+
+    const dto = dtos[0]
+    expect(dto.title).to.equal('Make GET work')
+    assert.ok(dto.id)
   })
 
   it('yields an error if stopping twice', async () => {
@@ -48,8 +65,8 @@ describe('backend', () => {
   it('can start and stop multiple times', async () => {
     for (let i = 0; i < 5; i++) {
       await stopListening()
-      listenAtPort(8080)
-      const response = await get('http://localhost:8080/tasks')
+      listenAtPort(9090)
+      const response = await get('http://localhost:9090/tasks')
       expect(response.statusCode).to.equal(200)
     }
   })

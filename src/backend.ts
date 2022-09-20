@@ -13,13 +13,17 @@ let repository: TaskRepository
 
 server.get('/tasks', async (_, response) => {
   const tasks = await repository.getAll()
-  setBody(response, tasks.map(t => ({ title: t.title })))
+  setBody(response, tasks.map(t => ({ id:t.id, title: t.title })))
 })
 
 server.post('/tasks', async (request, response) => {
   const taskDTO = await readBody(request)
-  repository.add(new Task(taskDTO.title))
-  setBody(response, taskDTO)
+  const task = new Task(taskDTO.title)
+  repository.add(task)
+  setBody(response, {
+    id: task.id,
+    title: task.title,
+  })
 })
 
 const s = server.finalize()
