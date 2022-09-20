@@ -16,7 +16,10 @@ class PGTaskRepository implements TaskRepository {
 
   async get(id: string): Promise<Task | undefined> {
     const res = await this.client.query('SELECT * FROM Tasks WHERE id = $1', [ id ])
-    return res.rows[0]
+    return {
+      ...res.rows[0],
+      isCompleted: res.rows[0].progress > 0,
+    }
   }
 
   async add(task: any) {

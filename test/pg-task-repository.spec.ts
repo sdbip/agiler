@@ -10,23 +10,50 @@ describe('PGTaskRepository', () => {
     assert.ok(database, 'The environment variable TEST_DATABASE_NAME must be set')
   })
 
-  it('works', async () => {
+  it('can add tasks and find them again', async () => {
     const repo = await connect(database)
 
     try {
-      const newTask = new Task('Make PGTaskRepository work')
-      await repo.add(newTask)
-      const completedTask = new Task('Completed Task')
-      completedTask.complete()
-      await repo.add(completedTask)
+      const task = new Task('Make PGTaskRepository work')
+      task.complete()
+      await repo.add(task)
 
-      assert.ok(await repo.get(newTask.id))
-      assert.ok(await repo.get(completedTask.id))
-      const newTasks = await repo.getNew()
+      const taskInRepository = await repo.get(task.id)
+      assert.ok(taskInRepository)
+      expect(taskInRepository?.id).to.equal(task.id)
+      expect(taskInRepository?.isCompleted).to.equal(task.isCompleted)
+      expect(taskInRepository?.title).to.equal(task.title)
+    } finally {
+      await repo.close()
+    }
+  })
 
-      assert.ok(newTasks)
-      expect(newTasks.map(t => t.id)).contain(newTask.id)
-      expect(newTasks.map(t => t.id)).not.contain(completedTask.id)
+  it('finds stored tasks', async () => {
+    const repo = await connect(database)
+
+    try {
+      const task = new Task('Make PGTaskRepository work')
+      await repo.add(task)
+
+      const storedTasks = await repo.getNew()
+      assert.ok(storedTasks)
+      expect(storedTasks.map(t => t.id)).contain(task.id)
+    } finally {
+      await repo.close()
+    }
+  })
+
+  it('ignores completed tasks', async () => {
+    const repo = await connect(database)
+
+    try {
+      const task = new Task('Completed Task')
+      task.complete()
+      await repo.add(task)
+
+      const storedTasks = await repo.getNew()
+      assert.ok(storedTasks)
+      expect(storedTasks.map(t => t.id)).not.contain(task.id)
     } finally {
       await repo.close()
     }
