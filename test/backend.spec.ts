@@ -35,7 +35,6 @@ describe('backend', () => {
       title: 'Get Shit Done',
     })
 
-    expect(response.statusCode).to.equal(200)
     const dto = JSON.parse(response.content)
     expect(dto.title).to.equal('Get Shit Done')
     assert.ok(dto.id)
@@ -47,6 +46,12 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(inmem.items['id'].isCompleted).to.equal(true)
+  })
+
+  it('returns 404 if not found [patch /task/:id/complete]', async () => {
+    const response = await patch('http://localhost:9090/task/id/complete')
+
+    expect(response.statusCode).to.equal(404)
   })
 
   it('returns stored tasks [get /task]', async () => {

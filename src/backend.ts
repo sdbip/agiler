@@ -27,9 +27,13 @@ server.post('/task', async (request, response) => {
 })
 
 server.patch('/task/:id/complete', async (request, response) => {
-  const maybeTask = await repository.get(request.params.id)
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const task = maybeTask!
+  const task = await repository.get(request.params.id)
+  if (!task) {
+    response.statusCode = 404
+    response.end()
+    return
+  }
+
   task.complete()
   response.end()
 })
