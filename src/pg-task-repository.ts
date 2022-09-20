@@ -22,6 +22,10 @@ class PGTaskRepository implements TaskRepository {
   async add(task: any) {
     await this.client.query('INSERT INTO Tasks VALUES ($1, $2)', [ task.id, task.title ])
   }
+
+  async close() {
+    await this.client.end()
+  }
 }
 
 export async function connect(database: string) {
