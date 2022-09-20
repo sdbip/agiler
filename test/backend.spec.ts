@@ -2,7 +2,7 @@ import { expect, assert } from 'chai'
 import { get, patch, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
-import { Task } from '../src/domain/task'
+import { Progress, Task } from '../src/domain/task'
 
 const inmem = new InMem()
 setRepository(inmem)
@@ -45,7 +45,7 @@ describe('backend', () => {
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'].isCompleted).to.equal(true)
+    expect(inmem.items['id'].progress).to.equal(Progress.completed)
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {

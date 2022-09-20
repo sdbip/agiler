@@ -21,7 +21,7 @@ describe('PGTaskRepository', () => {
       const taskInRepository = await repo.get(task.id)
       expect(taskInRepository).instanceOf(Task)
       expect(taskInRepository?.id).to.equal(task.id)
-      expect(taskInRepository?.isCompleted).to.equal(task.isCompleted)
+      expect(taskInRepository?.progress).to.equal(task.progress)
       expect(taskInRepository?.title).to.equal(task.title)
     } finally {
       await repo.close()

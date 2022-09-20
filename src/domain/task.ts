@@ -4,18 +4,21 @@ export class Task {
   readonly id: string
   state: TaskState
   
-  get isCompleted(): boolean { return this.state.isCompleted }
   get title(): string { return this.state.title }
-  
+  get progress() { return this.state.progress }
+
   complete() {
-    this.state.isCompleted = true
+    this.state.progress = Progress.completed
+  }
+  start() {
+    this.state.progress = Progress.inProgress
   }
 
   static new(title: string): Task {
     return new Task(randomUUID(),
     {
-      isCompleted: false,
       title,
+      progress: Progress.notStarted,
     })
   }
 
@@ -31,5 +34,11 @@ export class Task {
 
 export interface TaskState {
   title: string
-  isCompleted: boolean  
+  progress: Progress
+}
+
+export enum Progress {
+  notStarted = 0,
+  inProgress = 1,
+  completed = 2
 }

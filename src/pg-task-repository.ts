@@ -20,7 +20,7 @@ class PGTaskRepository implements TaskRepository {
   }
 
   async add(task: Task) {
-    await this.client.query('INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)', [ task.id, task.title, task.isCompleted ? 1 : 0 ])
+    await this.client.query('INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)', [ task.id, task.title, task.progress ])
   }
 
   async close() {
@@ -44,7 +44,7 @@ type TaskRow = {
 function task(row: TaskRow) {
   const props: TaskState = {
     title: row.title,
-    isCompleted: row.progress > 0,
+    progress: row.progress,
   }
   return Task.reconstitute(row.id, props)
 }

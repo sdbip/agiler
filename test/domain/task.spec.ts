@@ -1,10 +1,10 @@
 import { assert, expect } from 'chai'
-import { Task } from '../../src/domain/task'
+import { Progress, Task } from '../../src/domain/task'
 
 describe('Task', () => {
   it('has expected initial values', () => {
     const task = Task.new('Get it done')
-    expect(task.isCompleted).to.equal(false)
+    expect(task.progress).to.equal(Progress.notStarted)
     expect(task.title).to.equal('Get it done')
     assert.ok(task.id)
   })
@@ -12,7 +12,13 @@ describe('Task', () => {
   it('can be completed', () => {
     const task = Task.new('Get it done')
     task.complete()
-    expect(task.isCompleted).to.equal(true)
+    expect(task.progress).to.equal(Progress.completed)
+  })
+
+  it('can be started', () => {
+    const task = Task.new('Get it done')
+    task.start()
+    expect(task.progress).to.equal(Progress.inProgress)
   })
 
   it('has a unique id', () => {

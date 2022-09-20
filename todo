@@ -6,8 +6,8 @@
 - Higher purpose of the product?
 
 # Stories
+* Allow user to start a task
 - UI for operating tasks
-- Allow user to start a task
 
 # Tasks
 - Use event-sourcing?
