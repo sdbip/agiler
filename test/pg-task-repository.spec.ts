@@ -19,7 +19,7 @@ describe('PGTaskRepository', () => {
       await repo.add(task)
 
       const taskInRepository = await repo.get(task.id)
-      assert.ok(taskInRepository)
+      expect(taskInRepository).instanceOf(Task)
       expect(taskInRepository?.id).to.equal(task.id)
       expect(taskInRepository?.isCompleted).to.equal(task.isCompleted)
       expect(taskInRepository?.title).to.equal(task.title)

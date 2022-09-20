@@ -11,5 +11,4 @@
 - List unstarted tasks
 
 # Tasks
-- new Task({completed: false, title: 'Get it Done'}, 'my_id')
 - Use event-sourcing?
