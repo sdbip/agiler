@@ -1,5 +1,3 @@
-'use strict'
-
 import { expect, assert } from 'chai'
 import { get, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'

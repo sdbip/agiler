@@ -1,5 +1,3 @@
-'use strict'
-
 import { assert } from 'chai'
 import { Task } from '../src/domain/task'
 import { connect } from '../src/pg-task-repository'

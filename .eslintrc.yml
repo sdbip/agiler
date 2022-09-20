@@ -24,3 +24,4 @@ rules:
     - single
     - { avoidEscape: true }
   semi: [error, never]
+  strict: error

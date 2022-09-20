@@ -1,5 +1,3 @@
-'use strict'
-
 import { expect } from 'chai'
 import { get, post } from '../src/http'
 import { setupServer } from '../src/server'
