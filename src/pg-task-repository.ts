@@ -20,7 +20,7 @@ class PGTaskRepository implements TaskRepository {
   }
 
   async add(task: any) {
-    await this.client.query('INSERT INTO Tasks VALUES ($1, $2)', [ task.id, task.title ])
+    await this.client.query('INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)', [ task.id, task.title, task.isCompleted ? 1 : 0 ])
   }
 
   async close() {
