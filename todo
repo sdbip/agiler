@@ -8,7 +8,6 @@
 # Stories
 - UI for operating tasks
 - Allow user to start a task
-- List unstarted tasks
 
 # Tasks
 - Use event-sourcing?

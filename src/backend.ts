@@ -18,7 +18,7 @@ server.get('/task', async (request, response) => {
 
 server.post('/task', async (request, response) => {
   const taskDTO = await readBody(request)
-  const task = new Task(taskDTO.title)
+  const task = Task.new(taskDTO.title)
   repository.add(task)
   setBody(response, {
     id: task.id,

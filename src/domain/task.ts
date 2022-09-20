@@ -5,25 +5,29 @@ export class Task {
   isCompleted: boolean
   title: string
 
-  constructor(props: string | TaskProps) {
-    if (typeof props === 'string') {
-      this.id = randomUUID()
-      this.isCompleted = false
-      this.title = props
-    } else {
-      this.id = props.id
-      this.isCompleted = props.isCompleted
-      this.title = props.title
-    }
+  private constructor(id: string, props: TaskProps) {
+    this.id = id
+    this.isCompleted = props.isCompleted
+    this.title = props.title
   }
 
   complete() {
     this.isCompleted = true
   }
+
+  static new(title: string): Task {
+    return new Task(randomUUID(),
+    {
+      isCompleted: false,
+      title,
+    })
+  }
+  static reconstitute(id: string, props: TaskProps): Task {
+    return new Task(id, props)
+  }
 }
 
 export interface TaskProps {
-  id: string;
   title: string
   isCompleted: boolean  
 }

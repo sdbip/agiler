@@ -1,6 +1,6 @@
 import pg from 'pg'
 import { TaskRepository } from './backend'
-import { Task } from './domain/task'
+import { Task, TaskProps } from './domain/task'
 
 class PGTaskRepository implements TaskRepository {
   private client: pg.Client
@@ -11,21 +11,15 @@ class PGTaskRepository implements TaskRepository {
 
   async getNew() {
     const res = await this.client.query('SELECT * FROM Tasks WHERE progress = 0')
-    return res.rows.map(row => new Task({
-      ...row,
-      isCompleted: row.progress > 0,
-    }))
+    return res.rows.map(task)
   }
 
   async get(id: string): Promise<Task | undefined> {
     const res = await this.client.query('SELECT * FROM Tasks WHERE id = $1', [ id ])
-    return new Task({
-      ...res.rows[0],
-      isCompleted: res.rows[0].progress > 0,
-    })
+    return task(res.rows[0])
   }
 
-  async add(task: any) {
+  async add(task: Task) {
     await this.client.query('INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)', [ task.id, task.title, task.isCompleted ? 1 : 0 ])
   }
 
@@ -39,4 +33,18 @@ export async function connect(database: string) {
   await client.connect()
 
   return new PGTaskRepository(client)
+}
+
+type TaskRow = {
+  id: string
+  title: string
+  progress: number
+}
+
+function task(row: TaskRow) {
+  const props: TaskProps = {
+    title: row.title,
+    isCompleted: row.progress > 0,
+  }
+  return Task.reconstitute(row.id, props)
 }

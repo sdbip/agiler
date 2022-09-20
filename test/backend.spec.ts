@@ -41,7 +41,7 @@ describe('backend', () => {
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
-    inmem.items = { 'id': new Task('Get Shit Done') }
+    inmem.items = { 'id': Task.new('Get Shit Done') }
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
@@ -56,8 +56,8 @@ describe('backend', () => {
 
   it('returns open tasks only [get /task]', async () => {
     inmem.items = {
-      'one': new Task('New task'),
-      'two': new Task('Completed task'),
+      'one': Task.new('New task'),
+      'two': Task.new('Completed task'),
     }
     inmem.items['two'].complete()
     const response = await get('http://localhost:9090/task')

@@ -14,7 +14,7 @@ describe('PGTaskRepository', () => {
     const repo = await connect(database)
 
     try {
-      const task = new Task('Make PGTaskRepository work')
+      const task = Task.new('Make PGTaskRepository work')
       task.complete()
       await repo.add(task)
 
@@ -32,7 +32,7 @@ describe('PGTaskRepository', () => {
     const repo = await connect(database)
 
     try {
-      const task = new Task('Make PGTaskRepository work')
+      const task = Task.new('Make PGTaskRepository work')
       await repo.add(task)
 
       const storedTasks = await repo.getNew()
@@ -48,7 +48,7 @@ describe('PGTaskRepository', () => {
     const repo = await connect(database)
 
     try {
-      const task = new Task('Completed Task')
+      const task = Task.new('Completed Task')
       task.complete()
       await repo.add(task)
 
