@@ -11,7 +11,10 @@ class PGTaskRepository implements TaskRepository {
 
   async getNew() {
     const res = await this.client.query('SELECT * FROM Tasks WHERE progress = 0')
-    return res.rows
+    return res.rows.map(row => new Task({
+      ...row,
+      isCompleted: row.progress > 0,
+    }))
   }
 
   async get(id: string): Promise<Task | undefined> {

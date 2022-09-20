@@ -37,6 +37,7 @@ describe('PGTaskRepository', () => {
 
       const storedTasks = await repo.getNew()
       assert.ok(storedTasks)
+      expect(storedTasks[0]).instanceOf(Task)
       expect(storedTasks.map(t => t.id)).contain(task.id)
     } finally {
       await repo.close()
