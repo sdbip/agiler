@@ -4,6 +4,7 @@ import { expect, assert } from 'chai'
 import { get, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from '../src/inmem'
+import { Task } from '../src/domain/task'
 
 const inmem = new InMem()
 setRepository(inmem)
@@ -25,11 +26,11 @@ describe('backend', () => {
     })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items).to.eql([ { title: 'Get Shit Done' } ])
+    expect(inmem.items.map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
   })
 
   it('returns stored tasks [get /tasks]', async () => {
-    inmem.items = [ { title:'Make GET work' } ]
+    inmem.items = [ new Task('Make GET work') ]
     const response = await get('http://localhost:8080/tasks')
 
     expect(response.statusCode).to.equal(200)
