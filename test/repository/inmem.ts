@@ -1,5 +1,5 @@
-import { TaskRepository } from './backend'
-import { Task } from './domain/task'
+import { TaskRepository } from '../../src/backend'
+import { Task } from '../../src/domain/task'
 
 class InMem implements TaskRepository {
   items: Task[] = []

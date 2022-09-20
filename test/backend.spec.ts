@@ -3,7 +3,7 @@
 import { expect, assert } from 'chai'
 import { get, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
-import InMem from '../src/inmem'
+import InMem from './repository/inmem'
 import { Task } from '../src/domain/task'
 
 const inmem = new InMem()
