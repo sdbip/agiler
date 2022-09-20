@@ -54,8 +54,12 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(404)
   })
 
-  it('returns stored tasks [get /task]', async () => {
-    inmem.items = { 'id': new Task('Make GET work') }
+  it('returns open tasks only [get /task]', async () => {
+    inmem.items = {
+      'one': new Task('New task'),
+      'two': new Task('Completed task'),
+    }
+    inmem.items['two'].complete()
     const response = await get('http://localhost:9090/task')
 
     expect(response.statusCode).to.equal(200)
@@ -64,7 +68,7 @@ describe('backend', () => {
     expect(dtos?.length).to.equal(1)
 
     const dto = dtos[0]
-    expect(dto.title).to.equal('Make GET work')
+    expect(dto.title).to.equal('New task')
     assert.ok(dto.id)
   })
 

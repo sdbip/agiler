@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { assert, expect } from 'chai'
 import { Task } from '../src/domain/task'
 import { connect } from '../src/pg-task-repository'
 
@@ -14,11 +14,19 @@ describe('PGTaskRepository', () => {
     const repo = await connect(database)
 
     try {
-      const task = new Task('Make PGTaskRepository work')
+      const newTask = new Task('Make PGTaskRepository work')
+      await repo.add(newTask)
+      const completedTask = new Task('Completed Task')
+      completedTask.complete()
+      await repo.add(completedTask)
 
-      await repo.add(task)
-      assert.ok(await repo.get(task.id))
-      assert.ok(await repo.getAll())
+      assert.ok(await repo.get(newTask.id))
+      assert.ok(await repo.get(completedTask.id))
+      const newTasks = await repo.getNew()
+
+      assert.ok(newTasks)
+      expect(newTasks.map(t => t.id)).contain(newTask.id)
+      expect(newTasks.map(t => t.id)).not.contain(completedTask.id)
     } finally {
       await repo.close()
     }

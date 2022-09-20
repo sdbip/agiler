@@ -6,10 +6,10 @@
 - Higher purpose of the product?
 
 # Stories
-* List uncompleted tasks
 - UI for operating tasks
 - Allow user to start a task
 - List unstarted tasks
 
 # Tasks
+- new Task({completed: false, title: 'Get it Done'}, 'my_id')
 - Use event-sourcing?

@@ -3,7 +3,7 @@ import { Task } from './domain/task.js'
 import { setupServer } from './server.js'
 
 export interface TaskRepository {
-  getAll(): Promise<Task[]>
+  getNew(): Promise<Task[]>
   get(id: string): Promise<Task | undefined>
   add(task: Task): Promise<void>
 }
@@ -11,8 +11,8 @@ export interface TaskRepository {
 const server = setupServer()
 let repository: TaskRepository
 
-server.get('/task', async (_, response) => {
-  const tasks = await repository.getAll()
+server.get('/task', async (request, response) => {
+  const tasks = await repository.getNew()
   setBody(response, tasks.map(t => ({ id:t.id, title: t.title })))
 })
 

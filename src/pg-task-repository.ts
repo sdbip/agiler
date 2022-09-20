@@ -9,8 +9,8 @@ class PGTaskRepository implements TaskRepository {
     this.client = client
   }
 
-  async getAll() {
-    const res = await this.client.query('SELECT * FROM Tasks')
+  async getNew() {
+    const res = await this.client.query('SELECT * FROM Tasks WHERE progress = 0')
     return res.rows
   }
 
