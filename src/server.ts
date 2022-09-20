@@ -24,6 +24,9 @@ export const setupServer = () => {
     post: (path: string, handler: Handler) => {
       app.post(path, wrapHandler(handler))
     },
+    patch: (path: string, handler: Handler) => {
+      app.patch(path, wrapHandler(handler))
+    },
     finalize: () => new Server(app),
   }
 }

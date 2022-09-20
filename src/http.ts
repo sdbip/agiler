@@ -10,9 +10,14 @@ export const get = async (url: string) => {
   return await send('GET', url)
 }
 
-export const post = async (url: string, data: object) => {
-  const json = JSON.stringify(data)
+export const post = async (url: string, data?: object) => {
+  const json = data && JSON.stringify(data)
   return await send('POST', url, json)
+}
+
+export const patch = async (url: string, data?: object) => {
+  const json = data && JSON.stringify(data)
+  return await send('PATCH', url, json)
 }
 
 function send(method: string, url: string, body?: string) {

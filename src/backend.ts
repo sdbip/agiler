@@ -26,6 +26,14 @@ server.post('/task', async (request, response) => {
   })
 })
 
+server.patch('/task/:id/complete', async (request, response) => {
+  const maybeTask = await repository.get(request.params.id)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const task = maybeTask!
+  task.complete()
+  response.end()
+})
+
 const s = server.finalize()
 export function setRepository(r: TaskRepository) {repository = r}
 export const listenAtPort = s.listenAtPort.bind(s)

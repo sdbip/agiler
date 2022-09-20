@@ -13,5 +13,4 @@
 - List unstarted tasks
 
 # Tasks
-- Add endpoint for completing a task
 - Use event-sourcing?

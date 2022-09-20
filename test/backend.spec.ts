@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai'
-import { get, post } from '../src/http'
+import { get, patch, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
 import { Task } from '../src/domain/task'
@@ -24,7 +24,10 @@ describe('backend', () => {
     })
 
     expect(response.statusCode).to.equal(200)
-    expect(Object.values(inmem.items).map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
+    expect(
+      Object.values(inmem.items)
+        .map(i => ({ title: i.title })),
+      ).to.eql([ { title: 'Get Shit Done' } ])
   })
 
   it('returns task details [post /task]', async () => {
@@ -38,12 +41,20 @@ describe('backend', () => {
     assert.ok(dto.id)
   })
 
+  it('completes task [patch /task/:id/complete]', async () => {
+    inmem.items = { 'id': new Task('Get Shit Done') }
+    const response = await patch('http://localhost:9090/task/id/complete')
+
+    expect(response.statusCode).to.equal(200)
+    expect(inmem.items['id'].isCompleted).to.equal(true)
+  })
+
   it('returns stored tasks [get /task]', async () => {
     inmem.items = { 'id': new Task('Make GET work') }
     const response = await get('http://localhost:9090/task')
 
     expect(response.statusCode).to.equal(200)
-    
+
     const dtos = JSON.parse(response.content)
     expect(dtos?.length).to.equal(1)
 
