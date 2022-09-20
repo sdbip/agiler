@@ -1,6 +1,6 @@
 import pg from 'pg'
 import { TaskRepository } from './backend'
-import { Task, TaskProps } from './domain/task'
+import { Task, TaskState } from './domain/task'
 
 class PGTaskRepository implements TaskRepository {
   private client: pg.Client
@@ -42,7 +42,7 @@ type TaskRow = {
 }
 
 function task(row: TaskRow) {
-  const props: TaskProps = {
+  const props: TaskState = {
     title: row.title,
     isCompleted: row.progress > 0,
   }

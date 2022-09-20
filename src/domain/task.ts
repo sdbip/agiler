@@ -2,17 +2,13 @@ import { randomUUID } from 'crypto'
 
 export class Task {
   readonly id: string
-  isCompleted: boolean
-  title: string
-
-  private constructor(id: string, props: TaskProps) {
-    this.id = id
-    this.isCompleted = props.isCompleted
-    this.title = props.title
-  }
-
+  state: TaskState
+  
+  get isCompleted(): boolean { return this.state.isCompleted }
+  get title(): string { return this.state.title }
+  
   complete() {
-    this.isCompleted = true
+    this.state.isCompleted = true
   }
 
   static new(title: string): Task {
@@ -22,12 +18,18 @@ export class Task {
       title,
     })
   }
-  static reconstitute(id: string, props: TaskProps): Task {
-    return new Task(id, props)
+
+  static reconstitute(id: string, state: TaskState): Task {
+    return new Task(id, state)
+  }
+
+  private constructor(id: string, state: TaskState) {
+    this.id = id
+    this.state = state
   }
 }
 
-export interface TaskProps {
+export interface TaskState {
   title: string
   isCompleted: boolean  
 }
