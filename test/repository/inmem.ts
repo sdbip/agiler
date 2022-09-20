@@ -2,13 +2,13 @@ import { TaskRepository } from '../../src/backend'
 import { Task } from '../../src/domain/task'
 
 class InMem implements TaskRepository {
-  items: Task[] = []
+  items: {[id: string]: Task} = {}
   
-  async getAll() { return this.items }
+  async getAll() { return Object.values(this.items) }
   async get(id: string) {
-    return this.items.find(t => t.id === id)
+    return this.items[id]
   }
-  async add(task: any) { this.items.push(task) }
+  async add(task: any) { this.items[task.id] = task }
 }
 
 export default InMem

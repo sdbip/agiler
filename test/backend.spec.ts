@@ -10,7 +10,7 @@ setRepository(inmem)
 describe('backend', () => {
 
   beforeEach(() => {
-    inmem.items = []
+    inmem.items = {}
     listenAtPort(9090)
   })
 
@@ -24,7 +24,7 @@ describe('backend', () => {
     })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items.map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
+    expect(Object.values(inmem.items).map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
   })
 
   it('returns task details [post /task]', async () => {
@@ -39,7 +39,7 @@ describe('backend', () => {
   })
 
   it('returns stored tasks [get /task]', async () => {
-    inmem.items = [ new Task('Make GET work') ]
+    inmem.items = { 'id': new Task('Make GET work') }
     const response = await get('http://localhost:9090/task')
 
     expect(response.statusCode).to.equal(200)
