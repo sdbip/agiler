@@ -4,6 +4,7 @@ import { setupServer } from './server.js'
 
 export interface TaskRepository {
   getAll(): Promise<Task[]>
+  get(id: string): Promise<Task | undefined>
   add(task: Task): Promise<void>
 }
 
