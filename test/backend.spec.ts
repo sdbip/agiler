@@ -18,8 +18,8 @@ describe('backend', () => {
     stopListening()
   })
 
-  it('adds tasks to repository [post /tasks]', async () => {
-    const response = await post('http://localhost:9090/tasks', {
+  it('adds tasks to repository [post /task]', async () => {
+    const response = await post('http://localhost:9090/task', {
       title: 'Get Shit Done',
     })
 
@@ -27,8 +27,8 @@ describe('backend', () => {
     expect(inmem.items.map(i => ({ title: i.title }))).to.eql([ { title: 'Get Shit Done' } ])
   })
 
-  it('returns task details [post /tasks]', async () => {
-    const response = await post('http://localhost:9090/tasks', {
+  it('returns task details [post /task]', async () => {
+    const response = await post('http://localhost:9090/task', {
       title: 'Get Shit Done',
     })
 
@@ -38,9 +38,9 @@ describe('backend', () => {
     assert.ok(dto.id)
   })
 
-  it('returns stored tasks [get /tasks]', async () => {
+  it('returns stored tasks [get /task]', async () => {
     inmem.items = [ new Task('Make GET work') ]
-    const response = await get('http://localhost:9090/tasks')
+    const response = await get('http://localhost:9090/task')
 
     expect(response.statusCode).to.equal(200)
     
@@ -66,7 +66,7 @@ describe('backend', () => {
     for (let i = 0; i < 5; i++) {
       await stopListening()
       listenAtPort(9090)
-      const response = await get('http://localhost:9090/tasks')
+      const response = await get('http://localhost:9090/task')
       expect(response.statusCode).to.equal(200)
     }
   })
