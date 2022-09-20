@@ -6,10 +6,10 @@
   "author": "Johan Segerfeldt",
   "license": "ISC",
   "scripts": {
-    "start": "ts-node-esm run.ts",
-    "lint": "eslint .",
-    "test": "mocha -R dot",
-    "build": "yarn test && yarn lint && echo 'Test OK'"
+    "start": "source .env && ts-node-esm run.ts",
+    "lint": "source .env && eslint .",
+    "test": "source .env && mocha -R dot",
+    "build": "source .env && yarn test && yarn lint && echo 'Test OK'"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
