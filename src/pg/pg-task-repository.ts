@@ -10,17 +10,29 @@ export default class PGTaskRepository implements TaskRepository {
   }
 
   async allWithProgress(progress: Progress) {
-    const res = await this.database.client.query('SELECT * FROM Tasks WHERE progress = $1', [ Progress[progress] ])
+    const res = await this.database.client.query(
+      'SELECT * FROM Tasks WHERE progress = $1',
+      [ Progress[progress] ])
     return res.rows.map(task)
   }
 
   async get(id: string): Promise<Task | undefined> {
-    const res = await this.database.client.query('SELECT * FROM Tasks WHERE id = $1', [ id ])
+    const res = await this.database.client.query(
+      'SELECT * FROM Tasks WHERE id = $1',
+      [ id ])
     return task(res.rows[0])
   }
 
   async add(task: Task) {
-    await this.database.client.query('INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)', [ task.id, task.title, Progress[task.progress] ])
+    await this.database.client.query(
+      'INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)',
+      [ task.id, task.title, Progress[task.progress] ])
+  }
+
+  async update(task: Task) {
+    await this.database.client.query(
+      'UPDATE Tasks SET title = $2, progress = $3 WHERE id = $1',
+      [ task.id, task.title, Progress[task.progress] ])
   }
 }
 

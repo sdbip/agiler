@@ -24,7 +24,6 @@ describe('PGTaskRepository', () => {
 
   it('can add tasks and find them again', async () => {
     const task = Task.new('Make PGTaskRepository work')
-    task.complete()
     await repo.add(task)
 
     const taskInRepository = await repo.get(task.id)
@@ -32,6 +31,17 @@ describe('PGTaskRepository', () => {
     expect(taskInRepository?.id).to.equal(task.id)
     expect(taskInRepository?.progress).to.equal(task.progress)
     expect(taskInRepository?.title).to.equal(task.title)
+  })
+
+  it('can update tasks', async () => {
+    const task = Task.new('Make PGTaskRepository work')
+    await repo.add(task)
+
+    task.complete()
+    repo.update(task)
+
+    const taskInRepository = await repo.get(task.id)
+    expect(taskInRepository?.progress).to.equal(Progress.completed)
   })
 
   it('finds stored tasks', async () => {

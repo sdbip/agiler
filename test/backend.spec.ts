@@ -2,7 +2,7 @@ import { expect, assert } from 'chai'
 import { get, patch, post } from '../src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
-import { Progress, Task } from '../src/domain/task'
+import { Progress } from '../src/domain/task'
 
 const inmem = new InMem()
 setRepository(inmem)
@@ -41,7 +41,13 @@ describe('backend', () => {
   })
 
   it('assigns task [patch /task/:id/assign]', async () => {
-    inmem.items = { 'id': Task.new('Get Shit Done') }
+    inmem.items = {
+      id: {
+        title: 'Get Shit Done',
+        progress: Progress.notStarted,
+        assignee: null,
+      },
+    }
     const response = await patch('http://localhost:9090/task/id/assign', { member: 'Johan' })
 
     expect(response.statusCode).to.equal(200)
@@ -50,7 +56,13 @@ describe('backend', () => {
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
-    inmem.items = { 'id': Task.new('Get Shit Done') }
+    inmem.items = {
+      id: {
+        title: 'Get Shit Done',
+        progress: Progress.notStarted,
+        assignee: null,
+      },
+    }
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
@@ -65,10 +77,17 @@ describe('backend', () => {
 
   it('returns open tasks only [get /task]', async () => {
     inmem.items = {
-      'one': Task.new('New task'),
-      'two': Task.new('Completed task'),
+      'one': {
+        title: 'New task',
+        progress: Progress.notStarted,
+        assignee: null,
+      },
+      'two': {
+        title: 'Completed task',
+        progress: Progress.completed,
+        assignee: null,
+      },
     }
-    inmem.items['two'].complete()
     const response = await get('http://localhost:9090/task')
 
     expect(response.statusCode).to.equal(200)

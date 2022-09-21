@@ -1,12 +1,20 @@
 import { TaskRepository } from '../../src/backend'
-import { Progress, Task } from '../../src/domain/task'
+import { Progress, Task, TaskState } from '../../src/domain/task'
 
 class InMem implements TaskRepository {
-  items: {[id: string]: Task} = {}
+  items: {[id: string]: TaskState} = {}
 
-  async allWithProgress(progress: Progress) { return Object.values(this.items).filter(t => t.progress === progress) }
-  async get(id: string) { return this.items[id] }
-  async add(task: any) { this.items[task.id] = task }
+  async allWithProgress(progress: Progress) {
+    return Object.entries(this.items)
+      .filter(([ , state ]) => state.progress === progress)
+      .map(([ id, state ]) => Task.reconstitute(id, { ...state }))
+    }
+  async get(id: string) {
+    const state = this.items[id]
+    return state && Task.reconstitute(id, { ...state })
+  }
+  async add(task: Task) { this.items[task.id] = { ...task.state } }
+  async update(task: Task) { this.items[task.id] = { ...task.state } }
 }
 
 export default InMem

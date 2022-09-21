@@ -5,6 +5,7 @@ export interface TaskRepository {
   allWithProgress(progress: Progress): Promise<Task[]>
   get(id: string): Promise<Task | undefined>
   add(task: Task): Promise<void>
+  update(task: Task): Promise<void>
 }
 
 const server = setupServer()
@@ -31,6 +32,7 @@ server.patch('/task/:id/assign', async (request) => {
 
   const dto = await readBody(request)
   task.assign(dto.member)
+  await repository.update(task)
   return {}
 })
 
@@ -39,6 +41,7 @@ server.patch('/task/:id/complete', async (request) => {
   if (!task) return NOT_FOUND
 
   task.complete()
+  await repository.update(task)
   return {}
 })
 
