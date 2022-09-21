@@ -1,31 +1,43 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { createServer, Server as HTTPServer } from 'http'
 
-export type Handler = (request: Request, response: Response) => Promise<void>
+export type Handler = (request: express.Request) => Promise<Response>
+export interface Response {
+  statusCode?: number
+  content?: string | object
+}
 
 export const setupServer = () => {
   const app = express()
 
-  function wrapHandler(handler: Handler) {
-    return async function handleRequest(request: Request, response: Response) {
+  function wrapNewHandler(handler: Handler) {
+    return async (request: express.Request, response: express.Response) => {
+      let result: Response
       try {
-        await handler(request, response)
+        result = await handler(request)
       } catch (error) {
-        response.statusCode = 500
-        response.end(JSON.stringify({ error }))
+        result = {
+          statusCode: 500,
+          content: { error },
+        }
       }
+    
+      response.statusCode = result.statusCode ?? 200
+      response.end(typeof result.content === 'string'
+        ? result.content
+        : JSON.stringify(result.content))
     }
   }
 
   return {
     get: (path: string, handler: Handler) => {
-      app.get(path, wrapHandler(handler))
+      app.get(path, wrapNewHandler(handler))
     },
     post: (path: string, handler: Handler) => {
-      app.post(path, wrapHandler(handler))
+      app.post(path, wrapNewHandler(handler))
     },
     patch: (path: string, handler: Handler) => {
-      app.patch(path, wrapHandler(handler))
+      app.patch(path, wrapNewHandler(handler))
     },
     finalize: () => new Server(app),
   }

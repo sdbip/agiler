@@ -18,9 +18,9 @@ describe('get', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.get('/path', (_: any, response: any) => {
-      response.end('foo')
-    })
+    serverSetup.get('/path', () => ({
+      content: 'foo',
+    }))
     const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(200)
@@ -50,9 +50,9 @@ describe('post', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.post('/path', (_: any, response: any) => {
-      response.end('foo')
-    })
+    serverSetup.post('/path', () => ({
+      content: 'foo',
+    }))
     const response = await post('http://localhost:9090/path', {})
 
     expect(response.statusCode).to.equal(200)

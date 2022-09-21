@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { Task } from './domain/task.js'
 import { setupServer } from './server.js'
 
@@ -11,43 +11,49 @@ export interface TaskRepository {
 const server = setupServer()
 let repository: TaskRepository
 
-server.get('/task', async (request, response) => {
+server.get('/task', async () => {
   const tasks = await repository.getNew()
-  setBody(response, tasks.map(t => ({ id:t.id, title: t.title })))
+  return {
+     content: tasks.map(t => ({ id:t.id, title: t.title })),
+   }
 })
 
-server.post('/task', async (request, response) => {
+server.post('/task', async (request) => {
   const taskDTO = await readBody(request)
   const task = Task.new(taskDTO.title)
   repository.add(task)
-  setBody(response, {
-    id: task.id,
-    title: task.title,
-  })
+  return {
+      content: {
+      id: task.id,
+      title: task.title,
+    },
+  }
 })
 
-server.patch('/task/:id/assign', async (request, response) => {
+server.patch('/task/:id/assign', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) {
-    response.statusCode = 404
-    response.end()
-    return
+  if (!task) return {
+    statusCode: 404,
+    content: '',
   }
 
   task.start()
-  response.end()
+  return {
+    content: '',
+  }
 })
 
-server.patch('/task/:id/complete', async (request, response) => {
+server.patch('/task/:id/complete', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) {
-    response.statusCode = 404
-    response.end()
-    return
+  if (!task) return {
+    statusCode: 404,
+    content: '',
   }
 
   task.complete()
-  response.end()
+  return {
+    content: '',
+  }
 })
 
 const s = server.finalize()
@@ -75,8 +81,3 @@ function readBody(request: Request): Promise<any> {
     })
   })
 }
-
-function setBody(response: Response, object: any) {
-  response.end(JSON.stringify(object))
-}
-
