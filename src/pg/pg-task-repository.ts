@@ -9,8 +9,8 @@ export default class PGTaskRepository implements TaskRepository {
     this.database = database
   }
 
-  async getNew() {
-    const res = await this.database.client.query('SELECT * FROM Tasks WHERE progress = $1', [ Progress[Progress.notStarted] ])
+  async allWithProgress(progress: Progress) {
+    const res = await this.database.client.query('SELECT * FROM Tasks WHERE progress = $1', [ Progress[progress] ])
     return res.rows.map(task)
   }
 

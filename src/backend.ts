@@ -1,8 +1,8 @@
-import { Task } from './domain/task.js'
+import { Progress, Task } from './domain/task.js'
 import { Request, setupServer } from './server.js'
 
 export interface TaskRepository {
-  getNew(): Promise<Task[]>
+  allWithProgress(progress: Progress): Promise<Task[]>
   get(id: string): Promise<Task | undefined>
   add(task: Task): Promise<void>
 }
@@ -11,7 +11,7 @@ const server = setupServer()
 let repository: TaskRepository
 
 server.get('/task', async () => {
-  const tasks = await repository.getNew()
+  const tasks = await repository.allWithProgress(Progress.notStarted)
   return {
      content: tasks.map(t => ({ id:t.id, title: t.title })),
    }

@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai'
-import { Task } from '../../src/domain/task'
+import { Progress, Task } from '../../src/domain/task'
 import PGTaskRepository from '../../src/pg/pg-task-repository'
 import PGDatabase from '../../src/pg/pg-database'
 
@@ -35,7 +35,7 @@ describe('PGTaskRepository', () => {
     const task = Task.new('Make PGTaskRepository work')
     await repo.add(task)
 
-    const storedTasks = await repo.getNew()
+    const storedTasks = await repo.allWithProgress(Progress.notStarted)
     assert.ok(storedTasks)
     expect(storedTasks[0]).instanceOf(Task)
     expect(storedTasks.map(t => t.id)).contain(task.id)
@@ -46,7 +46,7 @@ describe('PGTaskRepository', () => {
     task.complete()
     await repo.add(task)
 
-    const storedTasks = await repo.getNew()
+    const storedTasks = await repo.allWithProgress(Progress.notStarted)
     assert.ok(storedTasks)
     expect(storedTasks.map(t => t.id)).not.contain(task.id)
   })
