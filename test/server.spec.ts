@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 import { get, post } from '../src/http'
-import { setupServer } from '../src/server'
+import { setupServer, ServerSetup, Server } from '../src/server'
 
-let server: any
-let serverSetup: any
+let server: Server
+let serverSetup: ServerSetup
 
 describe('get', () => {
 
@@ -18,7 +18,7 @@ describe('get', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.get('/path', () => 'foo')
+    serverSetup.get('/path', async () => 'foo')
     const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(200)
@@ -49,9 +49,7 @@ describe('post', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.post('/path', () => ({
-      content: 'foo',
-    }))
+    serverSetup.post('/path', async () => 'foo')
     const response = await post('http://localhost:9090/path', {})
 
     expect(response.statusCode).to.equal(200)

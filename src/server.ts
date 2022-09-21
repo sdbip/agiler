@@ -2,13 +2,19 @@ import express from 'express'
 import { createServer, Server as HTTPServer } from 'http'
 
 export type Request = express.Request
-export type Handler = (request: Request) => Promise<Response>
+export type Handler = (request: Request) => Promise<string | object>
 export interface Response {
   statusCode?: number
   content?: string | object
 }
+export interface ServerSetup {
+  get(path: string, handler: Handler): void
+  post(path: string, handler: Handler): void
+  patch(path: string, handler: Handler): void
+  finalize(): Server
+}
 
-export const setupServer = () => {
+export const setupServer = (): ServerSetup => {
   const app = express()
 
   function wrapNewHandler(handler: Handler) {
@@ -30,13 +36,15 @@ export const setupServer = () => {
       }
     }
 
-    function outputResult(response: express.Response, result: Response) {
-      response.statusCode = result.statusCode ?? 200
+    function outputResult(response: express.Response, result: string | object) {
+      const responseData = result as Response
+      response.statusCode = responseData?.statusCode ?? 200
+
       response.end(typeof result === 'string'
         ? result
-        : typeof result.content === 'string'
-          ? result.content
-          : JSON.stringify(result.content))
+        : typeof responseData.content === 'string'
+          ? responseData.content
+          : JSON.stringify(responseData.content))
     }
   }
 
@@ -69,13 +77,13 @@ export class Server {
     this.server.listen(port)
   }
 
-  stopListening() {
+  stopListening(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.server) return reject('no server started')
       this.server.close((error) => {
         if (error) return reject(error)
   
-        resolve(undefined)
+        resolve()
       })
     })
   }
