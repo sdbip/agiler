@@ -15,10 +15,11 @@ describe('Task', () => {
     expect(task.progress).to.equal(Progress.completed)
   })
 
-  it('can be started', () => {
+  it('can be assigned', () => {
     const task = Task.new('Get it done')
-    task.start()
+    task.assign('Kenny Starfighter')
     expect(task.progress).to.equal(Progress.inProgress)
+    expect(task.assignee).to.equal('Kenny Starfighter')
   })
 
   it('has a unique id', () => {

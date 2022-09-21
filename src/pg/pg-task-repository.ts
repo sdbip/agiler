@@ -33,6 +33,7 @@ type TaskRow = {
 function task(row: TaskRow) {
   const props: TaskState = {
     title: row.title,
+    assignee: null,
     progress: Progress[row.progress],
   }
   return Task.reconstitute(row.id, props)

@@ -33,7 +33,8 @@ server.patch('/task/:id/assign', async (request) => {
   const task = await repository.get(request.params.id)
   if (!task) return { statusCode: 404 }
 
-  task.start()
+  const dto = await readBody(request)
+  task.assign(dto.member)
   return {}
 })
 

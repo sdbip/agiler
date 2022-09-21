@@ -10,5 +10,4 @@
 - UI for operating tasks
 
 # Tasks
-* Add endpoint task/:id/assign
 - Use event-sourcing?

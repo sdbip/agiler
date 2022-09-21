@@ -6,11 +6,13 @@ export class Task {
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
+  get assignee(): string | null { return this.state.assignee }
 
   complete() {
     this.state.progress = Progress.completed
   }
-  start() {
+  assign(member: string) {
+    this.state.assignee = member
     this.state.progress = Progress.inProgress
   }
 
@@ -18,6 +20,7 @@ export class Task {
     return new Task(randomUUID(),
     {
       title,
+      assignee: null,
       progress: Progress.notStarted,
     })
   }
@@ -34,6 +37,7 @@ export class Task {
 
 export interface TaskState {
   title: string
+  assignee: string | null
   progress: Progress
 }
 
