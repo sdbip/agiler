@@ -14,6 +14,8 @@ export interface ServerSetup {
   finalize(): Server
 }
 
+export const NOT_FOUND: Response = { statusCode: 404 }
+
 export const setupServer = (): ServerSetup => {
   const app = express()
 

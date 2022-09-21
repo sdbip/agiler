@@ -1,5 +1,5 @@
 import { Progress, Task } from './domain/task.js'
-import { Request, setupServer } from './server.js'
+import { NOT_FOUND, Request, setupServer } from './server.js'
 
 export interface TaskRepository {
   allWithProgress(progress: Progress): Promise<Task[]>
@@ -31,7 +31,7 @@ server.post('/task', async (request) => {
 
 server.patch('/task/:id/assign', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) return { statusCode: 404 }
+  if (!task) return NOT_FOUND
 
   const dto = await readBody(request)
   task.assign(dto.member)
@@ -40,7 +40,7 @@ server.patch('/task/:id/assign', async (request) => {
 
 server.patch('/task/:id/complete', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) return { statusCode: 404 }
+  if (!task) return NOT_FOUND
 
   task.complete()
   return {}
