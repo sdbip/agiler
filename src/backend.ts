@@ -26,6 +26,18 @@ server.post('/task', async (request, response) => {
   })
 })
 
+server.patch('/task/:id/assign', async (request, response) => {
+  const task = await repository.get(request.params.id)
+  if (!task) {
+    response.statusCode = 404
+    response.end()
+    return
+  }
+
+  task.start()
+  response.end()
+})
+
 server.patch('/task/:id/complete', async (request, response) => {
   const task = await repository.get(request.params.id)
   if (!task) {

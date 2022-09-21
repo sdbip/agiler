@@ -6,8 +6,9 @@
 - Higher purpose of the product?
 
 # Stories
-* Allow user to start a task
+* Assign task to team member
 - UI for operating tasks
 
 # Tasks
+* Add endpoint task/:id/assign
 - Use event-sourcing?

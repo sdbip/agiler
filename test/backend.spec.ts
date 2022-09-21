@@ -40,6 +40,14 @@ describe('backend', () => {
     assert.ok(dto.id)
   })
 
+  it('assigns task [patch /task/:id/assign]', async () => {
+    inmem.items = { 'id': Task.new('Get Shit Done') }
+    const response = await patch('http://localhost:9090/task/id/assign')
+
+    expect(response.statusCode).to.equal(200)
+    expect(inmem.items['id'].progress).to.equal(Progress.inProgress)
+  })
+
   it('completes task [patch /task/:id/complete]', async () => {
     inmem.items = { 'id': Task.new('Get Shit Done') }
     const response = await patch('http://localhost:9090/task/id/complete')
