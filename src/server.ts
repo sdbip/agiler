@@ -7,6 +7,10 @@ export interface Response {
   statusCode?: number
   content?: string | object
 }
+interface NormalizedResponse {
+  statusCode: number
+  content: string
+}
 export interface ServerSetup {
   get(path: string, handler: Handler): void
   post(path: string, handler: Handler): void
@@ -19,10 +23,10 @@ export const NOT_FOUND: Response = { statusCode: 404 }
 export const setupServer = (): ServerSetup => {
   const app = express()
 
-  function wrapNewHandler(handler: Handler) {
+  function wrapHandler(handler: Handler) {
     return async (request: express.Request, response: express.Response) => {
       const result = await callHandler(request)
-      outputResult(response, result)
+      outputResult(response, toResponse(result))
     }
 
     async function callHandler(request: Request) {
@@ -38,27 +42,40 @@ export const setupServer = (): ServerSetup => {
       }
     }
 
-    function outputResult(response: express.Response, result: string | object) {
+    function toResponse(result: string | object): NormalizedResponse {
+      if (typeof result === 'string') return {
+        statusCode: 200,
+        content: result,
+      }
+
+      const responseData = result as Response
+      return {
+        statusCode: responseData.statusCode ?? 200,
+        content: typeof responseData.content === 'string'
+          ? responseData.content
+          : JSON.stringify('content' in responseData
+            ? responseData.content
+            : responseData),
+      }
+    }
+
+    function outputResult(response: express.Response, result: NormalizedResponse) {
       const responseData = result as Response
       response.statusCode = responseData?.statusCode ?? 200
 
-      response.end(typeof result === 'string'
-        ? result
-        : typeof responseData.content === 'string'
-          ? responseData.content
-          : JSON.stringify(responseData.content))
+      response.end(result.content)
     }
   }
 
   return {
     get: (path: string, handler: Handler) => {
-      app.get(path, wrapNewHandler(handler))
+      app.get(path, wrapHandler(handler))
     },
     post: (path: string, handler: Handler) => {
-      app.post(path, wrapNewHandler(handler))
+      app.post(path, wrapHandler(handler))
     },
     patch: (path: string, handler: Handler) => {
-      app.patch(path, wrapNewHandler(handler))
+      app.patch(path, wrapHandler(handler))
     },
     finalize: () => new Server(app),
   }

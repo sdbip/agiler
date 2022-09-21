@@ -12,9 +12,7 @@ let repository: TaskRepository
 
 server.get('/task', async () => {
   const tasks = await repository.allWithProgress(Progress.notStarted)
-  return {
-     content: tasks.map(t => ({ id:t.id, title: t.title })),
-   }
+  return tasks.map(t => ({ id:t.id, title: t.title }))
 })
 
 server.post('/task', async (request) => {
@@ -22,10 +20,8 @@ server.post('/task', async (request) => {
   const task = Task.new(taskDTO.title)
   repository.add(task)
   return {
-      content: {
-      id: task.id,
-      title: task.title,
-    },
+    id: task.id,
+    title: task.title,
   }
 })
 
