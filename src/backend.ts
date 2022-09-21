@@ -31,28 +31,18 @@ server.post('/task', async (request) => {
 
 server.patch('/task/:id/assign', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) return {
-    statusCode: 404,
-    content: '',
-  }
+  if (!task) return { statusCode: 404 }
 
   task.start()
-  return {
-    content: '',
-  }
+  return {}
 })
 
 server.patch('/task/:id/complete', async (request) => {
   const task = await repository.get(request.params.id)
-  if (!task) return {
-    statusCode: 404,
-    content: '',
-  }
+  if (!task) return { statusCode: 404 }
 
   task.complete()
-  return {
-    content: '',
-  }
+  return {}
 })
 
 const s = server.finalize()
