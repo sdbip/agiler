@@ -1,7 +1,8 @@
 import express from 'express'
 import { createServer, Server as HTTPServer } from 'http'
 
-export type Handler = (request: express.Request) => Promise<Response>
+export type Request = express.Request
+export type Handler = (request: Request) => Promise<Response>
 export interface Response {
   statusCode?: number
   content?: string | object
@@ -12,20 +13,30 @@ export const setupServer = () => {
 
   function wrapNewHandler(handler: Handler) {
     return async (request: express.Request, response: express.Response) => {
-      let result: Response
+      const result = await callHandler(request)
+      outputResult(response, result)
+    }
+
+    async function callHandler(request: Request) {
       try {
-        result = await handler(request)
-      } catch (error) {
-        result = {
+        return await handler(request)
+      } catch (thrown) {
+        const { message } = thrown as Error
+        const error = { message }
+        return {
           statusCode: 500,
           content: { error },
         }
       }
-    
+    }
+
+    function outputResult(response: express.Response, result: Response) {
       response.statusCode = result.statusCode ?? 200
-      response.end(typeof result.content === 'string'
-        ? result.content
-        : JSON.stringify(result.content))
+      response.end(typeof result === 'string'
+        ? result
+        : typeof result.content === 'string'
+          ? result.content
+          : JSON.stringify(result.content))
     }
   }
 

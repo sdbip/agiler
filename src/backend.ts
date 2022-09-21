@@ -1,6 +1,5 @@
-import { Request } from 'express'
 import { Task } from './domain/task.js'
-import { setupServer } from './server.js'
+import { Request, setupServer } from './server.js'
 
 export interface TaskRepository {
   getNew(): Promise<Task[]>

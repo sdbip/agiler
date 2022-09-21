@@ -18,9 +18,7 @@ describe('get', () => {
   })
 
   it('executes handler', async () => {
-    serverSetup.get('/path', () => ({
-      content: 'foo',
-    }))
+    serverSetup.get('/path', () => 'foo')
     const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(200)
@@ -34,6 +32,7 @@ describe('get', () => {
     const response = await get('http://localhost:9090/path')
 
     expect(response.statusCode).to.equal(500)
+    expect(response.content).to.equal('{"error":{"message":"foo"}}')
   })
 })
 
