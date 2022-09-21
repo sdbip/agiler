@@ -1,4 +1,5 @@
 import { assert, expect } from 'chai'
+import { promises as fs } from 'fs'
 import { Progress, Task } from '../../src/domain/task'
 import PGTaskRepository from '../../src/pg/pg-task-repository'
 import PGDatabase from '../../src/pg/pg-database'
@@ -12,6 +13,8 @@ describe('PGTaskRepository', () => {
     if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
     
     database = await PGDatabase.connect(databaseName)
+    const tasks = await fs.readFile('./schema/schema.sql')
+    database.client.query(tasks.toString('utf-8'))
     repo = new PGTaskRepository(database)  
   })
 
