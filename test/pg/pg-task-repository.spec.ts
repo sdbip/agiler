@@ -5,7 +5,7 @@ import PGTaskRepository from '../../src/pg/pg-task-repository'
 import PGDatabase from '../../src/pg/pg-database'
 
 describe('PGTaskRepository', () => {
-  let repo: PGTaskRepository
+  let repository: PGTaskRepository
   let database: PGDatabase
   
   before(async () => {
@@ -15,7 +15,7 @@ describe('PGTaskRepository', () => {
     database = await PGDatabase.connect(databaseName)
     const tasks = await fs.readFile('./schema/schema.sql')
     database.client.query(tasks.toString('utf-8'))
-    repo = new PGTaskRepository(database)  
+    repository = new PGTaskRepository(database)  
   })
 
   after(async () => {
@@ -24,9 +24,9 @@ describe('PGTaskRepository', () => {
 
   it('can add tasks and find them again', async () => {
     const task = Task.new('Make PGTaskRepository work')
-    await repo.add(task)
+    await repository.add(task)
 
-    const taskInRepository = await repo.get(task.id)
+    const taskInRepository = await repository.get(task.id)
     expect(taskInRepository).instanceOf(Task)
     expect(taskInRepository?.id).to.equal(task.id)
     expect(taskInRepository?.progress).to.equal(task.progress)
@@ -35,20 +35,20 @@ describe('PGTaskRepository', () => {
 
   it('can update tasks', async () => {
     const task = Task.new('Make PGTaskRepository work')
-    await repo.add(task)
+    await repository.add(task)
 
     task.complete()
-    repo.update(task)
+    repository.update(task)
 
-    const taskInRepository = await repo.get(task.id)
+    const taskInRepository = await repository.get(task.id)
     expect(taskInRepository?.progress).to.equal(Progress.completed)
   })
 
   it('finds stored tasks', async () => {
     const task = Task.new('Make PGTaskRepository work')
-    await repo.add(task)
+    await repository.add(task)
 
-    const storedTasks = await repo.allWithProgress(Progress.notStarted)
+    const storedTasks = await repository.allWithProgress(Progress.notStarted)
     assert.ok(storedTasks)
     expect(storedTasks[0]).instanceOf(Task)
     expect(storedTasks.map(t => t.id)).contain(task.id)
@@ -57,9 +57,9 @@ describe('PGTaskRepository', () => {
   it('ignores completed tasks', async () => {
     const task = Task.new('Completed Task')
     task.complete()
-    await repo.add(task)
+    await repository.add(task)
 
-    const storedTasks = await repo.allWithProgress(Progress.notStarted)
+    const storedTasks = await repository.allWithProgress(Progress.notStarted)
     assert.ok(storedTasks)
     expect(storedTasks.map(t => t.id)).not.contain(task.id)
   })
