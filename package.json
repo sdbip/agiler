@@ -7,10 +7,11 @@
   "license": "ISC",
   "scripts": {
     "deyaml": "yaml2json tsconfig.yml --save",
-    "start": "yarn deyaml && source .env && ts-node-esm run.ts",
-    "lint": "yarn deyaml && source .env && eslint .",
-    "test": "yarn deyaml && source .env && mocha -R dot",
-    "build": "yarn deyaml && source .env && yarn test && yarn lint && echo 'Test OK'"
+    "bundle-client": "yarn webpack && rm -rf lib",
+    "start": "yarn bundle-client && source .env && ts-node-esm run.ts",
+    "lint": "eslint client src test",
+    "test": "source .env && mocha -R dot",
+    "build": "yarn deyaml && yarn test && yarn lint && echo 'Build OK'"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
@@ -23,9 +24,12 @@
     "chai": "^4.3.6",
     "eslint": "^8.23.1",
     "mocha": "^10.0.0",
+    "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
     "typescript": "^4.4.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "yamljs": "^0.3.0"
   },
   "dependencies": {

@@ -3,6 +3,7 @@ import { setupServer } from './server.js'
 
 const server = setupServer()
 
+server.files('public')
 server.get('/', async () => {
   const data = await fs.readFile('index.html')
   return {
