@@ -6,8 +6,12 @@
 - Higher purpose of the product?
 
 # Stories
-- UI for operating tasks
+* UI for operating tasks
 
 # Tasks
+- Make a plan for the UI
+
+# Ice Box
+- Segregate frontend from backend
 - Matcher/Specification pattern
 - Use event-sourcing?
