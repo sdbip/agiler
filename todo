@@ -9,6 +9,10 @@
 * UI for operating tasks
 
 # Tasks
+* Write Chai tests for Modern Web's Test Runner
+  - Write a test that adds elements
+  - Add more browsers
+  - Figure out how to debug the browser
 - Make a plan for the UI
 
 # Ice Box
