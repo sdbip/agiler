@@ -14,7 +14,7 @@ describe('PGTaskRepository', () => {
     
     database = await PGDatabase.connect(databaseName)
     const tasks = await fs.readFile('./schema/schema.sql')
-    database.client.query(tasks.toString('utf-8'))
+    database.query(tasks.toString('utf-8'))
     repository = new PGTaskRepository(database)  
   })
 
