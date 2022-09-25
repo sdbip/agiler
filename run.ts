@@ -1,5 +1,5 @@
 import backend from './src/backend.js'
-import frontend from './src/frontend.js'
+import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
 import PGDatabase from './src/pg/pg-database.js'
 import PGTaskRepository from './src/pg/pg-task-repository.js'
@@ -16,8 +16,14 @@ backend.listenAtPort(8000)
 frontend.listenAtPort(80)
 
 process.on('SIGINT', async () => {
-  await backend.stopListening()
-  await frontend.stopListening()
+  await stop(backend)
+  await stop(frontend)
+
+  async function stop(server: { stopListening(): Promise<void> }) {
+    try {
+      await server.stopListening()
+    } catch (err) { console.error(err) }
+  }
 })
 
 console.log('Ready')

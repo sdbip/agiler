@@ -9,7 +9,7 @@
     "deyaml": "yaml2json tsconfig.yml --save",
     "bundle-client": "yarn webpack && rm -rf lib",
     "start": "yarn bundle-client && source .env && ts-node-esm run.ts",
-    "lint": "eslint client src test",
+    "lint": "eslint frontend src test",
     "test": "source .env && mocha -R dot && wtr --node-resolve --esbuild-target auto",
     "build": "yarn deyaml && yarn test && yarn lint && echo 'Build OK'"
   },

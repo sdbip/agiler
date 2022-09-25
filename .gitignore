@@ -2,5 +2,5 @@ node_modules/
 .env
 tsconfig.json
 lib
-public/bundle.js
+frontend/public/bundle.js
 .DS_Store

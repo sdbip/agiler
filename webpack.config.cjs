@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  entry: './client/index.ts',
+  entry: './frontend/src/index.ts',
   mode: 'production',
   stats: 'minimal',
   module: {
@@ -18,6 +18,6 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, './frontend/public'),
   },
 }

@@ -16,7 +16,7 @@ export interface ServerSetup {
   post(path: string, handler: Handler): void
   patch(path: string, handler: Handler): void
   finalize(): Server
-  files(root: string): void
+  public(root: string): void
 }
 
 export const NOT_FOUND: Response = { statusCode: 404 }
@@ -69,8 +69,8 @@ export const setupServer = (): ServerSetup => {
   }
 
   return {
-    files: (root: string) => {
-      app.use(express.static(root, {}))
+    public: (root: string) => {
+      app.use('/public', express.static(root, {}))
     },
     get: (path: string, handler: Handler) => {
       app.get(path, wrapHandler(handler))

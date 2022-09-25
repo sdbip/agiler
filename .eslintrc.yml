@@ -5,7 +5,7 @@ parser: '@typescript-eslint/parser'
 plugins: [ '@typescript-eslint' ]
 root: true
 ignorePatterns: 
-  - "public/bundle.js"
+  - "frontend/public/bundle.js"
   - webpack.config.cjs
 
 parserOptions:
