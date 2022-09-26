@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai'
-import { get } from '../../src/http'
+import { get } from '../../shared/src/http'
 import client from '../src/frontend'
 
 describe('server', () => {

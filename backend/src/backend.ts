@@ -1,5 +1,5 @@
 import { Progress, Task } from './domain/task.js'
-import { NOT_FOUND, Request, setupServer } from '../../src/server.js'
+import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 
 export interface TaskRepository {
   allWithProgress(progress: Progress): Promise<Task[]>

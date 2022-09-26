@@ -16,9 +16,9 @@ compilerOptions:
     - node_modules/@types
     - types
 include: 
-  - src
-  - types
-  - test
+  - backend
+  - frontend
+  - shared
 # `exclude: node_modules` would work if typescript supported YAML.
 # The JSON conversion needs an explicit array.
 exclude: [node_modules]

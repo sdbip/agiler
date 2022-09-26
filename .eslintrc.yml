@@ -1,11 +1,11 @@
 extends: 
-  - 'eslint:recommended'
-  - 'plugin:@typescript-eslint/recommended'
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
 parser: '@typescript-eslint/parser'
 plugins: [ '@typescript-eslint' ]
 root: true
 ignorePatterns: 
-  - "frontend/public/bundle.js"
+  - frontend/public/bundle.js
   - webpack.config.cjs
 
 parserOptions:

@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { setupServer } from '../../src/server.js'
+import { setupServer } from '../../shared/src/server.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 

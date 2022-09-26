@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai'
-import { get, patch, post } from '../../src/http'
+import { get, patch, post } from '../../shared/src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
 import { Progress } from '../src/domain/task'
