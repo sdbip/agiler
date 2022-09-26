@@ -1,8 +1,8 @@
-import backend from './src/backend.js'
+import backend from './backend/src/backend.js'
 import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
-import PGDatabase from './src/pg/pg-database.js'
-import PGTaskRepository from './src/pg/pg-task-repository.js'
+import PGDatabase from './backend/src/pg/pg-database.js'
+import PGTaskRepository from './backend/src/pg/pg-task-repository.js'
 
 const databaseName = env['DATABASE_NAME']
 if (!databaseName) {
