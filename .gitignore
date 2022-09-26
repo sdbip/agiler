@@ -1,6 +1,8 @@
-node_modules/
 .env
-tsconfig.json
-lib
-frontend/public/bundle.js
 .DS_Store
+node_modules/
+
+## Output from build
+tsconfig.json
+frontend/public/bundle.js
+frontend/public/bundle.js.LICENSE.txt
