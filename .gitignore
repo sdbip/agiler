@@ -3,6 +3,5 @@
 node_modules/
 
 ## Output from build
-tsconfig.json
 frontend/public/bundle.js
 frontend/public/bundle.js.LICENSE.txt
