@@ -8,7 +8,7 @@ export interface TaskRepository {
   update(task: Task): Promise<void>
 }
 
-const server = setupServer()
+const server = setupServer({})
 let repository: TaskRepository
 
 server.get('/task', async () => {

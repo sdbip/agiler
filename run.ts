@@ -22,7 +22,7 @@ process.on('SIGINT', async () => {
   async function stop(server: { stopListening(): Promise<void> }) {
     try {
       await server.stopListening()
-    } catch (err) { console.error(err) }
+    } catch (err) { }
   }
 })
 

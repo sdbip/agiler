@@ -8,7 +8,7 @@ let serverSetup: ServerSetup
 describe('get', () => {
 
   beforeEach(() => {
-    serverSetup = setupServer()
+    serverSetup = setupServer({})
     server = serverSetup.finalize()
     server.listenAtPort(9090)
   })
@@ -39,7 +39,7 @@ describe('get', () => {
 describe('post', () => {
 
   beforeEach(() => {
-    serverSetup = setupServer()
+    serverSetup = setupServer({})
     server = serverSetup.finalize()
     server.listenAtPort(9090)
   })

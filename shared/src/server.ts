@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { createServer, Server as HTTPServer } from 'http'
 
 export type Request = express.Request
@@ -21,8 +22,9 @@ export interface ServerSetup {
 
 export const NOT_FOUND: Response = { statusCode: 404 }
 
-export const setupServer = (): ServerSetup => {
+export const setupServer = (corsRules: cors.CorsOptions): ServerSetup => {
   const app = express()
+  app.use(cors(corsRules))
 
   function wrapHandler(handler: Handler) {
     return async (request: express.Request, response: express.Response) => {
