@@ -7,15 +7,17 @@
 
 # Stories
 * UI for operating tasks
+  - Add styling
+  - Change the layout?
 
 # Tasks
-* Write Chai/Karma tests for Modern Web's Test Runner
-  - Write a test that adds elements - Mustache?
+* Write tests for Modern Web's Test Runner
+  - Add test for the task-list
   - Add more browsers
   - Figure out how to debug the browser
-- Make a plan for the UI
+- Complete task when checked
 
 # Ice Box
 - Segregate frontend from backend
 - Matcher/Specification pattern
-- Use event-sourcing?
+- Use CQRS/ES?
