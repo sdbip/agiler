@@ -33,7 +33,17 @@ async function updateTasks() {
 
   const taskListElement = document.getElementById('task-list')  
   if (taskListElement) {
+    const existingIds = [ ...taskListElement.getElementsByTagName('input') ]
+      .map((el: HTMLElement) => el.id)
+    const newTasks = tasks.filter((t: any) => existingIds.indexOf(t.id) < 0)
+    for (const task of newTasks) task.isNew = true
+
     taskListElement.innerHTML = await render('task-list', { tasks })
+
+    await(delay(1))
+    console.log('new', [ ...taskListElement.getElementsByClassName('new') ])
+    for (const element of [ ...taskListElement.getElementsByClassName('new') ])
+      element.className = 'task'
   }
 }
 

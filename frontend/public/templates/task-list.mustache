@@ -1,7 +1,8 @@
 {{#tasks}}
-<div class="task" onclick="toggle(this, event)">
-  <input type="checkbox"{{#isCompleted}} checked {{/isCompleted}} id="{{id}}"
-    onchange="toggle(this, event)">
+<div class="task {{#isNew}} new {{/isNew}}" onclick="toggle(this, event)">
+  <input type="checkbox" id="{{id}}" onchange="toggle(this, event)"
+      {{#isCompleted}} checked {{/isCompleted}}
+    >
   {{title}}
 </div>
 {{/tasks}}

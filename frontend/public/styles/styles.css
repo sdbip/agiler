@@ -1,7 +1,13 @@
 .task {
   cursor: hand;
+  height: 21px;
   user-select: none;
   -webkit-user-select: none;
+  transition: height .5s ease-out;
+}
+
+.task.new {
+  height: 0;
 }
 
 input[type="text"] {
