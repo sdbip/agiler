@@ -12,8 +12,10 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   const wasCheckboxClicked = taskElement instanceof HTMLInputElement
   const checkbox = wasCheckboxClicked ? taskElement : taskElement.getElementsByTagName('input')[0]
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
+  checkbox.disabled = true
 
   await completeTask(checkbox.id)
+  await delay(1000)
   await updateTasks()
 }
 
@@ -33,4 +35,12 @@ async function updateTasks() {
   if (taskListElement) {
     taskListElement.innerHTML = await render('task-list', { tasks })
   }
+}
+
+function delay(millis: number) {
+  return new Promise<void>(resolve => {
+      setTimeout(() => {
+          resolve()
+      }, millis)
+  })
 }
