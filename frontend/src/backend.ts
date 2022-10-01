@@ -11,7 +11,6 @@ export const completeTask = async (id: string)  =>{
   console.log(`PATCH ${baseURL}/task/${id}/complete`)
 
   await fetch(`${baseURL}/task/${id}/complete`, { method: 'PATCH' })
-  console.log('completeTask done')
 }
 
 export const addTask = async (title: string) => {
