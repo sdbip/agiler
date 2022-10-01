@@ -6,8 +6,9 @@
   transition: height .5s ease-out;
 }
 
-.task.new {
+.task.hidden {
   height: 0;
+  overflow-y: hidden;
 }
 
 input[type="text"] {
