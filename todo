@@ -3,11 +3,17 @@
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 - Higher purpose of the product?
-- Tasks depend on other tasks
+- Let tasks depend on other tasks
+- Assign users to tasks (we don't have users yet)
+- The task elements are too wide
+- Add task on enter
+- Prioritise features and stories
+- Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
 
 # Stories
 
 # Tasks
+* Publish to Heroku
 
 # Ice Box
 - Segregate frontend from backend
