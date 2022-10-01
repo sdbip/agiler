@@ -1,6 +1,9 @@
 .env
 .DS_Store
+
+## Package Manager data
 node_modules/
+yarn-error.log
 
 ## Output from build
 frontend/public/bundle.js
