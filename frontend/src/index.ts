@@ -19,10 +19,21 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   await updateTasks()
 }
 
+globals.submitOnEnter = async function(titleInput: HTMLInputElement, event: KeyboardEvent) {
+  if (event.metaKey || event.ctrlKey || event.altKey) return
+  if (event.key !== 'Enter') return
+
+  await doAddTask(titleInput)
+}
+
 globals.addTask = async function() { // (button: HTMLButtonElement, event: MouseEvent)
   const titleInput = document.getElementById('task-title') as HTMLInputElement
   if (!titleInput.value) return
 
+  await doAddTask(titleInput)
+}
+
+async function doAddTask(titleInput: HTMLInputElement) {
   console.log('add task', await addTask(titleInput.value))
   titleInput.value = ''
   await updateTasks()

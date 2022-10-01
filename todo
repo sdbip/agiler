@@ -6,7 +6,6 @@
 - Let tasks depend on other tasks
 - Assign users to tasks (we don't have users yet)
 - The task elements are too wide
-- Add task on enter
 - Prioritise features and stories
 - Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
 
