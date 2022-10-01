@@ -6,23 +6,15 @@ updateTasks()
 
 // EVENT HANDLERS
 
-globals.toggle = function(taskElement: HTMLDivElement | HTMLInputElement, event: MouseEvent) {
+globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, event: MouseEvent) {
   if (event.target !== taskElement) return
 
-  if (taskElement instanceof HTMLInputElement) {
-    completeTask(taskElement.id)  
-  } else {
-    const checkbox = taskElement.getElementsByTagName('input')[0]
-    checkbox.checked = !checkbox.checked
-    completeTask(checkbox.id)
-  }
-}
+  const wasCheckboxClicked = taskElement instanceof HTMLInputElement
+  const checkbox = wasCheckboxClicked ? taskElement : taskElement.getElementsByTagName('input')[0]
+  if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
 
-globals.complete = function(inputElement: HTMLInputElement, event: MouseEvent) {
-  if (event.target !== inputElement) return
-
-  const checkbox = inputElement
-  completeTask(checkbox.id)
+  await completeTask(checkbox.id)
+  await updateTasks()
 }
 
 globals.addTask = async function() { // (button: HTMLButtonElement, event: MouseEvent)
