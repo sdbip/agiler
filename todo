@@ -12,11 +12,8 @@
   - Change the layout?
 
 # Tasks
-* Write tests for Modern Web's Test Runner
-  - Add test for the task-list
-  - Add more browsers
-  - Figure out how to debug the browser
-- Complete task when checked
+* Complete task when checked
+- Add task when button clicked
 
 # Ice Box
 - Segregate frontend from backend
