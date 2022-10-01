@@ -3,3 +3,28 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+input[type="text"] {
+  padding: 5px;
+  border: 1px solid silver;
+  border-radius: 5px;
+  font-size: 10pt;
+}
+
+button {
+  padding: 5px;
+  border: 1px solid silver;
+  border-radius: 5px;
+  font-size: 10pt;
+  background-color: white;
+}
+
+button:hover {
+  background-color: silver;
+  transform: translateY(-1px);
+}
+
+button:active {
+  background-color: silver;
+  transform: translateY(1px);
+}
