@@ -13,6 +13,8 @@ const database = await PGDatabase.connect(databaseName)
 
 backend.setRepository(new PGTaskRepository(database))
 backend.listenAtPort(8000)
+
+frontend.setBackendURL('http://localhost:8000')
 frontend.listenAtPort(80)
 
 process.on('SIGINT', async () => {

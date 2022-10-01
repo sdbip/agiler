@@ -1,4 +1,6 @@
-const baseURL = 'http://localhost:8000'
+import globals from './globals'
+
+const baseURL = globals.BACKEND_URL
 
 export const fetchTasks = async () => {
   const response = await fetch(`${baseURL}/task`)
