@@ -1,0 +1,5 @@
+.task {
+  cursor: hand;
+  user-select: none;
+  -webkit-user-select: none;
+}
