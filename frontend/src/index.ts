@@ -21,7 +21,7 @@ globals.addTask = async function() { // (button: HTMLButtonElement, event: Mouse
   const titleInput = document.getElementById('task-title') as HTMLInputElement
   if (!titleInput.value) return
 
-  await addTask(titleInput.value)  
+  console.log('add task', await addTask(titleInput.value))
   titleInput.value = ''
   await updateTasks()
 }

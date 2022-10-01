@@ -1,5 +1,4 @@
 # Features
-* Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 - Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
@@ -7,13 +6,8 @@
 - Tasks depend on other tasks
 
 # Stories
-* UI for operating tasks
-  - Add styling
-  - Change the layout?
 
 # Tasks
-* Complete task when checked
-- Add task when button clicked
 
 # Ice Box
 - Segregate frontend from backend
