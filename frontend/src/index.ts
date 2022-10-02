@@ -15,7 +15,7 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   checkbox.disabled = true
 
   await completeTask(checkbox.id)
-  await delay(1000)
+  await delay(200)
   await updateTasks()
 }
 
@@ -51,11 +51,10 @@ async function updateTasks() {
     for (const element of oldElements) element.parentElement!.className = 'task hidden'
     for (const task of newTasks) task.isNew = true
 
-    await(delay(1000))
-
+    await delay(500)
     taskListElement.innerHTML = await render('task-list', { tasks })
+    await delay(1)
 
-    await(delay(1))
     for (const element of [ ...taskListElement.getElementsByClassName('hidden') ])
       element.className = 'task'
   }
@@ -74,8 +73,6 @@ function findNewTasks(taskListElement: HTMLElement, tasks: any) {
 
 function delay(millis: number) {
   return new Promise<void>(resolve => {
-      setTimeout(() => {
-          resolve()
-      }, millis)
+      setTimeout(resolve, millis)
   })
 }
