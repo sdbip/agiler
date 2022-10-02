@@ -44,6 +44,43 @@ complexity and slow down the development effort). In that spirit, Agiler starts
 with minimum marketable *features*. Features lead to *stories* and stories lead
 to *tasks*.
 
+### Tracability
+
+We build software to perform some form of “business.” That “business” is
+whatever our company/organisation exists to do, and more specifically why we
+build our product. Business does not necessarily refer to banking or trading,
+but can just as easily relate to health-care or benefit programs. Business
+value can be healthy patients or reduced poverty as much as it can be
+boatloads of money.
+
+Everything we produce, every piece of code that we write, every structure we
+design, and every piece of technology we use, should be traceable to adding
+value to the business, learning more about the value, or enforcing the rules
+of the business and its domain.
+
+Traceability in Agiler works like this: At the top is the purpose and general
+values of our product. Each feature serves to improve one of said values. A
+large feature may be split in minor parts that bring noticable improvements.
+To plan the implementation of a feature, we split it in stories. Each story
+noticably advances the product to finishing the feature. We can show progress
+after each story.
+
+To finish a story, we need to make actual changes to our code, technology and
+structure. We may also need to ask questions, establish communication lines
+and many other things. To remind us of these TODOs we use tasks. A story
+should be done when all its tasks are completed, and as long as any one task
+is not done, neither is the story.
+
+Our code starts with user and business goals. We can use the term “use case”
+to refer to these interactions (even if the “user” may be another system).
+The user will always have a goal when interacting with our product. At the
+same time, the business (or societal law) may have opposing goals. Our first
+tests describe these goals and the rules for when and how they may be achieved.
+Only when we have established those rules do we plug in the rest of the
+implementation needed to deliver the new functionality to real-world users. As
+touted by YAGNI, we do not build technology, structure or even functionality
+that is not needed to complete the current story.
+
 ### Features
 
 Each feature should describe some business value that the product doesn't
