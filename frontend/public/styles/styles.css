@@ -10,11 +10,11 @@
   user-select: none;
   -webkit-user-select: none;
   transition: height .5s ease-out;
+  overflow-y: hidden;
 }
 
 .task.hidden {
   height: 0;
-  overflow-y: hidden;
 }
 
 input[type="text"] {
