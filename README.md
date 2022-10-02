@@ -2,6 +2,12 @@
 
 Agiler is a planning tool for agile development
 
+## Implemented Features
+
+- Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
+
+See [the Domain](#the-domain) for more information
+
 ## Building the Application
 
 Use the yarn package manager
