@@ -11,9 +11,9 @@
 # Stories
 
 # Tasks
-* Publish to Heroku
 
 # Ice Box
+- Publish to Heroku. Or somewhere else?
 - Segregate frontend from backend
 - Matcher/Specification pattern
 - Use CQRS/ES?
