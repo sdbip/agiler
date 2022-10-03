@@ -3,6 +3,7 @@ import { render } from './Templates'
 import { addTask, completeTask, fetchTasks } from './backend'
 import { delay } from './delay'
 import { addClass, removeClass } from './class'
+import { getElement, getElements } from './getElements'
 
 updateTasks()
 
@@ -12,7 +13,7 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   if (event.target !== taskElement) return
 
   const wasCheckboxClicked = taskElement instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? taskElement : taskElement.getElementsByTagName('input')[0]
+  const checkbox = wasCheckboxClicked ? taskElement : getElements('input', taskElement)[0] as HTMLInputElement
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
   checkbox.disabled = true
 
@@ -29,7 +30,7 @@ globals.submitOnEnter = async function(titleInput: HTMLInputElement, event: Keyb
 }
 
 globals.addTask = async function() { // (button: HTMLButtonElement, event: MouseEvent)
-  const titleInput = document.getElementById('task-title') as HTMLInputElement
+  const titleInput = getElement('#task-title') as HTMLInputElement
   if (!titleInput.value) return
 
   await doAddTask(titleInput)
@@ -44,7 +45,7 @@ async function doAddTask(titleInput: HTMLInputElement) {
 async function updateTasks() {
   const tasks = await fetchTasks()
 
-  const taskListElement = document.getElementById('task-list')  
+  const taskListElement = getElement('#task-list')  
   if (taskListElement) {
     const newTasks = findNewTasks(taskListElement, tasks)
     const oldElements = findObsoleteElements(taskListElement, tasks)
@@ -57,18 +58,17 @@ async function updateTasks() {
     taskListElement.innerHTML = await render('task-list', { tasks })
     await delay(1)
 
-    for (const element of [ ...taskListElement.getElementsByClassName('hidden') ])
+    for (const element of getElements('.hidden', taskListElement))
       removeClass(element, 'hidden')
   }
 }
 
-function findObsoleteElements(taskListElement: HTMLElement, tasks: any) {
-  return [ ...taskListElement.getElementsByTagName('input') ]
-    .filter(el => [ ...tasks ].every((t: any) => t.id !== el.id))
-}
+const findObsoleteElements = (taskListElement: HTMLElement, tasks: any[]) =>
+  getElements('input', taskListElement)
+    .filter(el => tasks.every((t: any) => t.id !== el.id))
 
-function findNewTasks(taskListElement: HTMLElement, tasks: any) {
-  const existingIds = [ ...taskListElement.getElementsByTagName('input') ]
-    .map((el: HTMLElement) => el.id)
+const findNewTasks = (taskListElement: HTMLElement, tasks: any) => {
+  const existingIds = getElements('input', taskListElement)
+      .map(el => el.id)
   return tasks.filter((t: any) => existingIds.indexOf(t.id) < 0)
 }
