@@ -1,6 +1,8 @@
 import globals from './globals'
 import { render } from './Templates'
 import { addTask, completeTask, fetchTasks } from './backend'
+import { delay } from './delay'
+import { addClass, removeClass } from './class'
 
 updateTasks()
 
@@ -60,15 +62,6 @@ async function updateTasks() {
   }
 }
 
-function addClass(element: Element, className: string) {
-  element.className = `${element.className} ${className}`
-}
-
-function removeClass(element: Element, className: string) {
-  const regex = new RegExp(`(?:\\s*)${className}`)
-  element.className = element.className.replace(regex, '')
-}
-
 function findObsoleteElements(taskListElement: HTMLElement, tasks: any) {
   return [ ...taskListElement.getElementsByTagName('input') ]
     .filter(el => [ ...tasks ].every((t: any) => t.id !== el.id))
@@ -78,10 +71,4 @@ function findNewTasks(taskListElement: HTMLElement, tasks: any) {
   const existingIds = [ ...taskListElement.getElementsByTagName('input') ]
     .map((el: HTMLElement) => el.id)
   return tasks.filter((t: any) => existingIds.indexOf(t.id) < 0)
-}
-
-function delay(millis: number) {
-  return new Promise<void>(resolve => {
-      setTimeout(resolve, millis)
-  })
 }
