@@ -1,9 +1,4 @@
-export const getElement = (selector: string): HTMLElement | null =>
-  document.getElementById(selector.substring(1))
+import $ from 'jquery'
 
-export const getElements = (selector: string, rootNode?: Element): Element[] => {
-  const parentNode = rootNode ?? document
-  return selector.startsWith('.')
-    ? [ ...parentNode.getElementsByClassName(selector.substring(1)) ]
-    : [ ...parentNode.getElementsByTagName(selector) ]
-}
+export const getElement = (selector: string): HTMLElement | null => $(selector)[0]
+export const getElements = (selector: string, rootNode?: Element): Element[] => [ ... $(selector, rootNode) ]
