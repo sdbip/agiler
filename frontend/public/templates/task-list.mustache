@@ -1,9 +1,10 @@
 {{#tasks}}
-<div class="task {{#isNew}} hidden {{/isNew}}" onclick="toggle(this, event)">
+<div class="task no-select {{#isNew}} hidden {{/isNew}}" onclick="toggle(this, event)">
   <input type="checkbox" id="{{id}}" onchange="toggle(this, event)"
       {{#isCompleted}} checked {{/isCompleted}}
     >
-  {{title}}
+  <label for="{{id}}"></label>
+  <span>{{title}}</span>
 </div>
 {{/tasks}}
  

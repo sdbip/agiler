@@ -1,20 +1,54 @@
+body {
+  font-family: system-ui;
+  font-size: 10pt;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
 .task-list {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
+  width: 225px;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .task {
+  background-color: cornsilk;
   cursor: hand;
+
+  border: 1px solid gray;
+  border-radius: 3px;
+  margin: 1px;
+  padding-top: 3px;
+  padding-left: 3px;
+}
+
+.task {
   height: 21px;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: height .5s ease-out;
   overflow-y: hidden;
+  transition: height .5s ease-out;
 }
 
 .task.hidden {
   height: 0;
+}
+
+.task > label {
+  width: 15px;
+  height: 15px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.task > span {
+  vertical-align: middle;
 }
 
 input[type="text"] {
@@ -22,6 +56,7 @@ input[type="text"] {
   border: 1px solid silver;
   border-radius: 5px;
   font-size: 10pt;
+  width: 160px;
 }
 
 button {

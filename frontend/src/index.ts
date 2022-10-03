@@ -48,7 +48,7 @@ async function updateTasks() {
     const oldElements = findObsoleteElements(taskListElement, tasks)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    for (const element of oldElements) element.parentElement!.className = 'task hidden'
+    for (const element of oldElements) addClass(element.parentElement!, 'hidden')
     for (const task of newTasks) task.isNew = true
 
     await delay(500)
@@ -56,8 +56,17 @@ async function updateTasks() {
     await delay(1)
 
     for (const element of [ ...taskListElement.getElementsByClassName('hidden') ])
-      element.className = 'task'
+      removeClass(element, 'hidden')
   }
+}
+
+function addClass(element: Element, className: string) {
+  element.className = `${element.className} ${className}`
+}
+
+function removeClass(element: Element, className: string) {
+  const regex = new RegExp(`(?:\\s*)${className}`)
+  element.className = element.className.replace(regex, '')
 }
 
 function findObsoleteElements(taskListElement: HTMLElement, tasks: any) {
