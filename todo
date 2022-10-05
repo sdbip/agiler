@@ -1,21 +1,29 @@
 # Features
-- Stories (business value, show progress to a stakeholder)
+* Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 - Higher purpose of the product?
 
 - Let tasks depend on other tasks
-- Assign users to tasks (we don't have users yet)
+- Assign developers to tasks (we don't have developers yet)
 - Prioritise features and stories
 - Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
 - Mark tasks as started
 
 # Stories
+- Collect stories similarly to how tasks are collected now
+- Add tasks to a story
+- Add story details
+- Allow story title to be changed
+- Add copy that describes the purpose of a story
+- Add copy that describes the purpose of a task
+- Plan & implement UI changes
 
 # Tasks
-- move frontend.ts to a different folder. The others run in browser
 
 # Ice Box
+- move frontend.ts to a different folder.
+  The other code runs in the browser
 - Publish to Heroku. Or somewhere else?
 - Matcher/Specification pattern
 - Use CQRS/ES?

@@ -130,3 +130,33 @@ There is, however, a contradicting thought: in Scrum we need features and
 stories to be “ready” before we can plan them in a sprint. There might be need
 for such a moniker in our case too. And it might be possible that we can start
 a task before the parent feature is ready. This is a thing to think about.
+
+## Assignees and Late Binding
+
+Many teams employ *early binding*. This means that they assign a developer to
+a task or even a story to make them responsible for its progress. This is not
+recommended for an agile team. In an agile team, the entire team is responsible
+for finishing the stories with high quality. Putting ht responsibility on an
+individual developer will create a group ofindividuals rather than a team, and
+that will impede progress in the long run.
+
+Early binding makes it hard for idle hands to find the next task to work on as
+all tasks will be taken. *Late binding* means that any task that isn't yet
+started can be claimed immediately.
+
+Too many in-progress items at any time is ineffective. It is perhaps highly
+efficient, but efficiency is nothing ccompared to effectivity. A team that gets
+things done is effective. A team that performs a lot of work is efficient. Work
+is not valuable, however. Finishing is. You should optimise for effectivity
+over efficiency.
+
+Ideally the team should have only one task at a time and finish it together.
+That is probably the most effective way of working. If it is not possible (or
+desirable) to work together, each individual should have only one open task
+at any time. Finish the task before claiming the next. That way those who have
+easier tasks, or are quick to finish, can always pick up a new one and stay
+productive. If all tasks are claimed they will have nothing to do.
+
+It is also important to finish tasks. Starting tasks is not valuable.
+Finishing them is. With too many tasks in progress switching between them will
+take up most of your time.
