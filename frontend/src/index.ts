@@ -1,6 +1,6 @@
 import globals from './globals'
+import backend from './backend'
 import { render } from './Templates'
-import { addTask, completeTask, fetchTasks } from './backend'
 import { delay } from './delay'
 import { addClass, removeClass } from './class'
 import { getElement, getElements } from './getElements'
@@ -13,37 +13,33 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   if (event.target !== taskElement) return
 
   const wasCheckboxClicked = taskElement instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? taskElement : getElements('input', taskElement)[0] as HTMLInputElement
+  const checkbox = wasCheckboxClicked ? taskElement : getElement('input', taskElement) as HTMLInputElement
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
   checkbox.disabled = true
 
-  await completeTask(checkbox.id)
+  await backend.completeTask(checkbox.id)
   await delay(200)
   await updateTasks()
 }
 
-globals.submitOnEnter = async function(titleInput: HTMLInputElement, event: KeyboardEvent) {
+globals.submitOnEnter = async function({ event }:{event: KeyboardEvent}) {
   if (event.metaKey || event.ctrlKey || event.altKey) return
   if (event.key !== 'Enter') return
 
-  await doAddTask(titleInput)
+  await globals.addTask()
 }
 
-globals.addTask = async function() { // (button: HTMLButtonElement, event: MouseEvent)
+globals.addTask = async function() {
   const titleInput = getElement('#task-title') as HTMLInputElement
   if (!titleInput.value) return
-
-  await doAddTask(titleInput)
-}
-
-async function doAddTask(titleInput: HTMLInputElement) {
-  console.log('add task', await addTask(titleInput.value))
+  
+  console.log('add task', await backend.addTask(titleInput.value))
   titleInput.value = ''
   await updateTasks()
 }
 
 async function updateTasks() {
-  const tasks = await fetchTasks()
+  const tasks = await backend.fetchTasks()
 
   const taskListElement = getElement('#task-list')  
   if (taskListElement) {

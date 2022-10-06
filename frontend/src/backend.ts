@@ -25,3 +25,9 @@ export const addTask = async (title: string) => {
   })
   return await response.json()
 }
+
+export default {
+  fetchTasks,
+  completeTask,
+  addTask,
+}
