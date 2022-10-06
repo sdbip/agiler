@@ -1,6 +1,8 @@
 body {
   font-family: system-ui;
   font-size: 10pt;
+  color: rgb(240, 240, 255);
+  background-color: rgb(30, 50, 60);
 }
 
 input[type='checkbox'] {
@@ -17,14 +19,15 @@ input[type='checkbox'] {
 }
 
 .task {
-  background-color: cornsilk;
   cursor: hand;
+  position: relative;
 
-  border: 1px solid gray;
-  border-radius: 3px;
+  border-radius: 30px;
   margin: 1px;
-  padding-top: 3px;
-  padding-left: 3px;
+  padding: 10px;
+  padding-left: 40px;
+
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 15%);
 }
 
 .task {
@@ -38,8 +41,12 @@ input[type='checkbox'] {
 }
 
 .task > label {
-  width: 15px;
-  height: 15px;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+
+  width: 20px;
+  height: 20px;
   border: 1px solid gray;
   border-radius: 3px;
   display: inline-block;
@@ -57,6 +64,8 @@ input[type="text"] {
   border-radius: 5px;
   font-size: 10pt;
   width: 160px;
+  background-color: transparent;
+  color: rgb(255 228 196);
 }
 
 button {
