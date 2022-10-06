@@ -1,4 +1,5 @@
 # Features
++ Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 * Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
@@ -12,14 +13,23 @@
 
 # Stories
 - Collect stories similarly to how tasks are collected now
+  (But stories cannot be completed by clicking/checking, instead that displays the details)
 - Add tasks to a story
 - Add story details
 - Allow story title to be changed
-- Add copy that describes the purpose of a story
-- Add copy that describes the purpose of a task
-- Plan & implement UI changes
+- Add text describing the purpose of a story
+- Add text describing the purpose of a task
+- Implement UI changes
 
 # Tasks
+- Add endpoints
+  - Add story
+  - Update story details
+  - Mark as “ready”
+  - Add task to story
+  - Finish task automatically when last task is done
+  - Reorder stories (for prioritisation)
+- Plan UI changes
 
 # Ice Box
 - move frontend.ts to a different folder.
