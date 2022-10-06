@@ -9,11 +9,16 @@ updateTasks()
 
 // EVENT HANDLERS
 
-globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, event: MouseEvent) {
-  if (event.target !== taskElement) return
+type EventArgs<
+    ElementType extends HTMLElement | void,
+    EventType extends Event | void
+  > = {element: ElementType, event: EventType}
 
-  const wasCheckboxClicked = taskElement instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? taskElement : getElement('input', taskElement) as HTMLInputElement
+globals.toggle = async function({ element, event }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+  if (event.target !== element) return
+
+  const wasCheckboxClicked = element instanceof HTMLInputElement
+  const checkbox = wasCheckboxClicked ? element : getElement('input', element) as HTMLInputElement
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
   checkbox.disabled = true
 
@@ -22,7 +27,7 @@ globals.toggle = async function(taskElement: HTMLDivElement | HTMLInputElement, 
   await updateTasks()
 }
 
-globals.submitOnEnter = async function({ event }:{event: KeyboardEvent}) {
+globals.addTaskIfEnter = async function({ event }: EventArgs<void, KeyboardEvent>) {
   if (event.metaKey || event.ctrlKey || event.altKey) return
   if (event.key !== 'Enter') return
 
