@@ -26,6 +26,13 @@ yarn test  # run Mocha tests
 yarn build # lint and test
 ```
 
+Build using `./jake`
+
+```shell
+./jake    # runs the full build
+./jake -T # to list all tasks
+```
+
 This command lints and tests the JavaScript code:
 
 ```shell
