@@ -2,8 +2,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { ESLint } = require('eslint')
 
+desc('Builds the application')
 task('default', [ 'lint' ])
 
+desc('Lints all .js and .ts files except those ignored by .eslintrc.yml')
 task('lint', async () => {
   const eslint = new ESLint()
   const result = await eslint.lintFiles([ '**/*.ts', '**/*.js', 'Jakefile' ])
