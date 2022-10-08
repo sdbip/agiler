@@ -8,8 +8,8 @@
   "scripts": {
     "bundle-client": "yarn webpack && rm -rf lib",
     "start": "yarn bundle-client && source .env && ts-node-esm run.ts",
-    "lint": "eslint frontend backend shared",
-    "test": "source .env && mocha -R dot && wtr --node-resolve --esbuild-target auto",
+    "lint": "jake lint --quiet",
+    "test": "jake test --quiet",
     "build": "yarn test && yarn lint && echo 'Build OK'"
   },
   "devDependencies": {
