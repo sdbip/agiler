@@ -38,3 +38,4 @@
 - Publish to Heroku. Or somewhere else?
 - Matcher/Specification pattern
 - Use CQRS/ES?
+- Design a reporter for Web Test Runner?

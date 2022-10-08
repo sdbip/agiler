@@ -25,7 +25,32 @@ task('lint', async () => {
 })
 
 desc('Run all tests')
-task('test', async () => {
+task('test', [ 'backend_tests', 'browser_tests' ])
+
+desc('Run browser tests')
+task('browser_tests', async () => {
+  process.stdout.write(c.italic(c.blue('Browser Testing ')))
+
+  const wtr = require('@web/test-runner')
+  await wtr.startTestRunner({
+    // WTR believe they have a Mocha-esque 'dot' reporter, but
+    // it actually stacks dots vertically instead of horisontally,
+    // making it utterly useless. It is also very hard to create
+    // a custom reporter, because the tool deletes whatever is
+    // sent to process.stdout. Only console.log() seems to work,
+    // and that inserts a newline for each call.
+    // 
+    // config: { reporters: [ wtr.dotReporter() ] },
+    argv: [
+      '--node-resolve',
+      '--esbuild-target',
+      'auto',
+    ],
+  })
+})
+
+desc('Run backend tests')
+task('backend_tests', async () => {
   process.stdout.write(c.italic(c.blue('Testing ')))
 
   await new Promise((resolve, reject) => {
