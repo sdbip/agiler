@@ -10,7 +10,7 @@
     "start": "yarn bundle-client && source .env && ts-node-esm run.ts",
     "lint": "jake lint --quiet",
     "test": "jake test --quiet",
-    "build": "yarn test && yarn lint && echo 'Build OK'"
+    "build": "yarn jake --quiet && echo 'Build OK'"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",

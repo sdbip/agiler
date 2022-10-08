@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { ESLint } = require('eslint')
-const { desc, task, fail } = require('jake')
+const jake = require('jake')
 const c = require('ansi-colors')
 const shelljs = require('shelljs')
+const { desc, task, fail } = jake
+
+jake.addListener('complete', () => { console.log('BUILD OK!') })
 
 desc('Builds the application')
 task('default', [ 'lint', 'test' ])
@@ -18,9 +21,10 @@ task('lint', async () => {
   const resultText = formatter.format(result)
 
   const hasErrors = result.filter(r => r.errorCount > 0).length > 0
+  const hasWarnings = result.filter(r => r.warningCount > 0).length > 0
 
-  process.stdout.write('.\n')
-  process.stdout.write(resultText)
+  process.stdout.write(hasErrors ? '!\n' : '.\n')
+  if (hasErrors || hasWarnings) process.stdout.write(`${resultText}\n`)
   if (hasErrors) fail(resultText)
 })
 
@@ -32,7 +36,7 @@ task('browser_tests', async () => {
   process.stdout.write(c.italic(c.blue('Browser Testing ')))
 
   const wtr = require('@web/test-runner')
-  await wtr.startTestRunner({
+  const runner = await wtr.startTestRunner({
     // WTR believe they have a Mocha-esque 'dot' reporter, but
     // it actually stacks dots vertically instead of horisontally,
     // making it utterly useless. It is also very hard to create
@@ -41,11 +45,15 @@ task('browser_tests', async () => {
     // and that inserts a newline for each call.
     // 
     // config: { reporters: [ wtr.dotReporter() ] },
+    autoExitProcess: false,
     argv: [
       '--node-resolve',
       '--esbuild-target',
       'auto',
     ],
+  })
+  await new Promise(resolve => {
+    runner.on('stopped', resolve)
   })
 })
 
