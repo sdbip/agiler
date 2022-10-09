@@ -20,6 +20,9 @@
 - Add text describing the purpose of a story
 - Add text describing the purpose of a task
 - Implement UI changes
+- Upgrade Task to Story
+- Upgrade Story to Feature
+- Split Feature
 
 # Tasks
 * Use Jake
