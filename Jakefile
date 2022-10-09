@@ -62,25 +62,31 @@ desc('Run browser tests')
 task('browser_tests', async () => {
   process.stdout.write(c.italic(c.blue('Browser Testing ')))
 
-  const wtr = require('@web/test-runner')
-  const runner = await wtr.startTestRunner({
-    // WTR believe they have a Mocha-esque 'dot' reporter, but
-    // it actually stacks dots vertically instead of horisontally,
-    // making it utterly useless. It is also very hard to create
-    // a custom reporter, because the tool deletes whatever is
-    // sent to process.stdout. Only console.log() seems to work,
-    // and that inserts a newline for each call.
-    // 
-    // config: { reporters: [ wtr.dotReporter() ] },
-    autoExitProcess: false,
-    argv: [
-      '--node-resolve',
-      '--esbuild-target',
-      'auto',
-    ],
-  })
-  await new Promise(resolve => {
-    runner.on('stopped', resolve)
+  await new Promise((resolve, reject) => {
+    const child = shelljs.exec('wtr --node-resolve --esbuild-target auto', { async: true, silent: true })
+
+    child.stdout.on('data', function(data) {
+      if (data.trim().length === 0) return
+
+      // eslint-disable-next-line no-control-regex
+      const redX = /\x1B\[31mx\x1B\[89m\x1B\[0m\x1B\[0m\n/g
+      const badControlChars = '\x1B[2K\x1B[1A\x1B[2K\x1B[G'
+
+      const mergedDots = data
+        .replace(/.* test files\.\.\.\n\n/, '')
+        .replace(badControlChars, '')
+        .replace(redX, c.red('!'))
+        .replace(/\.\n/g, '.')
+
+      process.stdout.write(mergedDots)
+    })
+
+    child.on('exit', code => {
+      process.stdout.write('\n')
+
+      if (code > 0) reject()
+      else resolve()
+    })
   })
 })
 
@@ -89,16 +95,19 @@ task('backend_tests', async () => {
   process.stdout.write(c.italic(c.blue('Testing ')))
 
   await new Promise((resolve, reject) => {
+    const promise = { resolve, reject }
     const child = shelljs.exec('source .env && mocha -R dot', { async: true, silent: true })
     let result = []
     child.stdout.on('data', function(data) {
-      if (!result.length) data = data.trim()
+      // if (!result.length) data = data.trim()
       switch (data) {
         case '.':
-          process.stdout.write(data)
+        case '\n  .':
+          process.stdout.write('.')
           break
+        case '\n  !':
         case '!':
-          process.stdout.write(c.red(data))
+          process.stdout.write(c.red('!'))
           break
         default: {
           result.push(data)
@@ -109,8 +118,12 @@ task('backend_tests', async () => {
 
     child.on('exit', code => {
       process.stdout.write('\n')
-      if (code) reject(new Error(result.join('')))
-      else resolve()
+      if (code > 0) {
+        console.error(`\n${result.join('').trim()}\n`)
+        promise.reject()
+      } else {
+        promise.resolve()
+      }
     })
   })
 })
