@@ -2,6 +2,7 @@
 const { ESLint } = require('eslint')
 const jake = require('jake')
 const c = require('ansi-colors')
+const rmrf = require('rimraf')
 const shelljs = require('shelljs')
 const { desc, task, fail } = jake
 
@@ -26,6 +27,32 @@ task('lint', async () => {
   process.stdout.write(hasErrors ? '!\n' : '.\n')
   if (hasErrors || hasWarnings) process.stdout.write(`${resultText}\n`)
   if (hasErrors) fail(resultText)
+})
+
+desc('Bundle browser code')
+task('bundle', [ 'create_bundle', 'clean_bundle' ], () => {
+  process.stdout.write(c.blue('\n'))
+})
+
+task('create_bundle', async () => {
+  process.stdout.write(c.blue('Bundling '))
+
+  const result = shelljs.exec('yarn webpack', { silent: true }) // && rm -rf lib
+
+  if (result.code > 0) {
+    process.stdout.write('!\n')
+    process.stdout.write(result.stdout.replace(/(ERROR.*$)/gm, c.red('$1')))
+    fail(result.stderr)
+  }
+  process.stdout.write('.')
+})
+
+task('clean_bundle', async () => {
+  await new Promise((resolve, reject) => rmrf('lib', error => {
+    if (error) reject(error)
+    else resolve()
+  }))
+  process.stdout.write('.')
 })
 
 desc('Run all tests')
@@ -68,8 +95,10 @@ task('backend_tests', async () => {
       if (!result.length) data = data.trim()
       switch (data) {
         case '.':
-        case '!':
           process.stdout.write(data)
+          break
+        case '!':
+          process.stdout.write(c.red(data))
           break
         default: {
           result.push(data)

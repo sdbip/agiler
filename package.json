@@ -6,11 +6,11 @@
   "author": "Johan Segerfeldt",
   "license": "ISC",
   "scripts": {
-    "bundle-client": "yarn webpack && rm -rf lib",
-    "start": "yarn bundle-client && source .env && ts-node-esm run.ts",
+    "bundle-client": "jake bundle --quiet",
+    "start": "jake bundle --quiet && source .env && ts-node-esm run.ts",
     "lint": "jake lint --quiet",
     "test": "jake test --quiet",
-    "build": "yarn jake --quiet && echo 'Build OK'"
+    "build": "yarn jake --quiet"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
@@ -34,6 +34,7 @@
     "jake": "^10.8.5",
     "mocha": "^10.0.0",
     "mustache": "^4.2.0",
+    "rimraf": "^3.0.2",
     "shelljs": "^0.8.5",
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
