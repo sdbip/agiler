@@ -101,13 +101,16 @@ describe('backend', () => {
   })
 
   it('yields an error if stopping twice', async () => {
+    let isFailure = true
     try {
       await stopListening()
+      isFailure = false
       await stopListening()
-      assert.fail('No error thrown')
+      isFailure = true
     }
     catch (error) {
     }
+    if (isFailure) assert.fail('No error thrown')
   })
 
   it('can start and stop multiple times', async () => {
