@@ -1,2 +1,2 @@
 #!/bin/zsh
-npm run build 
+yarn jake --quiet $*

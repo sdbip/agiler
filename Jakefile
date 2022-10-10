@@ -6,10 +6,10 @@ const rmrf = require('rimraf')
 const shelljs = require('shelljs')
 const { desc, task, fail } = jake
 
-jake.addListener('complete', () => { console.log('BUILD OK!') })
+jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
 
 desc('Builds the application')
-task('default', [ 'lint', 'test' ])
+task('default', [ 'lint', 'test', 'bundle' ])
 
 desc('Lints all .js and .ts files except those ignored by .eslintrc.yml')
 task('lint', async () => {
@@ -60,7 +60,7 @@ task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
 task('browser_tests', async () => {
-  process.stdout.write(c.italic(c.blue('Browser Testing ')))
+  process.stdout.write(c.italic(c.blue('Test on Google ')))
 
   await new Promise((resolve, reject) => {
     const child = shelljs.exec('wtr --node-resolve --esbuild-target auto', { async: true, silent: true })
@@ -68,15 +68,20 @@ task('browser_tests', async () => {
     child.stdout.on('data', function(data) {
       if (data.trim().length === 0) return
 
-      // eslint-disable-next-line no-control-regex
-      const redX = /\x1B\[31mx\x1B\[89m\x1B\[0m\x1B\[0m\n/g
-      const badControlChars = '\x1B[2K\x1B[1A\x1B[2K\x1B[G'
+      const regexes = {
+        /* eslint-disable no-control-regex */
+        redX: /\x1B\[31mx\x1B\[89m\x1B\[0m\x1B\[0m\n/g,
+        badControlChars: /\x1B\[2K|\x1B\[1A|\x1B\[G/g,
+        /* eslint-enable no-control-regex */
+        initialLine: /.* test files\.\.\.\n\n/,
+      }
 
       const mergedDots = data
-        .replace(/.* test files\.\.\.\n\n/, '')
-        .replace(badControlChars, '')
-        .replace(redX, c.red('!'))
+        .replace(regexes.initialLine, '')
+        .replace(regexes.badControlChars, '')
+        .replace(regexes.redX, c.red('!'))
         .replace(/\.\n/g, '.')
+        .trim()
 
       process.stdout.write(mergedDots)
     })
