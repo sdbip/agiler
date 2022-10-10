@@ -11,6 +11,9 @@ jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
 desc('Builds the application')
 task('default', [ 'lint', 'test', 'bundle' ])
 
+desc('Launches the application')
+task('start', [ 'lint', 'test', 'bundle', 'run' ])
+
 desc('Lints all .js and .ts files except those ignored by .eslintrc.yml')
 task('lint', async () => {
   process.stdout.write(c.blue('Linting '))
@@ -60,7 +63,7 @@ task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
 task('browser_tests', async () => {
-  process.stdout.write(c.italic(c.blue('Test on Google ')))
+  process.stdout.write(c.italic(c.blue('Testing browser code ')))
 
   await new Promise((resolve, reject) => {
     const child = shelljs.exec('wtr --node-resolve --esbuild-target auto', { async: true, silent: true })
@@ -97,7 +100,7 @@ task('browser_tests', async () => {
 
 desc('Run backend tests')
 task('backend_tests', async () => {
-  process.stdout.write(c.italic(c.blue('Testing ')))
+  process.stdout.write(c.italic(c.blue('Testing servers ')))
 
   await new Promise((resolve, reject) => {
     const promise = { resolve, reject }
@@ -122,13 +125,16 @@ task('backend_tests', async () => {
     })
 
     child.on('exit', code => {
+      const isError = code > 0
       process.stdout.write('\n')
-      if (code > 0) {
-        console.error(`\n${result.join('').trim()}\n`)
-        promise.reject()
-      } else {
-        promise.resolve()
-      }
+      if (isError) console.error(`${result.join('').trim()}\n`)
+      if (isError) promise.reject()
+      else promise.resolve()
     })
   })
+})
+
+task('run', async () => {
+  process.stdout.write(c.blue('Starting\n'))
+  shelljs.exec('source .env && ts-node-esm run.ts')
 })

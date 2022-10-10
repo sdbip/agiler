@@ -6,11 +6,10 @@
   "author": "Johan Segerfeldt",
   "license": "ISC",
   "scripts": {
-    "bundle-client": "jake bundle --quiet",
-    "start": "jake bundle --quiet && source .env && ts-node-esm run.ts",
+    "start": "jake start --quiet",
     "lint": "jake lint --quiet",
-    "test": "jake test --quiet",
-    "build": "yarn jake --quiet"
+    "test": "jake lint test --quiet",
+    "build": "jake --quiet"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
