@@ -6,5 +6,6 @@ node_modules/
 yarn-error.log
 
 ## Output from build
+lazy/
 frontend/public/bundle.js
 frontend/public/bundle.js.LICENSE.txt

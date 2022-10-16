@@ -4,9 +4,32 @@ const jake = require('jake')
 const c = require('ansi-colors')
 const rmrf = require('rimraf')
 const shelljs = require('shelljs')
-const { desc, task, fail } = jake
+const { desc, task, fail, directory } = jake
+const fs = require('fs').promises
 
 jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
+
+const lazyTasksDirectory = 'lazy'
+directory(lazyTasksDirectory)
+
+const deglob = glob => new jake.FileList(glob).toArray()
+
+const lazyTask = (name, dependencies, action) => {
+  const outputPath = `${lazyTasksDirectory}/${name}.inc`
+  task(name, [ outputPath ])
+  jake.file(outputPath, dependencies.concat(lazyTasksDirectory), async () => {
+    await action()
+    await fs.writeFile(outputPath, new Date().toISOString())
+  })
+}
+
+desc('Remove all intermediate output')
+task('clean', async () => {
+  await new Promise((resolve, reject) => rmrf(lazyTasksDirectory, error => {
+    if (error) reject(error)
+    else resolve()
+  }))
+})
 
 desc('Builds the application')
 task('default', [ 'lint', 'test', 'bundle' ])
@@ -15,7 +38,7 @@ desc('Launches the application')
 task('start', [ 'lint', 'test', 'bundle', 'run' ])
 
 desc('Lints all .js and .ts files except those ignored by .eslintrc.yml')
-task('lint', async () => {
+lazyTask('lint', deglob([ '**/*.ts', '**/*.js' ]), async () => {
   process.stdout.write(c.blue('Linting '))
 
   const eslint = new ESLint()
@@ -34,10 +57,10 @@ task('lint', async () => {
 
 desc('Bundle browser code')
 task('bundle', [ 'create_bundle', 'clean_bundle' ], () => {
-  process.stdout.write(c.blue('\n'))
+  process.stdout.write('\n')
 })
 
-task('create_bundle', async () => {
+lazyTask('create_bundle', deglob('frontend/**/*'), async () => {
   process.stdout.write(c.blue('Bundling '))
 
   const result = shelljs.exec('yarn webpack', { silent: true }) // && rm -rf lib
@@ -62,7 +85,7 @@ desc('Run all tests')
 task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
-task('browser_tests', async () => {
+lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
   process.stdout.write(c.italic(c.blue('Testing browser code ')))
 
   await new Promise((resolve, reject) => {
@@ -99,7 +122,7 @@ task('browser_tests', async () => {
 })
 
 desc('Run backend tests')
-task('backend_tests', async () => {
+lazyTask('backend_tests', deglob('backend/**/*'), async () => {
   process.stdout.write(c.italic(c.blue('Testing servers ')))
 
   await new Promise((resolve, reject) => {
@@ -107,7 +130,6 @@ task('backend_tests', async () => {
     const child = shelljs.exec('source .env && mocha -R dot', { async: true, silent: true })
     let result = []
     child.stdout.on('data', function(data) {
-      // if (!result.length) data = data.trim()
       switch (data) {
         case '.':
         case '\n  .':
