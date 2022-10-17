@@ -1,8 +1,14 @@
 import { randomUUID } from 'crypto'
 
+export enum ItemType {
+  Task,
+  Story,
+}
+
 export class Item {
   readonly id: string
   state: TaskState
+  type = ItemType.Task
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
