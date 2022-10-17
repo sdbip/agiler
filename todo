@@ -12,27 +12,28 @@
 - Mark tasks as started
 
 # Stories
-- Collect stories similarly to how tasks are collected now
-  (But stories cannot be completed by clicking/checking, instead that displays the details)
+* Promote Task to Story
+- Prioritise stories
+- Add Task to Story
 - Add tasks to a story
+- Finish task automatically when last task is done
 - Add story details
 - Allow story title to be changed
 - Add text describing the purpose of a story
 - Add text describing the purpose of a task
 - Implement UI changes
-- Upgrade Task to Story
 - Upgrade Story to Feature
 - Split Feature
+- Collect stories similarly to how tasks are collected now
+  (But stories cannot be completed by clicking/checking, instead that displays the details)
 
 # Tasks
-- Add endpoints
-  - Add story
-  - Update story details
-  - Mark as “ready”
-  - Add task to story
-  - Finish task automatically when last task is done
-  - Reorder stories (for prioritisation)
+- Add endpoint
+  - Rename Task to `Item`
+  - Add `type` to task (`Story` or `Task`).
+- Update UI to display stories *and* tasks
 - Plan UI changes
+  - Maybe add stories directly (tasks that are immediately promoted)?
 
 # Ice Box
 - move frontend.ts to a different folder.
