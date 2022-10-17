@@ -14,6 +14,9 @@ export class Item {
   get progress() { return this.state.progress }
   get assignee(): string | null { return this.state.assignee }
 
+  promote() {
+    this.type = ItemType.Story
+  }
   complete() {
     this.state.progress = Progress.completed
   }

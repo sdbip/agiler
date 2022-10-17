@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai'
-import { Progress, Item } from '../../src/domain/item'
+import { Progress, Item, ItemType } from '../../src/domain/item'
 
 describe('Item', () => {
   it('has expected initial values', () => {
@@ -20,6 +20,14 @@ describe('Item', () => {
     task.assign('Kenny Starfighter')
     expect(task.progress).to.equal(Progress.inProgress)
     expect(task.assignee).to.equal('Kenny Starfighter')
+  })
+
+  it('can be promoted to story', () => {
+    const task = Item.new('Get it done')
+    expect(ItemType[task.type]).to.equal(ItemType[ItemType.Task])
+
+    task.promote()
+    expect(ItemType[task.type]).to.equal(ItemType[ItemType.Story])
   })
 
   it('has a unique id', () => {
