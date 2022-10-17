@@ -9,7 +9,7 @@ const fs = require('fs').promises
 
 jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
 
-const lazyTasksDirectory = 'lazy'
+const lazyTasksDirectory = 'lazy_tasks'
 directory(lazyTasksDirectory)
 
 const deglob = glob => new jake.FileList(glob).toArray()
