@@ -1,36 +1,36 @@
 import { assert, expect } from 'chai'
-import { Progress, Task } from '../../src/domain/task'
+import { Progress, Item } from '../../src/domain/item'
 
-describe('Task', () => {
+describe('Item', () => {
   it('has expected initial values', () => {
-    const task = Task.new('Get it done')
+    const task = Item.new('Get it done')
     expect(task.progress).to.equal(Progress.notStarted)
     expect(task.title).to.equal('Get it done')
     assert.ok(task.id)
   })
 
   it('can be completed', () => {
-    const task = Task.new('Get it done')
+    const task = Item.new('Get it done')
     task.complete()
     expect(task.progress).to.equal(Progress.completed)
   })
 
   it('can be assigned', () => {
-    const task = Task.new('Get it done')
+    const task = Item.new('Get it done')
     task.assign('Kenny Starfighter')
     expect(task.progress).to.equal(Progress.inProgress)
     expect(task.assignee).to.equal('Kenny Starfighter')
   })
 
   it('has a unique id', () => {
-    const task1 = Task.new('Get it done')
-    const task2 = Task.new('Get it done')
+    const task1 = Item.new('Get it done')
+    const task2 = Item.new('Get it done')
 
     expect(task1.id).not.to.equal(task2.id)
   })
 
   it('has a uuid id', () => {
-    const task = Task.new('Get it done')
+    const task = Item.new('Get it done')
 
     expect(task.id).to.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)
     expect(task.id).to.match(/^[0-9a-f-]*$/)

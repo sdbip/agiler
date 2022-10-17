@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 
-export class Task {
+export class Item {
   readonly id: string
   state: TaskState
   
@@ -16,8 +16,8 @@ export class Task {
     this.state.progress = Progress.inProgress
   }
 
-  static new(title: string): Task {
-    return new Task(randomUUID(),
+  static new(title: string): Item {
+    return new Item(randomUUID(),
     {
       title,
       assignee: null,
@@ -25,8 +25,8 @@ export class Task {
     })
   }
 
-  static reconstitute(id: string, state: TaskState): Task {
-    return new Task(id, state)
+  static reconstitute(id: string, state: TaskState): Item {
+    return new Item(id, state)
   }
 
   private constructor(id: string, state: TaskState) {

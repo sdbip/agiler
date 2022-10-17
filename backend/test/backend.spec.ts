@@ -2,7 +2,7 @@ import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
-import { Progress } from '../src/domain/task'
+import { Progress } from '../src/domain/item'
 
 const inmem = new InMem()
 setRepository(inmem)

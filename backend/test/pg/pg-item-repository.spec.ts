@@ -1,11 +1,11 @@
 import { assert, expect } from 'chai'
 import { promises as fs } from 'fs'
-import { Progress, Task } from '../../src/domain/task'
-import PGTaskRepository from '../../src/pg/pg-task-repository'
+import { Progress, Item } from '../../src/domain/item'
+import PGIemRepository from '../../src/pg/pg-item-repository'
 import PGDatabase from '../../src/pg/pg-database'
 
-describe('PGTaskRepository', () => {
-  let repository: PGTaskRepository
+describe('PGIemRepository', () => {
+  let repository: PGIemRepository
   let database: PGDatabase
   
   before(async () => {
@@ -15,7 +15,7 @@ describe('PGTaskRepository', () => {
     database = await PGDatabase.connect(databaseName)
     const tasks = await fs.readFile('./schema/schema.sql')
     database.query(tasks.toString('utf-8'))
-    repository = new PGTaskRepository(database)  
+    repository = new PGIemRepository(database)  
   })
 
   after(async () => {
@@ -23,18 +23,18 @@ describe('PGTaskRepository', () => {
   })
 
   it('can add tasks and find them again', async () => {
-    const task = Task.new('Make PGTaskRepository work')
+    const task = Item.new('Make PGIemRepository work')
     await repository.add(task)
 
     const taskInRepository = await repository.get(task.id)
-    expect(taskInRepository).instanceOf(Task)
+    expect(taskInRepository).instanceOf(Item)
     expect(taskInRepository?.id).to.equal(task.id)
     expect(taskInRepository?.progress).to.equal(task.progress)
     expect(taskInRepository?.title).to.equal(task.title)
   })
 
   it('can update tasks', async () => {
-    const task = Task.new('Make PGTaskRepository work')
+    const task = Item.new('Make PGIemRepository work')
     await repository.add(task)
 
     task.complete()
@@ -45,17 +45,17 @@ describe('PGTaskRepository', () => {
   })
 
   it('finds stored tasks', async () => {
-    const task = Task.new('Make PGTaskRepository work')
+    const task = Item.new('Make PGIemRepository work')
     await repository.add(task)
 
     const storedTasks = await repository.allWithProgress(Progress.notStarted)
     assert.ok(storedTasks)
-    expect(storedTasks[0]).instanceOf(Task)
+    expect(storedTasks[0]).instanceOf(Item)
     expect(storedTasks.map(t => t.id)).contain(task.id)
   })
 
   it('ignores completed tasks', async () => {
-    const task = Task.new('Completed Task')
+    const task = Item.new('Completed Task')
     task.complete()
     await repository.add(task)
 

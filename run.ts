@@ -2,7 +2,7 @@ import backend from './backend/src/backend.js'
 import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
 import PGDatabase from './backend/src/pg/pg-database.js'
-import PGTaskRepository from './backend/src/pg/pg-task-repository.js'
+import PGItemRepository from './backend/src/pg/pg-item-repository.js'
 
 const databaseName = env['DATABASE_NAME']
 if (!databaseName) {
@@ -11,7 +11,7 @@ if (!databaseName) {
 }
 const database = await PGDatabase.connect(databaseName)
 
-backend.setRepository(new PGTaskRepository(database))
+backend.setRepository(new PGItemRepository(database))
 backend.listenAtPort(8000)
 
 frontend.setBackendURL('http://localhost:8000')

@@ -1,8 +1,8 @@
-import { TaskRepository } from '../backend'
-import { Progress, Task, TaskState } from '../domain/task.js'
+import { ItemRepository } from '../backend'
+import { Progress, Item, TaskState } from '../domain/item.js'
 import PGDatabase from './pg-database'
 
-export default class PGTaskRepository implements TaskRepository {
+export default class PGItemRepository implements ItemRepository {
   private readonly database: PGDatabase
 
   constructor(database: PGDatabase) {
@@ -16,20 +16,20 @@ export default class PGTaskRepository implements TaskRepository {
     return res.rows.map(task)
   }
 
-  async get(id: string): Promise<Task | undefined> {
+  async get(id: string): Promise<Item | undefined> {
     const res = await this.database.query(
       'SELECT * FROM Tasks WHERE id = $1',
       [ id ])
     return task(res.rows[0])
   }
 
-  async add(task: Task) {
+  async add(task: Item) {
     await this.database.query(
       'INSERT INTO Tasks (id, title, progress) VALUES ($1, $2, $3)',
       [ task.id, task.title, Progress[task.progress] ])
   }
 
-  async update(task: Task) {
+  async update(task: Item) {
     await this.database.query(
       'UPDATE Tasks SET title = $2, progress = $3 WHERE id = $1',
       [ task.id, task.title, Progress[task.progress] ])
@@ -48,5 +48,5 @@ function task(row: TaskRow) {
     assignee: null,
     progress: Progress[row.progress],
   }
-  return Task.reconstitute(row.id, props)
+  return Item.reconstitute(row.id, props)
 }

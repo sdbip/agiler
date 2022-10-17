@@ -1,15 +1,15 @@
-import { Progress, Task } from './domain/task.js'
+import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 
-export interface TaskRepository {
-  allWithProgress(progress: Progress): Promise<Task[]>
-  get(id: string): Promise<Task | undefined>
-  add(task: Task): Promise<void>
-  update(task: Task): Promise<void>
+export interface ItemRepository {
+  allWithProgress(progress: Progress): Promise<Item[]>
+  get(id: string): Promise<Item | undefined>
+  add(task: Item): Promise<void>
+  update(task: Item): Promise<void>
 }
 
 const server = setupServer({})
-let repository: TaskRepository
+let repository: ItemRepository
 
 server.get('/task', async () => {
   const tasks = await repository.allWithProgress(Progress.notStarted)
@@ -18,7 +18,7 @@ server.get('/task', async () => {
 
 server.post('/task', async (request) => {
   const taskDTO = await readBody(request)
-  const task = Task.new(taskDTO.title)
+  const task = Item.new(taskDTO.title)
   repository.add(task)
   return {
     id: task.id,
@@ -46,7 +46,7 @@ server.patch('/task/:id/complete', async (request) => {
 })
 
 const s = server.finalize()
-export function setRepository(r: TaskRepository) {repository = r}
+export function setRepository(r: ItemRepository) {repository = r}
 export const listenAtPort = s.listenAtPort.bind(s)
 export const stopListening = s.stopListening.bind(s)
 
