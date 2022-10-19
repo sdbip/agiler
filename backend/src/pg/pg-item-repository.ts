@@ -49,5 +49,5 @@ function item(row: TaskRow) {
     assignee: null,
     progress: Progress[row.progress],
   }
-  return Item.reconstitute(row.id, ItemType[row.type], props)
+  return Item.fromState(row.id, ItemType[row.type], props)
 }

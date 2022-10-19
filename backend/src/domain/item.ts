@@ -42,7 +42,33 @@ export class Item {
     return item
   }
 
-  static reconstitute(id: string, type: ItemType, state: TaskState): Item {
+  static reconstitute(id: string, events: UnpublishedEvent[]) {
+    const item = new Item(id, ItemType.Task, {
+      assignee: null,
+      progress: Progress.notStarted,
+      title: '',
+    })
+    for (const event of events) {
+      switch (event.name) {
+      case 'Created':
+        item.state.title = event.details.title
+        item.type = event.details.type
+        break
+      case 'ProgressChanged':
+        item.state.progress = event.details.progress
+        break
+      case 'AssigneeChanged':
+        item.state.assignee = event.details.assignee
+        break
+      case 'TypeChanged':
+        item.type = event.details.type
+        break
+      }
+    }
+    return item
+  }
+
+  static fromState(id: string, type: ItemType, state: TaskState): Item {
     return new Item(id, type, state)
   }
 

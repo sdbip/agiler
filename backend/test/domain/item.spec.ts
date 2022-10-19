@@ -1,15 +1,9 @@
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import { Progress, Item, ItemType } from '../../src/domain/item'
 
 describe('Item', () => {
-  it('has expected initial values', () => {
-    const item = Item.new('Get it done')
-    expect(item.progress).to.equal(Progress.notStarted)
-    expect(item.title).to.equal('Get it done')
-    assert.ok(item.id)
-  })
 
-  it('adds initial event', () => {
+  it('adds Created event', () => {
     const item = Item.new('Get it done')
     expect(item.unpublishedEvents.length).to.equal(1)
     const event = item.unpublishedEvents[0]
@@ -20,15 +14,17 @@ describe('Item', () => {
     })
   })
 
-  it('can be completed', () => {
-    const item = Item.new('Get it done')
-    item.complete()
-    expect(item.progress).to.equal(Progress.completed)
+  it('can be reconstituted from Created event', () => {
+    const original = Item.new('Get it done')
+
+    const item = Item.reconstitute('item', original.unpublishedEvents)
+    expect(item.progress).to.equal(Progress.notStarted)
+    expect(item.title).to.equal('Get it done')
+    expect(item.type).to.equal(ItemType.Task)
   })
 
   it('adds event when completed', () => {
-    const item = Item.new('')
-    item.unpublishedEvents = []
+    const item = Item.reconstitute('id', [])
     item.complete()
     expect(item.unpublishedEvents.length).to.equal(1)
 
@@ -37,16 +33,16 @@ describe('Item', () => {
     expect(event.details).to.eql({ progress: Progress.completed })
   })
 
-  it('can be assigned', () => {
-    const item = Item.new('Get it done')
-    item.assign('Kenny Starfighter')
-    expect(item.progress).to.equal(Progress.inProgress)
-    expect(item.assignee).to.equal('Kenny Starfighter')
+  it('can be reconstituted as completed', () => {
+    const original = Item.reconstitute('id', [])
+    original.complete()
+
+    const item = Item.reconstitute('id', original.unpublishedEvents)
+    expect(item.progress).to.equal(Progress.completed)
   })
 
   it('adds event when assigned', () => {
-    const item = Item.new('')
-    item.unpublishedEvents = []
+    const item = Item.reconstitute('id', [])
     item.assign('Johan')
     expect(item.unpublishedEvents.length).to.equal(2)
 
@@ -59,23 +55,31 @@ describe('Item', () => {
     expect(event1.details).to.eql({ progress: Progress.inProgress })
   })
 
-  it('can be promoted to story', () => {
-    const item = Item.new('Get it done')
-    expect(item.type).to.equal(ItemType.Task)
+  it('can be assigned', () => {
+    const original = Item.reconstitute('id', [])
+    original.assign('Kenny Starfighter')
 
-    item.promote()
-    expect(item.type).to.equal(ItemType.Story)
+    const item = Item.reconstitute('id', original.unpublishedEvents)
+    expect(item.assignee).to.equal('Kenny Starfighter')
   })
 
   it('adds event when promoted', () => {
-    const item = Item.new('')
-    item.unpublishedEvents = []
+    const item = Item.reconstitute('id', [])
     item.promote()
     expect(item.unpublishedEvents.length).to.equal(1)
 
     const event = item.unpublishedEvents[0]
     expect(event.name).to.equal('TypeChanged')
     expect(event.details).to.eql({ type: ItemType.Story })
+  })
+
+  it('can be reconstituted as story', () => {
+    const original = Item.reconstitute('id', [])
+    original.promote()
+
+    const item = Item.reconstitute('id', original.unpublishedEvents)
+
+    expect(item.type).to.equal(ItemType.Story)
   })
 
   it('has a unique id', () => {
