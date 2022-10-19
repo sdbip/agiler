@@ -59,8 +59,10 @@ input[type='checkbox'] {
   vertical-align: middle;
 }
 
-.Task > span {
-  vertical-align: middle;
+.Task > .promote-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
 }
 
 input[type="text"] {

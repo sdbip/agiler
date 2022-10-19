@@ -13,7 +13,6 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-* Promote Task to Story
 - Make tasks children of stories
   - Add text-box for adding a task to a story
   - Add chevron to collapse/expand a story
@@ -33,7 +32,6 @@
 - Maybe add stories directly (tasks that are immediately promoted)?
 
 # Tasks
-- Add button to promote a task to a story
 
 # Ice Box
 - move frontend.ts to a different folder.

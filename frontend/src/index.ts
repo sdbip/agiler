@@ -43,6 +43,11 @@ globals.addTask = async function() {
   await updateTasks()
 }
 
+globals.promote = async function({ element }: EventArgs<HTMLElement, Event>) {
+  await backend.promoteTask(element.id.replace(/^promote-/, ''))
+  await updateTasks()
+}
+
 async function updateTasks() {
   const tasks = await backend.fetchTasks()
 
@@ -59,6 +64,9 @@ async function updateTasks() {
     taskListElement.innerHTML = await render('task-list', {
       tasks,
       canComplete: () => function(this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+      canPromote: () => function(this: any, text: string, render: any) {
         return this.type === 'Task' ? render(text) : ''
       },
     })

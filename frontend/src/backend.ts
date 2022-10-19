@@ -26,8 +26,15 @@ export const addTask = async (title: string) => {
   return await response.json()
 }
 
+export const promoteTask = async (id: string) => {
+  console.log(`PATCH ${baseURL}/task/${id}/promote`)
+
+  await fetch(`${baseURL}/task/${id}/promote`, { method: 'PATCH' })
+}
+
 export default {
   fetchTasks,
   completeTask,
   addTask,
+  promoteTask,
 }
