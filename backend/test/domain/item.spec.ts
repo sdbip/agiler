@@ -40,7 +40,6 @@ describe('Item', () => {
   it('has a uuid id', () => {
     const item = Item.new('Get it done')
 
-    expect(item.id).to.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)
-    expect(item.id).to.match(/^[0-9a-f-]*$/)
+    expect(item.id).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
   })
 })
