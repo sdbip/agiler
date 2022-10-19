@@ -18,14 +18,17 @@ export class Item {
 
   promote() {
     this.type = ItemType.Story
+    this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
   }
   complete() {
     this.state.progress = Progress.completed
-    this.add({ name: 'ProgressChanged', details: { progress: Progress.completed } })
+    this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
   assign(member: string) {
     this.state.assignee = member
     this.state.progress = Progress.inProgress
+    this.addEvent({ name: 'AssigneeChanged', details: { assignee: member } })
+    this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.inProgress } })
   }
 
   static new(title: string): Item {
@@ -35,7 +38,7 @@ export class Item {
         assignee: null,
         progress: Progress.notStarted,
       })
-    item.add({ name: 'Created', details: { title, type: ItemType.Task } })
+    item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
     return item
   }
 
@@ -43,7 +46,7 @@ export class Item {
     return new Item(id, type, state)
   }
 
-  private add(event: UnpublishedEvent) {
+  private addEvent(event: UnpublishedEvent) {
     this.unpublishedEvents.push(event)
   }
 
