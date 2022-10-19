@@ -59,7 +59,7 @@ describe('PGIemRepository', () => {
     const item = Item.new('Make PGIemRepository work')
     await repository.add(item)
 
-    const storedItems = await repository.tasksWithProgress(Progress.notStarted)
+    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     assert.ok(storedItems)
     expect(storedItems[0]).instanceOf(Item)
     expect(storedItems.map(t => t.id)).contain(item.id)
@@ -70,18 +70,18 @@ describe('PGIemRepository', () => {
     item.complete()
     await repository.add(item)
 
-    const storedItems = await repository.tasksWithProgress(Progress.notStarted)
+    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     assert.ok(storedItems)
     expect(storedItems.map(t => t.id)).not.contain(item.id)
   })
 
-  it('ignores stories', async () => {
+  it('includes stories', async () => {
     const item = Item.new('Story')
     item.promote()
     await repository.add(item)
 
-    const storedItems = await repository.tasksWithProgress(Progress.notStarted)
+    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     assert.ok(storedItems)
-    expect(storedItems.map(t => t.id)).not.contain(item.id)
+    expect(storedItems.map(t => t.id)).to.contain(item.id)
   })
 })

@@ -110,7 +110,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(404)
   })
 
-  it('returns only tasks [get /task]', async () => {
+  it('returns stories as well as tasks [get /task]', async () => {
     inmem.items = {
       'one': [
         ItemType.Task,
@@ -134,7 +134,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
 
     const dtos = JSON.parse(response.content)
-    expect(dtos?.length).to.equal(1)
+    expect(dtos?.length).to.equal(2)
 
     const dto = dtos[0]
     expect(dto.title).to.equal('Task')

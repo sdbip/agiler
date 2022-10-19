@@ -2,7 +2,7 @@ import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 
 export interface ItemRepository {
-  tasksWithProgress(progress: Progress): Promise<Item[]>
+  itemsWithProgress(progress: Progress): Promise<Item[]>
   get(id: string): Promise<Item | undefined>
   add(item: Item): Promise<void>
   update(item: Item): Promise<void>
@@ -12,7 +12,7 @@ const server = setupServer({})
 let repository: ItemRepository
 
 server.get('/task', async () => {
-  const tasks = await repository.tasksWithProgress(Progress.notStarted)
+  const tasks = await repository.itemsWithProgress(Progress.notStarted)
   return tasks.map(t => ({ id:t.id, title: t.title }))
 })
 

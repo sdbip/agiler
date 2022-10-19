@@ -4,9 +4,9 @@ import { Progress, Item, ItemType, TaskState } from '../../src/domain/item'
 class InMem implements ItemRepository {
   items: {[id: string]: [ItemType, TaskState]} = {}
 
-  async tasksWithProgress(progress: Progress) {
+  async itemsWithProgress(progress: Progress) {
     return Object.entries(this.items)
-      .filter(([ , [ type, state ] ]) => type === ItemType.Task && state.progress === progress)
+      .filter(([ , [ , state ] ]) => state.progress === progress)
       .map(([ id, [ type, state ] ]) => Item.reconstitute(id, type, { ...state }))
     }
   async get(id: string) {
