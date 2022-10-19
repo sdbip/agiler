@@ -14,6 +14,9 @@
 
 # Stories
 * Promote Task to Story
+- Make tasks children of stories
+  - Add text-box for adding a task to a story
+  - Add chevron to collapse/expand a story
 - Prioritise stories
 - Add Task to Story
 - Add tasks to a story
@@ -27,11 +30,13 @@
 - Split Feature
 - Collect stories similarly to how tasks are collected now
   (But stories cannot be completed by clicking/checking, instead that displays the details)
+- Maybe add stories directly (tasks that are immediately promoted)?
 
 # Tasks
-- Update UI to display stories *and* tasks
-- Plan UI changes
-  - Maybe add stories directly (tasks that are immediately promoted)?
+* Display tasks and stories in the existing list
+- Colour-code or something to tell a task from a story
+- Add button to promote a task to a story
+- Remove checkbox from stories
 
 # Ice Box
 - move frontend.ts to a different folder.
