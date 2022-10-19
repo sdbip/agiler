@@ -9,6 +9,17 @@ describe('Item', () => {
     assert.ok(item.id)
   })
 
+  it('adds initial event', () => {
+    const item = Item.new('Get it done')
+    expect(item.unpublishedEvents.length).to.equal(1)
+    const event = item.unpublishedEvents[0]
+    expect(event.name).to.equal('Created')
+    expect(event.details).to.eql({
+      type: ItemType.Task,
+      title: 'Get it done',
+    })
+  })
+
   it('can be completed', () => {
     const item = Item.new('Get it done')
     item.complete()

@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+import { UnpublishedEvent } from './unpublished_event'
 
 export enum ItemType {
   Task = 'Task',
@@ -9,6 +10,7 @@ export class Item {
   readonly id: string
   state: TaskState
   type = ItemType.Task
+  unpublishedEvents: UnpublishedEvent[] = []
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
@@ -26,12 +28,18 @@ export class Item {
   }
 
   static new(title: string): Item {
-    return new Item(randomUUID(), ItemType.Task,
-    {
+    const item = new Item(randomUUID(), ItemType.Task,
+      {
+        title,
+        assignee: null,
+        progress: Progress.notStarted,
+      })
+    const details = {
       title,
-      assignee: null,
-      progress: Progress.notStarted,
-    })
+      type: ItemType.Task,
+    }
+    item.unpublishedEvents.push(new UnpublishedEvent('Created', details))
+    return item
   }
 
   static reconstitute(id: string, type: ItemType, state: TaskState): Item {
