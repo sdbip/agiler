@@ -26,7 +26,7 @@ export class Item {
   }
 
   static new(title: string): Item {
-    return new Item(randomUUID(),
+    return new Item(randomUUID(), ItemType.Task,
     {
       title,
       assignee: null,
@@ -34,12 +34,13 @@ export class Item {
     })
   }
 
-  static reconstitute(id: string, state: TaskState): Item {
-    return new Item(id, state)
+  static reconstitute(id: string, type: ItemType, state: TaskState): Item {
+    return new Item(id, type, state)
   }
 
-  private constructor(id: string, state: TaskState) {
+  private constructor(id: string, type: ItemType, state: TaskState) {
     this.id = id
+    this.type = type
     this.state = state
   }
 }

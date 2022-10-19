@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai'
 import { promises as fs } from 'fs'
-import { Progress, Item } from '../../src/domain/item'
+import { Progress, Item, ItemType } from '../../src/domain/item'
 import PGIemRepository from '../../src/pg/pg-item-repository'
 import PGDatabase from '../../src/pg/pg-database'
 
@@ -33,7 +33,7 @@ describe('PGIemRepository', () => {
     expect(taskInRepository?.title).to.equal(task.title)
   })
 
-  it('can update tasks', async () => {
+  it('can complete tasks', async () => {
     const task = Item.new('Make PGIemRepository work')
     await repository.add(task)
 
@@ -42,6 +42,17 @@ describe('PGIemRepository', () => {
 
     const taskInRepository = await repository.get(task.id)
     expect(taskInRepository?.progress).to.equal(Progress.completed)
+  })
+
+  it('can promote tasks', async () => {
+    const task = Item.new('Make PGIemRepository work')
+    await repository.add(task)
+
+    task.promote()
+    repository.update(task)
+
+    const taskInRepository = await repository.get(task.id)
+    expect(taskInRepository?.type).to.equal(ItemType.Story)
   })
 
   it('finds stored tasks', async () => {

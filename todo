@@ -28,7 +28,6 @@
   (But stories cannot be completed by clicking/checking, instead that displays the details)
 
 # Tasks
-- Add endpoint
 - Update UI to display stories *and* tasks
 - Plan UI changes
   - Maybe add stories directly (tasks that are immediately promoted)?

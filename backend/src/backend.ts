@@ -26,6 +26,15 @@ server.post('/task', async (request) => {
   }
 })
 
+server.patch('/task/:id/promote', async (request) => {
+  const task = await repository.get(request.params.id)
+  if (!task) return NOT_FOUND
+
+  task.promote()
+  await repository.update(task)
+  return {}
+})
+
 server.patch('/task/:id/assign', async (request) => {
   const task = await repository.get(request.params.id)
   if (!task) return NOT_FOUND

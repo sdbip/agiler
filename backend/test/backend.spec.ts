@@ -2,7 +2,7 @@ import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
 import { setRepository, listenAtPort, stopListening } from '../src/backend'
 import InMem from './repository/inmem'
-import { Progress } from '../src/domain/item'
+import { ItemType, Progress } from '../src/domain/item'
 
 const inmem = new InMem()
 setRepository(inmem)
@@ -26,7 +26,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(
       Object.values(inmem.items)
-        .map(i => ({ title: i.title })),
+        .map(i => ({ title: i[1].title })),
       ).to.eql([ { title: 'Get Shit Done' } ])
   })
 
@@ -40,33 +40,68 @@ describe('backend', () => {
     assert.ok(dto.id)
   })
 
+  it('promotes tasks [patch /task/:id/promote]', async () => {
+    inmem.items = {
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+    }
+    const response = await patch('http://localhost:9090/task/id/promote')
+
+    expect(response.statusCode).to.equal(200)
+    expect(ItemType[inmem.items['id'][0]]).to.equal(ItemType[ItemType.Story])
+  })
+
+  it('returns 404 if not found [patch /task/:id/promote]', async () => {
+    const response = await patch('http://localhost:9090/task/id/promote')
+
+    expect(response.statusCode).to.equal(404)
+  })
+
   it('assigns task [patch /task/:id/assign]', async () => {
     inmem.items = {
-      id: {
-        title: 'Get Shit Done',
-        progress: Progress.notStarted,
-        assignee: null,
-      },
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
     }
     const response = await patch('http://localhost:9090/task/id/assign', { member: 'Johan' })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'].progress).to.equal(Progress.inProgress)
-    expect(inmem.items['id'].assignee).to.equal('Johan')
+    expect(inmem.items['id'][1].progress).to.equal(Progress.inProgress)
+    expect(inmem.items['id'][1].assignee).to.equal('Johan')
+  })
+
+  it('returns 404 if not found [patch /task/:id/assign]', async () => {
+    const response = await patch('http://localhost:9090/task/id/assign')
+
+    expect(response.statusCode).to.equal(404)
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
     inmem.items = {
-      id: {
-        title: 'Get Shit Done',
-        progress: Progress.notStarted,
-        assignee: null,
-      },
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
     }
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'].progress).to.equal(Progress.completed)
+    expect(inmem.items['id'][1].progress).to.equal(Progress.completed)
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {
@@ -77,16 +112,22 @@ describe('backend', () => {
 
   it('returns open tasks only [get /task]', async () => {
     inmem.items = {
-      'one': {
-        title: 'New task',
-        progress: Progress.notStarted,
-        assignee: null,
-      },
-      'two': {
-        title: 'Completed task',
-        progress: Progress.completed,
-        assignee: null,
-      },
+      'one': [
+        ItemType.Task,
+        {
+          title: 'New task',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+      'two': [
+        ItemType.Task,
+        {
+          title: 'Completed task',
+          progress: Progress.completed,
+          assignee: null,
+        },
+      ],
     }
     const response = await get('http://localhost:9090/task')
 
