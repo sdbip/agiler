@@ -56,7 +56,12 @@ async function updateTasks() {
     for (const task of newTasks) task.isNew = true
 
     await delay(500)
-    taskListElement.innerHTML = await render('task-list', { tasks })
+    taskListElement.innerHTML = await render('task-list', {
+      tasks,
+      canComplete: () => function(this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+    })
     await delay(1)
 
     for (const element of getElements('.hidden', taskListElement))

@@ -18,7 +18,7 @@ input[type='checkbox'] {
   -webkit-user-select: none;
 }
 
-.task {
+.Task, .Story {
   cursor: hand;
   position: relative;
 
@@ -30,17 +30,22 @@ input[type='checkbox'] {
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 15%);
 }
 
-.task {
+.Story {
+  cursor: default;
+  background-color: rgba(0, 128, 255, 0.4);
+}
+
+.Task {
   height: 21px;
   overflow-y: hidden;
   transition: height .5s ease-out;
 }
 
-.task.hidden {
+.Task.hidden {
   height: 0;
 }
 
-.task > label {
+.Task > label, .Story > label {
   position: absolute;
   top: 8px;
   left: 8px;
@@ -54,7 +59,7 @@ input[type='checkbox'] {
   vertical-align: middle;
 }
 
-.task > span {
+.Task > span {
   vertical-align: middle;
 }
 

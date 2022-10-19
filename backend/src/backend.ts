@@ -13,7 +13,7 @@ let repository: ItemRepository
 
 server.get('/task', async () => {
   const tasks = await repository.itemsWithProgress(Progress.notStarted)
-  return tasks.map(t => ({ id:t.id, title: t.title }))
+  return tasks.map(t => ({ id:t.id, title: t.title, type: t.type }))
 })
 
 server.post('/task', async (request) => {

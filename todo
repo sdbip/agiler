@@ -33,10 +33,7 @@
 - Maybe add stories directly (tasks that are immediately promoted)?
 
 # Tasks
-* Display tasks and stories in the existing list
-- Colour-code or something to tell a task from a story
 - Add button to promote a task to a story
-- Remove checkbox from stories
 
 # Ice Box
 - move frontend.ts to a different folder.
