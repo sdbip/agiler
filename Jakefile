@@ -57,11 +57,7 @@ lazyTask('lint', deglob([ '**/*.ts', '**/*.js' ]), async () => {
 })
 
 desc('Bundle browser code')
-task('bundle', [ 'create_bundle', 'clean_bundle' ], () => {
-  log.endTask()
-})
-
-lazyTask('create_bundle', deglob('frontend/**/*'), async () => {
+lazyTask('bundle', deglob('frontend/**/*'), async () => {
   log.startTask('Bundling')
 
   const result = shelljs.exec('yarn webpack', { silent: true }) // && rm -rf lib
@@ -73,14 +69,13 @@ lazyTask('create_bundle', deglob('frontend/**/*'), async () => {
     fail(result.stderr)
   }
   log.progress(({ success: true }))
-})
 
-task('clean_bundle', async () => {
   await new Promise((resolve, reject) => rmrf('lib', error => {
     if (error) reject(error)
     else resolve()
   }))
   log.progress(({ success: true }))
+  log.endTask()
 })
 
 desc('Run all tests')
