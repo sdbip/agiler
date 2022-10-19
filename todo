@@ -14,29 +14,24 @@
 
 # Stories
 - Make tasks children of stories
+  - Add Task to Story
   - Add text-box for adding a task to a story
   - Add chevron to collapse/expand a story
 - Prioritise stories
-- Add Task to Story
-- Add tasks to a story
 - Finish task automatically when last task is done
 - Add story details
 - Allow story title to be changed
 - Add text describing the purpose of a story
 - Add text describing the purpose of a task
-- Implement UI changes
 - Upgrade Story to Feature
 - Split Feature
-- Collect stories similarly to how tasks are collected now
-  (But stories cannot be completed by clicking/checking, instead that displays the details)
-- Maybe add stories directly (tasks that are immediately promoted)?
 
 # Tasks
+* Refactor to CQRS/ES
 
 # Ice Box
 - move frontend.ts to a different folder.
   The other code runs in the browser
 - Publish to Heroku. Or somewhere else?
 - Matcher/Specification pattern
-- Use CQRS/ES?
 - Design a reporter for Web Test Runner?
