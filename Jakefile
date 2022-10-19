@@ -23,7 +23,7 @@ const lazyTask = (name, dependencies, action) => {
   })
 }
 
-desc('Remove all intermediate output')
+desc('Remove all intermediate log')
 task('clean', async () => {
   await new Promise((resolve, reject) => rmrf(lazyTasksDirectory, error => {
     if (error) reject(error)
@@ -39,7 +39,7 @@ task('start', [ 'lint', 'test', 'bundle', 'run' ])
 
 desc('Lints all .js and .ts files except those ignored by .eslintrc.yml')
 lazyTask('lint', deglob([ '**/*.ts', '**/*.js' ]), async () => {
-  process.stdout.write(c.blue('Linting '))
+  log.startTask('Linting')
 
   const eslint = new ESLint()
   const result = await eslint.lintFiles([ '**/*.ts', '**/*.js', 'Jakefile' ])
@@ -50,27 +50,29 @@ lazyTask('lint', deglob([ '**/*.ts', '**/*.js' ]), async () => {
   const hasErrors = result.filter(r => r.errorCount > 0).length > 0
   const hasWarnings = result.filter(r => r.warningCount > 0).length > 0
 
-  process.stdout.write(hasErrors ? '!\n' : '.\n')
-  if (hasErrors || hasWarnings) process.stdout.write(`${resultText}\n`)
+  log.progress(({ success: !hasErrors }))
+  log.endTask()
+  if (hasErrors || hasWarnings) log.text(`${resultText}\n`)
   if (hasErrors) fail(resultText)
 })
 
 desc('Bundle browser code')
 task('bundle', [ 'create_bundle', 'clean_bundle' ], () => {
-  process.stdout.write('\n')
+  log.endTask()
 })
 
 lazyTask('create_bundle', deglob('frontend/**/*'), async () => {
-  process.stdout.write(c.blue('Bundling '))
+  log.startTask('Bundling')
 
   const result = shelljs.exec('yarn webpack', { silent: true }) // && rm -rf lib
 
   if (result.code > 0) {
-    process.stdout.write('!\n')
-    process.stdout.write(result.stdout.replace(/(ERROR.*$)/gm, c.red('$1')))
+    log.progress({ success: false })
+    log.endTask()
+    log.text(result.stdout.replace(/(ERROR.*$)/gm, c.red('$1')))
     fail(result.stderr)
   }
-  process.stdout.write('.')
+  log.progress(({ success: true }))
 })
 
 task('clean_bundle', async () => {
@@ -78,7 +80,7 @@ task('clean_bundle', async () => {
     if (error) reject(error)
     else resolve()
   }))
-  process.stdout.write('.')
+  log.progress(({ success: true }))
 })
 
 desc('Run all tests')
@@ -86,7 +88,7 @@ task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
 lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
-  process.stdout.write(c.italic(c.blue('Testing browser code ')))
+  log.startTask('Testing browser code')
 
   await new Promise((resolve, reject) => {
     const child = shelljs.exec('wtr --node-resolve --esbuild-target auto', { async: true, silent: true })
@@ -109,11 +111,11 @@ lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
         .replace(/\.\n/g, '.')
         .trim()
 
-      process.stdout.write(mergedDots)
+      log.text(mergedDots)
     })
 
     child.on('exit', code => {
-      process.stdout.write('\n')
+      log.endTask()
 
       if (code > 0) reject()
       else resolve()
@@ -123,7 +125,7 @@ lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
 
 desc('Run backend tests')
 lazyTask('backend_tests', deglob('backend/**/*'), async () => {
-  process.stdout.write(c.italic(c.blue('Testing servers ')))
+  log.startTask('Testing servers')
 
   await new Promise((resolve, reject) => {
     const promise = { resolve, reject }
@@ -133,11 +135,11 @@ lazyTask('backend_tests', deglob('backend/**/*'), async () => {
       switch (data) {
         case '.':
         case '\n  .':
-          process.stdout.write('.')
+          log.progress(({ success: true }))
           break
         case '\n  !':
         case '!':
-          process.stdout.write(c.red('!'))
+          log.progress(({ success: false }))
           break
         default: {
           result.push(data)
@@ -148,7 +150,7 @@ lazyTask('backend_tests', deglob('backend/**/*'), async () => {
 
     child.on('exit', code => {
       const isError = code > 0
-      process.stdout.write('\n')
+      log.endTask()
       if (isError) console.error(`${result.join('').trim()}\n`)
       if (isError) promise.reject()
       else promise.resolve()
@@ -157,6 +159,27 @@ lazyTask('backend_tests', deglob('backend/**/*'), async () => {
 })
 
 task('run', async () => {
-  process.stdout.write(c.blue('Starting\n'))
+  log.task('Starting')
   shelljs.exec('source .env && ts-node-esm run.ts')
 })
+
+const log = {
+  task: name => {
+    log.startTask(name)
+    log.endTask()
+  },
+
+  startTask: name => {
+    log.text(`${c.blue(name)} `)
+  },
+  endTask: () => {
+    log.text('\n')
+  },
+  progress: ({ success }) => {
+    log.text(success ? '.' : c.red('!'))
+  },
+
+  text: text => {
+    process.stdout.write(text)
+  },
+}
