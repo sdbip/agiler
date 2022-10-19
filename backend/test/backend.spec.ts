@@ -110,6 +110,37 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(404)
   })
 
+  it('returns only tasks [get /task]', async () => {
+    inmem.items = {
+      'one': [
+        ItemType.Task,
+        {
+          title: 'Task',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+      'two': [
+        ItemType.Story,
+        {
+          title: 'Story',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+    }
+    const response = await get('http://localhost:9090/task')
+
+    expect(response.statusCode).to.equal(200)
+
+    const dtos = JSON.parse(response.content)
+    expect(dtos?.length).to.equal(1)
+
+    const dto = dtos[0]
+    expect(dto.title).to.equal('Task')
+    assert.ok(dto.id)
+  })
+
   it('returns open tasks only [get /task]', async () => {
     inmem.items = {
       'one': [

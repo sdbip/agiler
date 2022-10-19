@@ -9,10 +9,10 @@ export default class PGItemRepository implements ItemRepository {
     this.database = database
   }
 
-  async allWithProgress(progress: Progress) {
+  async tasksWithProgress(progress: Progress) {
     const res = await this.database.query(
-      'SELECT * FROM Items WHERE progress = $1',
-      [ progress ])
+      'SELECT * FROM Items WHERE progress = $1 AND type = $2',
+      [ progress, ItemType.Task ])
     return res.rows.map(item)
   }
 

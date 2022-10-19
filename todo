@@ -10,6 +10,7 @@
 - Prioritise features and stories
 - Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
 - Mark tasks as started
+- Use socket.io to remove finished tasks automatically
 
 # Stories
 * Promote Task to Story
