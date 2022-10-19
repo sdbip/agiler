@@ -13,8 +13,8 @@ class InMem implements ItemRepository {
     const item = this.items[id]
     return item && Item.reconstitute(id, item[0], { ...item[1] })
   }
-  async add(task: Item) { this.items[task.id] = [ task.type, { ...task.state } ]}
-  async update(task: Item) { this.items[task.id] = [ task.type, { ...task.state } ]}
+  async add(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
+  async update(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
 }
 
 export default InMem

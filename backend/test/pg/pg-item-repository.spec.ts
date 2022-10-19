@@ -23,55 +23,55 @@ describe('PGIemRepository', () => {
   })
 
   it('can add tasks and find them again', async () => {
-    const task = Item.new('Make PGIemRepository work')
-    await repository.add(task)
+    const item = Item.new('Make PGIemRepository work')
+    await repository.add(item)
 
-    const taskInRepository = await repository.get(task.id)
-    expect(taskInRepository).instanceOf(Item)
-    expect(taskInRepository?.id).to.equal(task.id)
-    expect(taskInRepository?.progress).to.equal(task.progress)
-    expect(taskInRepository?.title).to.equal(task.title)
+    const itemInRepository = await repository.get(item.id)
+    expect(itemInRepository).instanceOf(Item)
+    expect(itemInRepository?.id).to.equal(item.id)
+    expect(itemInRepository?.progress).to.equal(item.progress)
+    expect(itemInRepository?.title).to.equal(item.title)
   })
 
   it('can complete tasks', async () => {
-    const task = Item.new('Make PGIemRepository work')
-    await repository.add(task)
+    const item = Item.new('Make PGIemRepository work')
+    await repository.add(item)
 
-    task.complete()
-    repository.update(task)
+    item.complete()
+    repository.update(item)
 
-    const taskInRepository = await repository.get(task.id)
-    expect(taskInRepository?.progress).to.equal(Progress.completed)
+    const itemInRepository = await repository.get(item.id)
+    expect(itemInRepository?.progress).to.equal(Progress.completed)
   })
 
   it('can promote tasks', async () => {
-    const task = Item.new('Make PGIemRepository work')
-    await repository.add(task)
+    const item = Item.new('Make PGIemRepository work')
+    await repository.add(item)
 
-    task.promote()
-    repository.update(task)
+    item.promote()
+    repository.update(item)
 
-    const taskInRepository = await repository.get(task.id)
-    expect(taskInRepository?.type).to.equal(ItemType.Story)
+    const itemInRepository = await repository.get(item.id)
+    expect(itemInRepository?.type).to.equal(ItemType.Story)
   })
 
   it('finds stored tasks', async () => {
-    const task = Item.new('Make PGIemRepository work')
-    await repository.add(task)
+    const item = Item.new('Make PGIemRepository work')
+    await repository.add(item)
 
-    const storedTasks = await repository.allWithProgress(Progress.notStarted)
-    assert.ok(storedTasks)
-    expect(storedTasks[0]).instanceOf(Item)
-    expect(storedTasks.map(t => t.id)).contain(task.id)
+    const storedItems = await repository.allWithProgress(Progress.notStarted)
+    assert.ok(storedItems)
+    expect(storedItems[0]).instanceOf(Item)
+    expect(storedItems.map(t => t.id)).contain(item.id)
   })
 
   it('ignores completed tasks', async () => {
-    const task = Item.new('Completed Task')
-    task.complete()
-    await repository.add(task)
+    const item = Item.new('Completed Task')
+    item.complete()
+    await repository.add(item)
 
-    const storedTasks = await repository.allWithProgress(Progress.notStarted)
-    assert.ok(storedTasks)
-    expect(storedTasks.map(t => t.id)).not.contain(task.id)
+    const storedItems = await repository.allWithProgress(Progress.notStarted)
+    assert.ok(storedItems)
+    expect(storedItems.map(t => t.id)).not.contain(item.id)
   })
 })

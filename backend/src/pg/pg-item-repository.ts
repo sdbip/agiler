@@ -13,26 +13,26 @@ export default class PGItemRepository implements ItemRepository {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE progress = $1',
       [ Progress[progress] ])
-    return res.rows.map(task)
+    return res.rows.map(item)
   }
 
   async get(id: string): Promise<Item | undefined> {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE id = $1',
       [ id ])
-    return task(res.rows[0])
+    return item(res.rows[0])
   }
 
-  async add(task: Item) {
+  async add(item: Item) {
     await this.database.query(
       'INSERT INTO Items (id, title, progress, type) VALUES ($1, $2, $3, $4)',
-      [ task.id, task.title, Progress[task.progress], ItemType[task.type] ])
+      [ item.id, item.title, Progress[item.progress], ItemType[item.type] ])
   }
 
-  async update(task: Item) {
+  async update(item: Item) {
     await this.database.query(
       'UPDATE Items SET title = $2, progress = $3, type = $4 WHERE id = $1',
-      [ task.id, task.title, Progress[task.progress], ItemType[task.type] ])
+      [ item.id, item.title, Progress[item.progress], ItemType[item.type] ])
   }
 }
 
@@ -43,7 +43,7 @@ type TaskRow = {
   type: keyof typeof ItemType
 }
 
-function task(row: TaskRow) {
+function item(row: TaskRow) {
   const props: TaskState = {
     title: row.title,
     assignee: null,

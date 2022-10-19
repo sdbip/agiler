@@ -4,8 +4,8 @@ import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 export interface ItemRepository {
   allWithProgress(progress: Progress): Promise<Item[]>
   get(id: string): Promise<Item | undefined>
-  add(task: Item): Promise<void>
-  update(task: Item): Promise<void>
+  add(item: Item): Promise<void>
+  update(item: Item): Promise<void>
 }
 
 const server = setupServer({})
@@ -18,39 +18,39 @@ server.get('/task', async () => {
 
 server.post('/task', async (request) => {
   const taskDTO = await readBody(request)
-  const task = Item.new(taskDTO.title)
-  repository.add(task)
+  const item = Item.new(taskDTO.title)
+  repository.add(item)
   return {
-    id: task.id,
-    title: task.title,
+    id: item.id,
+    title: item.title,
   }
 })
 
 server.patch('/task/:id/promote', async (request) => {
-  const task = await repository.get(request.params.id)
-  if (!task) return NOT_FOUND
+  const item = await repository.get(request.params.id)
+  if (!item) return NOT_FOUND
 
-  task.promote()
-  await repository.update(task)
+  item.promote()
+  await repository.update(item)
   return {}
 })
 
 server.patch('/task/:id/assign', async (request) => {
-  const task = await repository.get(request.params.id)
-  if (!task) return NOT_FOUND
+  const item = await repository.get(request.params.id)
+  if (!item) return NOT_FOUND
 
   const dto = await readBody(request)
-  task.assign(dto.member)
-  await repository.update(task)
+  item.assign(dto.member)
+  await repository.update(item)
   return {}
 })
 
 server.patch('/task/:id/complete', async (request) => {
-  const task = await repository.get(request.params.id)
-  if (!task) return NOT_FOUND
+  const item = await repository.get(request.params.id)
+  if (!item) return NOT_FOUND
 
-  task.complete()
-  await repository.update(task)
+  item.complete()
+  await repository.update(item)
   return {}
 })
 
