@@ -54,7 +54,7 @@ describe('backend', () => {
     const response = await patch('http://localhost:9090/task/id/promote')
 
     expect(response.statusCode).to.equal(200)
-    expect(ItemType[inmem.items['id'][0]]).to.equal(ItemType[ItemType.Story])
+    expect(inmem.items['id'][0]).to.equal(ItemType.Story)
   })
 
   it('returns 404 if not found [patch /task/:id/promote]', async () => {

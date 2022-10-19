@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto'
 
 export enum ItemType {
-  Task,
-  Story,
+  Task = 'Task',
+  Story = 'Story',
 }
 
 export class Item {
@@ -52,7 +52,7 @@ export interface TaskState {
 }
 
 export enum Progress {
-  notStarted,
-  inProgress,
-  completed
+  notStarted = 'notStarted',
+  inProgress = 'inProgress',
+  completed = 'completed',
 }

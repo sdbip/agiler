@@ -12,7 +12,7 @@ export default class PGItemRepository implements ItemRepository {
   async allWithProgress(progress: Progress) {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE progress = $1',
-      [ Progress[progress] ])
+      [ progress ])
     return res.rows.map(item)
   }
 
@@ -26,13 +26,13 @@ export default class PGItemRepository implements ItemRepository {
   async add(item: Item) {
     await this.database.query(
       'INSERT INTO Items (id, title, progress, type) VALUES ($1, $2, $3, $4)',
-      [ item.id, item.title, Progress[item.progress], ItemType[item.type] ])
+      [ item.id, item.title, item.progress, item.type ])
   }
 
   async update(item: Item) {
     await this.database.query(
       'UPDATE Items SET title = $2, progress = $3, type = $4 WHERE id = $1',
-      [ item.id, item.title, Progress[item.progress], ItemType[item.type] ])
+      [ item.id, item.title, item.progress, item.type ])
   }
 }
 

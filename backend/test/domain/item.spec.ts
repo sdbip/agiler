@@ -24,10 +24,10 @@ describe('Item', () => {
 
   it('can be promoted to story', () => {
     const item = Item.new('Get it done')
-    expect(ItemType[item.type]).to.equal(ItemType[ItemType.Task])
+    expect(item.type).to.equal(ItemType.Task)
 
     item.promote()
-    expect(ItemType[item.type]).to.equal(ItemType[ItemType.Story])
+    expect(item.type).to.equal(ItemType.Story)
   })
 
   it('has a unique id', () => {
