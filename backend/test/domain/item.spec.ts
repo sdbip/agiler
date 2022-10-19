@@ -26,6 +26,17 @@ describe('Item', () => {
     expect(item.progress).to.equal(Progress.completed)
   })
 
+  it('adds event when completed', () => {
+    const item = Item.new('')
+    item.unpublishedEvents = []
+    item.complete()
+    expect(item.unpublishedEvents.length).to.equal(1)
+
+    const event = item.unpublishedEvents[0]
+    expect(event.name).to.equal('ProgressChanged')
+    expect(event.details).to.eql({ progress: Progress.completed })
+  })
+
   it('can be assigned', () => {
     const item = Item.new('Get it done')
     item.assign('Kenny Starfighter')

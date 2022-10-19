@@ -21,6 +21,7 @@ export class Item {
   }
   complete() {
     this.state.progress = Progress.completed
+    this.add({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
   assign(member: string) {
     this.state.assignee = member
@@ -34,16 +35,16 @@ export class Item {
         assignee: null,
         progress: Progress.notStarted,
       })
-    const details = {
-      title,
-      type: ItemType.Task,
-    }
-    item.unpublishedEvents.push(new UnpublishedEvent('Created', details))
+    item.add({ name: 'Created', details: { title, type: ItemType.Task } })
     return item
   }
 
   static reconstitute(id: string, type: ItemType, state: TaskState): Item {
     return new Item(id, type, state)
+  }
+
+  private add(event: UnpublishedEvent) {
+    this.unpublishedEvents.push(event)
   }
 
   private constructor(id: string, type: ItemType, state: TaskState) {
