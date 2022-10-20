@@ -1,6 +1,6 @@
-import { EventPublisher } from '../../src/backend'
-import { Event } from '../../src/domain/event'
-import { PGDatabase } from '../../src/pg/pg-database'
+import { EventPublisher } from '../backend'
+import { Event } from '../domain/event'
+import { PGDatabase } from './pg-database'
 
 export class PGEventPublisher implements EventPublisher {
   async publish(entityId: string, entityType: string, events: Event[]) {

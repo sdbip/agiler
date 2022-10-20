@@ -1,9 +1,10 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { Event } from './domain/event.js'
+import { ItemDTO } from './dtos/item-dto.js'
 
 export interface ItemRepository {
-  itemsWithProgress(progress: Progress): Promise<Item[]>
+  itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
   get(id: string): Promise<Item | undefined>
   add(item: Item): Promise<void>
   update(item: Item): Promise<void>

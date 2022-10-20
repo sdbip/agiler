@@ -1,17 +1,18 @@
 import { EventPublisher, ItemRepository } from '../../src/backend'
 import { Progress, Item, ItemType, TaskState } from '../../src/domain/item'
 import { Event } from '../../src/domain/event'
+import { ItemDTO } from '../../src/dtos/item-dto'
 
 export class InMem implements ItemRepository, EventPublisher {
   entityTypes: {[id: string]: string} = {}
   events: {[id: string]: Event[]} = {}
   items: {[id: string]: [ItemType, TaskState]} = {}
 
-  async itemsWithProgress(progress: Progress) {
+  async itemsWithProgress(progress: Progress): Promise<ItemDTO[]> {
     return Object.entries(this.items)
       .filter(([ , [ , state ] ]) => state.progress === progress)
-      .map(([ id, [ type, state ] ]) => Item.fromState(id, type, { ...state }))
-    }
+      .map(([ id, [ type, state ] ]) => ({ id, type, ...state }))
+  }
   async get(id: string) {
     const item = this.items[id]
     return item && Item.fromState(id, item[0], { ...item[1] })
