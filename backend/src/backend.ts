@@ -26,7 +26,7 @@ server.post('/task', async (request) => {
   const taskDTO = await readBody(request)
   const item = Item.new(taskDTO.title)
   await repository.add(item)
-  await publisher?.publish(item.id, 'Itemm', item.unpublishedEvents)
+  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {
     id: item.id,
     title: item.title,
@@ -39,7 +39,7 @@ server.patch('/task/:id/promote', async (request) => {
 
   item.promote()
   await repository.update(item)
-  await publisher?.publish(item.id, 'Itemm', item.unpublishedEvents)
+  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {}
 })
 
@@ -50,7 +50,7 @@ server.patch('/task/:id/assign', async (request) => {
   const dto = await readBody(request)
   item.assign(dto.member)
   await repository.update(item)
-  await publisher?.publish(item.id, 'Itemm', item.unpublishedEvents)
+  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {}
 })
 
@@ -60,7 +60,7 @@ server.patch('/task/:id/complete', async (request) => {
 
   item.complete()
   await repository.update(item)
-  await publisher?.publish(item.id, 'Itemm', item.unpublishedEvents)
+  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {}
 })
 

@@ -27,7 +27,6 @@
 - Split Feature
 
 # Tasks
-- !Itemm
 * Refactor to CQRS/ES
   - Stop using fromState
   - Check for concurrent version changes

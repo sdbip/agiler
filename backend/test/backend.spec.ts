@@ -39,6 +39,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(Object.values(inmem.events)[0])
       .to.eql([ { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
+    expect(Object.values(inmem.entityTypes)[0]).to.eql('Item')
   })
 
   it('returns task details [post /task]', async () => {
@@ -85,6 +86,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(inmem.events['id'])
       .to.eql([ { name: 'TypeChanged', details: { type: ItemType.Story } } ])
+    expect(inmem.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/promote]', async () => {
@@ -128,6 +130,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(inmem.events['id']).to.deep.include
       .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
+    expect(inmem.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/assign]', async () => {
@@ -170,6 +173,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(inmem.events['id'])
       .to.eql([ { name: 'ProgressChanged', details: { progress: Progress.completed } } ])
+    expect(inmem.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {
