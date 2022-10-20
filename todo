@@ -28,10 +28,13 @@
 
 # Tasks
 * Refactor to CQRS/ES
-  * Apply eventual consistency
-    - Project Events into Items table
+  - try/catch in `PGEventPublisher` not tested (should it work like that anyway?)
+  - Need `version` to order events
+    - Version is always 0
   - Check for concurrent version changes
   - Replace constructor params with (id, version)
+  - Position is always 0; set the same position for all events added at the same time
+  - Set actor & timestamp
 
 # Ice Box
 - move frontend.ts to a different folder.
@@ -39,3 +42,9 @@
 - Publish to Heroku. Or somewhere else?
 - Matcher/Specification pattern
 - Design a reporter for Web Test Runner?
+- Poll for new events
+  - Find new events by `position` > last processed
+  - `Event` should be split in three versions
+    - `UnpublishedEvent` with object details
+    - `PublishedEvent` with stringified details
+    - `Event` with entity id/type for projection

@@ -5,6 +5,7 @@ import { PGDatabase } from './backend/src/pg/pg-database.js'
 import { PGItemRepository } from './backend/src/pg/pg-item-repository.js'
 import { PGEventPublisher } from './backend/src/pg/pg-event-publisher.js'
 import { PGEventRepository } from './backend/src/pg/pg-event-repository.js'
+import { promises as fs } from 'fs'
 
 const databaseName = env['DATABASE_NAME']
 if (!databaseName) {
@@ -13,6 +14,9 @@ if (!databaseName) {
 }
 const database = await PGDatabase.connect(databaseName)
 const itemRepository = new PGItemRepository(database)
+
+const schema = await fs.readFile('./schema/schema.sql')
+await database.query(schema.toString('utf-8'))
 
 backend.setRepository(itemRepository)
 backend.setEventProjection(itemRepository)
