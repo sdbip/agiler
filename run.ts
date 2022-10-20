@@ -12,8 +12,10 @@ if (!databaseName) {
   exit(1)
 }
 const database = await PGDatabase.connect(databaseName)
+const itemRepository = new PGItemRepository(database)
 
-backend.setRepository(new PGItemRepository(database))
+backend.setRepository(itemRepository)
+backend.setEventProjection(itemRepository)
 backend.setEventRepository(new PGEventRepository(database))
 backend.setPublisher(new PGEventPublisher(database))
 backend.listenAtPort(8000)

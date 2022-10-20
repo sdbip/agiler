@@ -7,13 +7,13 @@ import { PGDatabase } from '../../src/pg/pg-database'
 describe(PGItemRepository.name, () => {
   let repository: PGItemRepository
   let database: PGDatabase
-  
+
   before(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
-    
+
     database = await PGDatabase.connect(databaseName)
-    repository = new PGItemRepository(database)  
+    repository = new PGItemRepository(database)
 
     const schema = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Items')
@@ -26,7 +26,7 @@ describe(PGItemRepository.name, () => {
 
   it('can add tasks and find them again', async () => {
     const item = Item.new('Make PGItemRepository work')
-    await repository.add(item)
+    await repository.project(item.id, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.id).to.equal(item.id)
@@ -36,10 +36,8 @@ describe(PGItemRepository.name, () => {
 
   it('can complete tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
-    await repository.add(item)
-
     item.complete()
-    repository.update(item)
+    await repository.project(item.id, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.progress).to.equal(Progress.completed)
@@ -47,13 +45,20 @@ describe(PGItemRepository.name, () => {
 
   it('can promote tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
-    await repository.add(item)
-
     item.promote()
-    repository.update(item)
+    await repository.project(item.id, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.type).to.equal(ItemType.Story)
+  })
+
+  it('can assign tasks', async () => {
+    const item = Item.new('Make PGItemRepository work')
+    item.assign('Agent 47')
+    await repository.project(item.id, item.unpublishedEvents)
+
+    const itemInRepository = await repository.get(item.id)
+    expect(itemInRepository?.assignee).to.equal('Agent 47')
   })
 
   it('finds stored tasks', async () => {
