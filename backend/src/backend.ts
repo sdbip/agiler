@@ -1,17 +1,13 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
-import { Event } from './domain/event.js'
 import { ItemDTO } from './dtos/item-dto.js'
+import { EventPublisher } from './es'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
   get(id: string): Promise<Item | undefined>
   add(item: Item): Promise<void>
   update(item: Item): Promise<void>
-}
-
-export interface EventPublisher {
-  publish(entityId: string, entityType: string, events: Event[]): Promise<void>
 }
 
 const server = setupServer({})

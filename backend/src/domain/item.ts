@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Event } from './event'
+import { Event } from '../es'
 
 export enum ItemType {
   Task = 'Task',

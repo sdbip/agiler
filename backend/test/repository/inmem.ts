@@ -1,6 +1,6 @@
-import { EventPublisher, ItemRepository } from '../../src/backend'
+import { ItemRepository } from '../../src/backend'
+import { Event, EventPublisher } from '../../src/es'
 import { Progress, Item, ItemType, TaskState } from '../../src/domain/item'
-import { Event } from '../../src/domain/event'
 import { ItemDTO } from '../../src/dtos/item-dto'
 
 export class InMem implements ItemRepository, EventPublisher {

@@ -1,5 +1,4 @@
-import { EventPublisher } from '../backend'
-import { Event } from '../domain/event'
+import { Event, EventPublisher } from '../es'
 import { PGDatabase } from './pg-database'
 
 export class PGEventPublisher implements EventPublisher {

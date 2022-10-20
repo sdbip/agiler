@@ -2,7 +2,7 @@ import { assert, expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Event } from '../../src/domain/event'
+import { Event } from '../../src/es'
 
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
