@@ -1,4 +1,4 @@
-export type UnpublishedEvent = {
+export type Event = {
   get name(): string
   get details(): any
 }

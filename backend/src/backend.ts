@@ -1,6 +1,6 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
-import { UnpublishedEvent } from './domain/unpublished_event.js'
+import { Event } from './domain/event.js'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<Item[]>
@@ -10,7 +10,7 @@ export interface ItemRepository {
 }
 
 export interface EventPublisher {
-  publish(id: string, events: UnpublishedEvent[]): Promise<void>
+  publish(id: string, events: Event[]): Promise<void>
 }
 
 const server = setupServer({})

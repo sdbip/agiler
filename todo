@@ -28,10 +28,9 @@
 
 # Tasks
 * Refactor to CQRS/ES
+  * Publish the events in PostgreSQL
   - Stop using fromState
-  - Rename UnpublishedEvent to Event
-  - Publish the events in PostgreSQL
-    - Check for concurrent version changes
+  - Check for concurrent version changes
   - Read events when reconstituting
   - Replace constructor params with (id, version)
   - Apply eventual consistency
