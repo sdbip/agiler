@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
-import { setEventRepository, setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
+import { setEventRepository, setRepository, listenAtPort, stopListening, setPublisher, setEventProjection } from '../src/backend'
 import { InMemItemRepository } from './repository/in-mem-item-repository'
 import { InMemEventStore } from './repository/in-mem-event-store'
 import { ItemType, Progress } from '../src/domain/item'
@@ -8,6 +8,7 @@ import { ItemType, Progress } from '../src/domain/item'
 const itemRepository = new InMemItemRepository()
 const eventStore = new InMemEventStore()
 setRepository(itemRepository)
+setEventProjection(itemRepository)
 setPublisher(eventStore)
 setEventRepository(eventStore)
 
