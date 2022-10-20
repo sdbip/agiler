@@ -1,16 +1,19 @@
 import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
-import { setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
+import { setEventRepository, setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
 import { InMem } from './repository/inmem'
 import { ItemType, Progress } from '../src/domain/item'
 
 const inmem = new InMem()
 setRepository(inmem)
 setPublisher(inmem)
+setEventRepository(inmem)
 
 describe('backend', () => {
 
   beforeEach(() => {
+    inmem.entityTypes = {}
+    inmem.events = {}
     inmem.items = {}
     listenAtPort(9090)
   })
@@ -53,6 +56,8 @@ describe('backend', () => {
   })
 
   it('promotes tasks [patch /task/:id/promote]', async () => {
+    inmem.entityTypes = { id: 'Item' }
+    inmem.events = { id: [] }
     inmem.items = {
       id: [
         ItemType.Task,
@@ -70,16 +75,7 @@ describe('backend', () => {
   })
 
   it('publishes "TypeChanged" event when tasks are promoted [post /task]', async () => {
-    inmem.items = {
-      id: [
-        ItemType.Task,
-        {
-          title: 'Get Shit Done',
-          progress: Progress.notStarted,
-          assignee: null,
-        },
-      ],
-    }
+    inmem.entityTypes = { id: 'Item' }
     inmem.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/promote')
 
@@ -96,6 +92,8 @@ describe('backend', () => {
   })
 
   it('assigns task [patch /task/:id/assign]', async () => {
+    inmem.entityTypes = { id: 'Item' }
+    inmem.events = { id: [] }
     inmem.items = {
       id: [
         ItemType.Task,
@@ -114,16 +112,7 @@ describe('backend', () => {
   })
 
   it('publishes events when tasks are assigned [post /task]', async () => {
-    inmem.items = {
-      id: [
-        ItemType.Task,
-        {
-          title: 'Get Shit Done',
-          progress: Progress.notStarted,
-          assignee: null,
-        },
-      ],
-    }
+    inmem.entityTypes = { id: 'Item' }
     inmem.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
 
@@ -140,6 +129,8 @@ describe('backend', () => {
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
+    inmem.entityTypes = { id: 'Item' }
+    inmem.events = { id: [] }
     inmem.items = {
       id: [
         ItemType.Task,
@@ -156,17 +147,8 @@ describe('backend', () => {
     expect(inmem.items['id'][1].progress).to.equal(Progress.completed)
   })
 
-  it('publishes "Changed" event when tasks are completed [post /task]', async () => {
-    inmem.items = {
-      id: [
-        ItemType.Task,
-        {
-          title: 'Get Shit Done',
-          progress: Progress.notStarted,
-          assignee: null,
-        },
-      ],
-    }
+  it('publishes "ProgressChanged" event when tasks are completed [post /task]', async () => {
+    inmem.entityTypes = { id: 'Item' }
     inmem.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/complete')
 

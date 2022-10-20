@@ -1,9 +1,9 @@
 import { ItemRepository } from '../../src/backend'
-import { Event, EventPublisher } from '../../src/es'
+import { Event, EventPublisher, EventRepository } from '../../src/es'
 import { Progress, Item, ItemType, TaskState } from '../../src/domain/item'
 import { ItemDTO } from '../../src/dtos/item-dto'
 
-export class InMem implements ItemRepository, EventPublisher {
+export class InMem implements EventRepository, ItemRepository, EventPublisher {
   entityTypes: {[id: string]: string} = {}
   events: {[id: string]: Event[]} = {}
   items: {[id: string]: [ItemType, TaskState]} = {}
@@ -19,6 +19,11 @@ export class InMem implements ItemRepository, EventPublisher {
   }
   async add(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
   async update(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
+
+  async getEvents(entityId: string) {
+    return this.events[entityId]
+  }
+
   async publish(entityId: string, entityType: string, events: Event[]) {
     this.entityTypes[entityId] = entityType
     this.events[entityId] = [ ...this.events[entityId] ?? [], ...events ]

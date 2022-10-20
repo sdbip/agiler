@@ -1,7 +1,7 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { ItemDTO } from './dtos/item-dto.js'
-import { EventPublisher } from './es'
+import { EventPublisher, EventRepository } from './es'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
@@ -11,18 +11,19 @@ export interface ItemRepository {
 }
 
 const server = setupServer({})
-let repository: ItemRepository
+let itemRepository: ItemRepository
+let eventRepository: EventRepository | undefined
 let publisher: EventPublisher | undefined
 
 server.get('/task', async () => {
-  const tasks = await repository.itemsWithProgress(Progress.notStarted)
+  const tasks = await itemRepository.itemsWithProgress(Progress.notStarted)
   return tasks.map(t => ({ id:t.id, title: t.title, type: t.type }))
 })
 
 server.post('/task', async (request) => {
   const taskDTO = await readBody(request)
   const item = Item.new(taskDTO.title)
-  await repository.add(item)
+  await itemRepository.add(item)
   await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {
     id: item.id,
@@ -31,38 +32,67 @@ server.post('/task', async (request) => {
 })
 
 server.patch('/task/:id/promote', async (request) => {
-  const item = await repository.get(request.params.id)
-  if (!item) return NOT_FOUND
+  const id = request.params.id
 
+  const events = await eventRepository?.getEvents(id)
+  if (!events) return NOT_FOUND
+
+  const item = Item.reconstitute(id, events)
   item.promote()
-  await repository.update(item)
-  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+
+  const syncedItem = await itemRepository.get(id)
+  if (syncedItem) {
+    syncedItem.promote()
+    await itemRepository.update(syncedItem)
+  }
+
   return {}
 })
 
 server.patch('/task/:id/assign', async (request) => {
-  const item = await repository.get(request.params.id)
-  if (!item) return NOT_FOUND
+  const id = request.params.id
+  
+  const events = await eventRepository?.getEvents(id)
+  if (!events) return NOT_FOUND
 
   const dto = await readBody(request)
+
+  const item = Item.reconstitute(id, events)
   item.assign(dto.member)
-  await repository.update(item)
-  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+
+  const syncedItem = await itemRepository.get(id)
+  if (syncedItem) {
+    syncedItem.assign(dto.member)
+    await itemRepository.update(syncedItem)
+  }
+
   return {}
 })
 
 server.patch('/task/:id/complete', async (request) => {
-  const item = await repository.get(request.params.id)
-  if (!item) return NOT_FOUND
+  const id = request.params.id
 
+  const events = await eventRepository?.getEvents(id)
+  if (!events) return NOT_FOUND
+
+  const item = Item.reconstitute(id, events)
   item.complete()
-  await repository.update(item)
-  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+
+  const syncedItem = await itemRepository.get(id)
+  if (syncedItem) {
+    syncedItem.complete()
+    await itemRepository.update(syncedItem)
+  }
+
   return {}
 })
 
 const s = server.finalize()
-export function setRepository(r: ItemRepository) {repository = r}
+export function setEventRepository(r: EventRepository) { eventRepository = r }
+export function setRepository(r: ItemRepository) {itemRepository = r}
 export function setPublisher(p: EventPublisher) {publisher = p}
 export const listenAtPort = s.listenAtPort.bind(s)
 export const stopListening = s.stopListening.bind(s)
@@ -70,6 +100,7 @@ export const stopListening = s.stopListening.bind(s)
 export default {
   listenAtPort,
   stopListening,
+  setEventRepository, 
   setRepository,
 }
 
