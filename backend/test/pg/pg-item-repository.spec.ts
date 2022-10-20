@@ -13,9 +13,11 @@ describe(PGItemRepository.name, () => {
     if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
     
     database = await PGDatabase.connect(databaseName)
-    const tasks = await fs.readFile('./schema/schema.sql')
-    database.query(tasks.toString('utf-8'))
     repository = new PGItemRepository(database)  
+
+    const schema = await fs.readFile('./schema/schema.sql')
+    await database.query('DROP TABLE IF EXISTS Items')
+    await database.query(schema.toString('utf-8'))
   })
 
   after(async () => {

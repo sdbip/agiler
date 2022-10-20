@@ -27,8 +27,8 @@
 - Split Feature
 
 # Tasks
+- !Itemm
 * Refactor to CQRS/ES
-  * Publish the events in PostgreSQL
   - Stop using fromState
   - Check for concurrent version changes
   - Read events when reconstituting
