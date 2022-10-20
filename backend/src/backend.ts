@@ -5,9 +5,8 @@ import { EventPublisher, EventRepository } from './es'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
-  get(id: string): Promise<Item | undefined>
-  add(item: Item): Promise<void>
-  update(item: Item): Promise<void>
+  add(item: ItemDTO): Promise<void>
+  update(item: ItemDTO): Promise<void>
 }
 
 const server = setupServer({})
@@ -21,9 +20,9 @@ server.get('/task', async () => {
 })
 
 server.post('/task', async (request) => {
-  const taskDTO = await readBody(request)
-  const item = Item.new(taskDTO.title)
-  await itemRepository.add(item)
+  const command = await readBody(request)
+  const item = Item.new(command.title)
+  await itemRepository.add({ id: item.id, type: item.type, title: item.title, progress: item.progress, assignee: item.assignee })
   await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
   return {
     id: item.id,
@@ -41,11 +40,14 @@ server.patch('/task/:id/promote', async (request) => {
   item.promote()
   await publisher?.publish(id, 'Item', item.unpublishedEvents)
 
-  const syncedItem = await itemRepository.get(id)
-  if (syncedItem) {
-    syncedItem.promote()
-    await itemRepository.update(syncedItem)
+  const syncedItem: ItemDTO = {
+    id: item.id,
+    type: item.type,
+    title: item.title,
+    progress: item.progress,
+    assignee: item.assignee,
   }
+  await itemRepository.update(syncedItem)
 
   return {}
 })
@@ -62,11 +64,14 @@ server.patch('/task/:id/assign', async (request) => {
   item.assign(dto.member)
   await publisher?.publish(id, 'Item', item.unpublishedEvents)
 
-  const syncedItem = await itemRepository.get(id)
-  if (syncedItem) {
-    syncedItem.assign(dto.member)
-    await itemRepository.update(syncedItem)
+  const syncedItem: ItemDTO = {
+    id: item.id,
+    type: item.type,
+    title: item.title,
+    progress: item.progress,
+    assignee: item.assignee,
   }
+  await itemRepository.update(syncedItem)
 
   return {}
 })
@@ -81,11 +86,14 @@ server.patch('/task/:id/complete', async (request) => {
   item.complete()
   await publisher?.publish(id, 'Item', item.unpublishedEvents)
 
-  const syncedItem = await itemRepository.get(id)
-  if (syncedItem) {
-    syncedItem.complete()
-    await itemRepository.update(syncedItem)
+  const syncedItem: ItemDTO = {
+    id: item.id,
+    type: item.type,
+    title: item.title,
+    progress: item.progress,
+    assignee: item.assignee,
   }
+  await itemRepository.update(syncedItem)
 
   return {}
 })

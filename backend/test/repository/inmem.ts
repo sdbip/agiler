@@ -17,8 +17,8 @@ export class InMem implements EventRepository, ItemRepository, EventPublisher {
     const item = this.items[id]
     return item && Item.fromState(id, item[0], { ...item[1] })
   }
-  async add(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
-  async update(item: Item) { this.items[item.id] = [ item.type, { ...item.state } ]}
+  async add(item: ItemDTO) { this.items[item.id] = [ item.type, { ...item } ]}
+  async update(item: ItemDTO) { this.items[item.id] = [ item.type, { ...item } ]}
 
   async getEvents(entityId: string) {
     return this.events[entityId]
