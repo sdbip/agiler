@@ -6,3 +6,7 @@ export type Event = {
 export interface EventPublisher {
   publish(entityId: string, entityType: string, events: Event[]): Promise<void>;
 }
+
+export interface EventRepository {
+  getEvents(entityId: string): Promise<Event[]>
+}
