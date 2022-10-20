@@ -109,6 +109,7 @@ export default {
   listenAtPort,
   stopListening,
   setEventRepository, 
+  setPublisher, 
   setRepository,
 }
 

@@ -1,20 +1,22 @@
 import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
 import { setEventRepository, setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
-import { InMem } from './repository/inmem'
+import { InMemItemRepository } from './repository/in-mem-item-repository'
+import { InMemEventStore } from './repository/in-mem-event-store'
 import { ItemType, Progress } from '../src/domain/item'
 
-const inmem = new InMem()
-setRepository(inmem)
-setPublisher(inmem)
-setEventRepository(inmem)
+const itemRepository = new InMemItemRepository()
+const eventStore = new InMemEventStore()
+setRepository(itemRepository)
+setPublisher(eventStore)
+setEventRepository(eventStore)
 
 describe('backend', () => {
 
   beforeEach(() => {
-    inmem.entityTypes = {}
-    inmem.events = {}
-    inmem.items = {}
+    eventStore.entityTypes = {}
+    eventStore.events = {}
+    itemRepository.items = {}
     listenAtPort(9090)
   })
 
@@ -29,7 +31,7 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(
-      Object.values(inmem.items)
+      Object.values(itemRepository.items)
         .map(i => ({ title: i[1].title })),
       ).to.eql([ { title: 'Get Shit Done' } ])
   })
@@ -40,9 +42,9 @@ describe('backend', () => {
     })
 
     expect(response.statusCode).to.equal(200)
-    expect(Object.values(inmem.events)[0])
+    expect(Object.values(eventStore.events)[0])
       .to.eql([ { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
-    expect(Object.values(inmem.entityTypes)[0]).to.eql('Item')
+    expect(Object.values(eventStore.entityTypes)[0]).to.eql('Item')
   })
 
   it('returns task details [post /task]', async () => {
@@ -56,9 +58,9 @@ describe('backend', () => {
   })
 
   it('promotes tasks [patch /task/:id/promote]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
-    inmem.items = {
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
+    itemRepository.items = {
       id: [
         ItemType.Task,
         {
@@ -71,18 +73,18 @@ describe('backend', () => {
     const response = await patch('http://localhost:9090/task/id/promote')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'][0]).to.equal(ItemType.Story)
+    expect(itemRepository.items['id'][0]).to.equal(ItemType.Story)
   })
 
   it('publishes "TypeChanged" event when tasks are promoted [post /task]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/promote')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.events['id'])
+    expect(eventStore.events['id'])
       .to.eql([ { name: 'TypeChanged', details: { type: ItemType.Story } } ])
-    expect(inmem.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/promote]', async () => {
@@ -92,9 +94,9 @@ describe('backend', () => {
   })
 
   it('assigns task [patch /task/:id/assign]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
-    inmem.items = {
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
+    itemRepository.items = {
       id: [
         ItemType.Task,
         {
@@ -107,19 +109,19 @@ describe('backend', () => {
     const response = await patch('http://localhost:9090/task/id/assign', { member: 'Johan' })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'][1].progress).to.equal(Progress.inProgress)
-    expect(inmem.items['id'][1].assignee).to.equal('Johan')
+    expect(itemRepository.items['id'][1].progress).to.equal(Progress.inProgress)
+    expect(itemRepository.items['id'][1].assignee).to.equal('Johan')
   })
 
   it('publishes events when tasks are assigned [post /task]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.events['id']).to.deep.include
+    expect(eventStore.events['id']).to.deep.include
       .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
-    expect(inmem.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/assign]', async () => {
@@ -129,9 +131,9 @@ describe('backend', () => {
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
-    inmem.items = {
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
+    itemRepository.items = {
       id: [
         ItemType.Task,
         {
@@ -144,18 +146,18 @@ describe('backend', () => {
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.items['id'][1].progress).to.equal(Progress.completed)
+    expect(itemRepository.items['id'][1].progress).to.equal(Progress.completed)
   })
 
   it('publishes "ProgressChanged" event when tasks are completed [post /task]', async () => {
-    inmem.entityTypes = { id: 'Item' }
-    inmem.events = { id: [] }
+    eventStore.entityTypes = { id: 'Item' }
+    eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
-    expect(inmem.events['id'])
+    expect(eventStore.events['id'])
       .to.eql([ { name: 'ProgressChanged', details: { progress: Progress.completed } } ])
-    expect(inmem.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entityTypes['id']).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {
@@ -165,7 +167,7 @@ describe('backend', () => {
   })
 
   it('returns stories as well as tasks [get /task]', async () => {
-    inmem.items = {
+    itemRepository.items = {
       'one': [
         ItemType.Task,
         {
@@ -196,7 +198,7 @@ describe('backend', () => {
   })
 
   it('returns open tasks only [get /task]', async () => {
-    inmem.items = {
+    itemRepository.items = {
       'one': [
         ItemType.Task,
         {

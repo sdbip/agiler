@@ -28,7 +28,6 @@
 
 # Tasks
 * Refactor to CQRS/ES
-  - Stop using fromState
   - Check for concurrent version changes
   - Read events when reconstituting
   - Replace constructor params with (id, version)

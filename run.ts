@@ -1,8 +1,10 @@
 import backend from './backend/src/backend.js'
 import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
-import PGDatabase from './backend/src/pg/pg-database.js'
-import PGItemRepository from './backend/src/pg/pg-item-repository.js'
+import { PGDatabase } from './backend/src/pg/pg-database.js'
+import { PGItemRepository } from './backend/src/pg/pg-item-repository.js'
+import { PGEventPublisher } from './backend/src/pg/pg-event-publisher.js'
+import { PGEventRepository } from './backend/src/pg/pg-event-repository.js'
 
 const databaseName = env['DATABASE_NAME']
 if (!databaseName) {
@@ -12,6 +14,8 @@ if (!databaseName) {
 const database = await PGDatabase.connect(databaseName)
 
 backend.setRepository(new PGItemRepository(database))
+backend.setEventRepository(new PGEventRepository(database))
+backend.setPublisher(new PGEventPublisher(database))
 backend.listenAtPort(8000)
 
 frontend.setBackendURL('http://localhost:8000')

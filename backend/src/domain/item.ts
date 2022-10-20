@@ -60,13 +60,6 @@ export class Item {
     return item
   }
 
-  static fromState(id: string, type: ItemType, state: TaskState): Item {
-    const item = new Item(id)
-    item.type = type
-    item.state = state
-    return item
-  }
-
   private addEvent(event: Event) {
     this.unpublishedEvents.push(event)
   }

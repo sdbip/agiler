@@ -29,7 +29,6 @@ describe(PGItemRepository.name, () => {
     await repository.add(item)
 
     const itemInRepository = await repository.get(item.id)
-    expect(itemInRepository).instanceOf(Item)
     expect(itemInRepository?.id).to.equal(item.id)
     expect(itemInRepository?.progress).to.equal(item.progress)
     expect(itemInRepository?.title).to.equal(item.title)

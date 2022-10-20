@@ -1,5 +1,5 @@
 import { ItemRepository } from '../backend'
-import { Progress, Item, TaskState, ItemType } from '../domain/item.js'
+import { Progress, Item } from '../domain/item.js'
 import { ItemDTO } from '../dtos/item-dto'
 import { PGDatabase } from './pg-database'
 
@@ -21,7 +21,7 @@ export class PGItemRepository implements ItemRepository {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE id = $1',
       [ id ])
-    return item(res.rows[0])
+    return res.rows[0]
   }
 
   async add(item: ItemDTO) {
@@ -35,20 +35,4 @@ export class PGItemRepository implements ItemRepository {
       'UPDATE Items SET title = $2, progress = $3, type = $4 WHERE id = $1',
       [ item.id, item.title, item.progress, item.type ])
   }
-}
-
-type TaskRow = {
-  id: string
-  title: string
-  progress: keyof typeof Progress
-  type: keyof typeof ItemType
-}
-
-function item(row: TaskRow) {
-  const props: TaskState = {
-    title: row.title,
-    assignee: null,
-    progress: Progress[row.progress],
-  }
-  return Item.fromState(row.id, ItemType[row.type], props)
 }
