@@ -28,10 +28,10 @@
 
 # Tasks
 * Refactor to CQRS/ES
+  * Apply eventual consistency
+    - Project Events into Items table
   - Check for concurrent version changes
-  - Read events when reconstituting
   - Replace constructor params with (id, version)
-  - Apply eventual consistency
 
 # Ice Box
 - move frontend.ts to a different folder.
