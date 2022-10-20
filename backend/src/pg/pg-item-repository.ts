@@ -14,7 +14,7 @@ export class PGItemRepository implements ItemRepository {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE progress = $1',
       [ progress ])
-    return res.rows.map(item)
+    return res.rows
   }
 
   async get(id: string): Promise<Item | undefined> {

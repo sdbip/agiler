@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { Progress, Item, ItemType } from '../../src/domain/item'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
@@ -10,7 +10,7 @@ describe(PGItemRepository.name, () => {
   
   before(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
-    if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
+    if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
     
     database = await PGDatabase.connect(databaseName)
     repository = new PGItemRepository(database)  
@@ -62,8 +62,7 @@ describe(PGItemRepository.name, () => {
     await repository.add(item)
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    assert.ok(storedItems)
-    expect(storedItems[0]).instanceOf(Item)
+    expect(storedItems).to.exist
     expect(storedItems.map(t => t.id)).contain(item.id)
   })
 
@@ -73,7 +72,7 @@ describe(PGItemRepository.name, () => {
     await repository.add(item)
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    assert.ok(storedItems)
+    expect(storedItems).to.exist
     expect(storedItems.map(t => t.id)).not.contain(item.id)
   })
 
@@ -83,7 +82,7 @@ describe(PGItemRepository.name, () => {
     await repository.add(item)
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    assert.ok(storedItems)
+    expect(storedItems).to.exist
     expect(storedItems.map(t => t.id)).to.contain(item.id)
   })
 })
