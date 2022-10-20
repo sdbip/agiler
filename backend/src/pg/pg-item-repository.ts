@@ -1,8 +1,8 @@
 import { ItemRepository } from '../backend'
 import { Progress, Item, TaskState, ItemType } from '../domain/item.js'
-import PGDatabase from './pg-database'
+import { PGDatabase } from './pg-database'
 
-export default class PGItemRepository implements ItemRepository {
+export class PGItemRepository implements ItemRepository {
   private readonly database: PGDatabase
 
   constructor(database: PGDatabase) {

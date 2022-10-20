@@ -1,11 +1,11 @@
 import { assert, expect } from 'chai'
 import { promises as fs } from 'fs'
 import { Progress, Item, ItemType } from '../../src/domain/item'
-import PGIemRepository from '../../src/pg/pg-item-repository'
-import PGDatabase from '../../src/pg/pg-database'
+import { PGItemRepository } from '../../src/pg/pg-item-repository'
+import { PGDatabase } from '../../src/pg/pg-database'
 
-describe('PGIemRepository', () => {
-  let repository: PGIemRepository
+describe(PGItemRepository.name, () => {
+  let repository: PGItemRepository
   let database: PGDatabase
   
   before(async () => {
@@ -15,7 +15,7 @@ describe('PGIemRepository', () => {
     database = await PGDatabase.connect(databaseName)
     const tasks = await fs.readFile('./schema/schema.sql')
     database.query(tasks.toString('utf-8'))
-    repository = new PGIemRepository(database)  
+    repository = new PGItemRepository(database)  
   })
 
   after(async () => {
@@ -23,7 +23,7 @@ describe('PGIemRepository', () => {
   })
 
   it('can add tasks and find them again', async () => {
-    const item = Item.new('Make PGIemRepository work')
+    const item = Item.new('Make PGItemRepository work')
     await repository.add(item)
 
     const itemInRepository = await repository.get(item.id)
@@ -34,7 +34,7 @@ describe('PGIemRepository', () => {
   })
 
   it('can complete tasks', async () => {
-    const item = Item.new('Make PGIemRepository work')
+    const item = Item.new('Make PGItemRepository work')
     await repository.add(item)
 
     item.complete()
@@ -45,7 +45,7 @@ describe('PGIemRepository', () => {
   })
 
   it('can promote tasks', async () => {
-    const item = Item.new('Make PGIemRepository work')
+    const item = Item.new('Make PGItemRepository work')
     await repository.add(item)
 
     item.promote()
@@ -56,7 +56,7 @@ describe('PGIemRepository', () => {
   })
 
   it('finds stored tasks', async () => {
-    const item = Item.new('Make PGIemRepository work')
+    const item = Item.new('Make PGItemRepository work')
     await repository.add(item)
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)

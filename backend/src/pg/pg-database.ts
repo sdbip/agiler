@@ -1,6 +1,6 @@
 import pg from 'pg'
 
-export default class PGDatabase {
+export class PGDatabase {
   private client: pg.Client
 
   private constructor(client: pg.Client) {

@@ -2,7 +2,7 @@ import { EventPublisher, ItemRepository } from '../../src/backend'
 import { Progress, Item, ItemType, TaskState } from '../../src/domain/item'
 import { Event } from '../../src/domain/event'
 
-class InMem implements ItemRepository, EventPublisher {
+export class InMem implements ItemRepository, EventPublisher {
   events: {[id: string]: Event[]} = {}
   items: {[id: string]: [ItemType, TaskState]} = {}
 
@@ -21,5 +21,3 @@ class InMem implements ItemRepository, EventPublisher {
     this.events[id] = [ ...this.events[id] ?? [], ...events ]
   }
 }
-
-export default InMem

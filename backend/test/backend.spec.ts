@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
 import { setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
-import InMem from './repository/inmem'
+import { InMem } from './repository/inmem'
 import { ItemType, Progress } from '../src/domain/item'
 
 const inmem = new InMem()
