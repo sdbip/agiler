@@ -1,11 +1,12 @@
 import { expect, assert } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
-import { setRepository, listenAtPort, stopListening } from '../src/backend'
+import { setRepository, listenAtPort, stopListening, setPublisher } from '../src/backend'
 import InMem from './repository/inmem'
 import { ItemType, Progress } from '../src/domain/item'
 
 const inmem = new InMem()
 setRepository(inmem)
+setPublisher(inmem)
 
 describe('backend', () => {
 
@@ -28,6 +29,16 @@ describe('backend', () => {
       Object.values(inmem.items)
         .map(i => ({ title: i[1].title })),
       ).to.eql([ { title: 'Get Shit Done' } ])
+  })
+
+  it('publishes "Created" event when tasks are added [post /task]', async () => {
+    const response = await post('http://localhost:9090/task', {
+      title: 'Get Shit Done',
+    })
+
+    expect(response.statusCode).to.equal(200)
+    expect(Object.values(inmem.events)[0])
+      .to.eql([ { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
   })
 
   it('returns task details [post /task]', async () => {
@@ -57,6 +68,25 @@ describe('backend', () => {
     expect(inmem.items['id'][0]).to.equal(ItemType.Story)
   })
 
+  it('publishes "TypeChanged" event when tasks are promoted [post /task]', async () => {
+    inmem.items = {
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+    }
+    inmem.events = { id: [] }
+    const response = await patch('http://localhost:9090/task/id/promote')
+
+    expect(response.statusCode).to.equal(200)
+    expect(inmem.events['id'])
+      .to.eql([ { name: 'TypeChanged', details: { type: ItemType.Story } } ])
+  })
+
   it('returns 404 if not found [patch /task/:id/promote]', async () => {
     const response = await patch('http://localhost:9090/task/id/promote')
 
@@ -81,6 +111,25 @@ describe('backend', () => {
     expect(inmem.items['id'][1].assignee).to.equal('Johan')
   })
 
+  it('publishes events when tasks are assigned [post /task]', async () => {
+    inmem.items = {
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+    }
+    inmem.events = { id: [] }
+    const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
+
+    expect(response.statusCode).to.equal(200)
+    expect(inmem.events['id']).to.deep.include
+      .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
+  })
+
   it('returns 404 if not found [patch /task/:id/assign]', async () => {
     const response = await patch('http://localhost:9090/task/id/assign')
 
@@ -102,6 +151,25 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(inmem.items['id'][1].progress).to.equal(Progress.completed)
+  })
+
+  it('publishes "Changed" event when tasks are completed [post /task]', async () => {
+    inmem.items = {
+      id: [
+        ItemType.Task,
+        {
+          title: 'Get Shit Done',
+          progress: Progress.notStarted,
+          assignee: null,
+        },
+      ],
+    }
+    inmem.events = { id: [] }
+    const response = await patch('http://localhost:9090/task/id/complete')
+
+    expect(response.statusCode).to.equal(200)
+    expect(inmem.events['id'])
+      .to.eql([ { name: 'ProgressChanged', details: { progress: Progress.completed } } ])
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {

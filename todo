@@ -28,12 +28,13 @@
 
 # Tasks
 * Refactor to CQRS/ES
-  - Replace constructor params with (id, version)
   - Stop using fromState
   - Rename UnpublishedEvent to Event
   - Publish the events in PostgreSQL
     - Check for concurrent version changes
   - Read events when reconstituting
+  - Replace constructor params with (id, version)
+  - Apply eventual consistency
 
 # Ice Box
 - move frontend.ts to a different folder.

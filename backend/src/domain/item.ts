@@ -8,9 +8,9 @@ export enum ItemType {
 
 export class Item {
   readonly id: string
-  state: TaskState
+  readonly unpublishedEvents: UnpublishedEvent[] = []
+  state: TaskState = { title: '', assignee: null, progress: Progress.notStarted }
   type = ItemType.Task
-  unpublishedEvents: UnpublishedEvent[] = []
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
@@ -32,22 +32,14 @@ export class Item {
   }
 
   static new(title: string): Item {
-    const item = new Item(randomUUID(), ItemType.Task,
-      {
-        title,
-        assignee: null,
-        progress: Progress.notStarted,
-      })
+    const item = new Item(randomUUID())
     item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
+    item.state.title = title
     return item
   }
 
   static reconstitute(id: string, events: UnpublishedEvent[]) {
-    const item = new Item(id, ItemType.Task, {
-      assignee: null,
-      progress: Progress.notStarted,
-      title: '',
-    })
+    const item = new Item(id)
     for (const event of events) {
       switch (event.name) {
       case 'Created':
@@ -69,18 +61,17 @@ export class Item {
   }
 
   static fromState(id: string, type: ItemType, state: TaskState): Item {
-    return new Item(id, type, state)
+    const item = new Item(id)
+    item.type = type
+    item.state = state
+    return item
   }
 
   private addEvent(event: UnpublishedEvent) {
     this.unpublishedEvents.push(event)
   }
 
-  private constructor(id: string, type: ItemType, state: TaskState) {
-    this.id = id
-    this.type = type
-    this.state = state
-  }
+  private constructor(id: string) { this.id = id }
 }
 
 export interface TaskState {
