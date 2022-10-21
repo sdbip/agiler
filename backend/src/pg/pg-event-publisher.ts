@@ -9,18 +9,22 @@ export class PGEventPublisher implements EventPublisher {
 
   async publish(events: Event[], entity: EntityId) {
     await this.database.transaction(async () => {
-      if (!await this.exists(entity.id))
+      const storedVersion = await this.getVersion(entity.id)
+      if (storedVersion === null)
         await this.insertEntity(entity)
 
+      let version = storedVersion ?? 0
       for (const event of events)
-        await this.insertEvent(event, entity)
+        await this.insertEvent(event, entity, version++)
+
+      await this.setEntityVersion(entity.id, version)
       return true
     })
   }
 
-  private async exists(entityId: string) {
-    const count = await this.database.query('SELECT COUNT(*) FROM Entities WHERE id = $1', [ entityId ])
-    return count.rows[0].count > 0
+  private async getVersion(entityId: string) {
+    const result = await this.database.query('SELECT version FROM Entities WHERE id = $1', [ entityId ])
+    return result.rows[0]?.version ?? null
   }
 
   private async insertEntity(entity: EntityId) {
@@ -32,14 +36,26 @@ export class PGEventPublisher implements EventPublisher {
       ])
   }
 
-  private async insertEvent(event: Event, entity: EntityId) {
+  private async insertEvent(event: Event, entity: EntityId, version: number) {
+    const actor = ''
+    const timestamp = 0
+    const position = 0
     await this.database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         entity.id,
         entity.type,
         event.name,
         JSON.stringify(event.details),
-        '', 0, 0, 0,
+        actor,
+        timestamp,
+        version,
+        position,
       ])
+  }
+
+  private async setEntityVersion(id: string, version: number) {
+    await this.database.query(
+      'UPDATE Entities SET version = $2 WHERE id = $1',
+      [ id, version ])
   }
 }

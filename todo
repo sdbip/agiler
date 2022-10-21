@@ -28,13 +28,7 @@
 
 # Tasks
 * Refactor to CQRS/ES
-  - Add a Domain primitive for entityId: string, entityType: string?
-  - Need `version` to order events
-    - Version is always 0
   - Check for concurrent version changes
-  - Replace constructor params with (id, version)
-  - Position is always 0; set the same position for all events added at the same time
-  - Set actor & timestamp
 
 # Ice Box
 - move frontend.ts to a different folder.
@@ -48,3 +42,6 @@
     - `UnpublishedEvent` with object details
     - `PublishedEvent` with stringified details
     - `Event` with entity id/type for projection
+- Position is always 0; set the same position for all
+  events added at the same time
+- Set actor & timestamp

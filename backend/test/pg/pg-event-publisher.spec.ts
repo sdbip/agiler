@@ -8,7 +8,7 @@ describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
   let database: PGDatabase
   
-  before(async () => {
+  beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
     
@@ -20,7 +20,7 @@ describe(PGEventPublisher.name, () => {
     await database.query(tasks.toString('utf-8'))
   })
 
-  after(async () => {
+  afterEach(async () => {
     database.close()
   })
 
@@ -29,30 +29,81 @@ describe(PGEventPublisher.name, () => {
       name: 'TestEvent',
       details: { value: 1 },
     }
-    await publisher.publish([ event ], { id: 'new_entity', type: 'Item' })
+    await publisher.publish([ event ], { id: 'id', type: 'Item' })
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
-      [ 'new_entity' ])
+      [ 'id' ])
     expect(res.rows[0]).to.exist
-    expect(res.rows[0]).to.deep.include({ entity_id: 'new_entity', name: 'TestEvent', details: '{"value":1}' })
+    expect(res.rows[0]).to.deep.include({ entity_id: 'id', name: 'TestEvent', details: '{"value":1}' })
   })
 
   it('can publish events for existing entities', async () => {
     await database.query(
       'INSERT INTO Entities VALUES ($1, $2, $3)',
-      [ 'existing_entity', 'type', 0 ])
+      [ 'id', 'type', 0 ])
 
     const event: Event = {
       name: 'TestEvent',
       details: { value: 1 },
     }
-    await publisher.publish([ event ], { id: 'existing_entity', type: 'Item' })
+    await publisher.publish([ event ], { id: 'id', type: 'Item' })
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
-      [ 'existing_entity' ])
+      [ 'id' ])
     expect(res.rows[0]).to.exist
-    expect(res.rows[0]).to.deep.include({ entity_id: 'existing_entity', name: 'TestEvent', details: '{"value":1}' })
+    expect(res.rows[0]).to.deep.include({ entity_id: 'id', name: 'TestEvent', details: '{"value":1}' })
+  })
+
+  it('sets increasing version number for each event', async () => {
+    const event1: Event = {
+      name: 'Event1',
+      details: { value: 1 },
+    }
+    const event2: Event = {
+      name: 'Event2',
+      details: { value: 1 },
+    }
+    await publisher.publish([ event1, event2 ], { id: 'id', type: 'Item' })
+
+    const res = await database.query(
+      'SELECT * FROM Events WHERE entity_id = $1 ORDER BY version',
+      [ 'id' ])
+
+    expect(res.rows[0]).to.deep.include({ name: 'Event1', version: 0 })
+    expect(res.rows[1]).to.deep.include({ name: 'Event2', version: 1 })
+  })
+
+  it('sets the first event\'s version to the current version of the entity', async () => {
+    await database.query(
+      'INSERT INTO Entities VALUES ($1, $2, $3)',
+      [ 'id', 'type', 1 ])
+
+    const event: Event = {
+      name: 'Event1',
+      details: { value: 1 },
+    }
+    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+
+    const res = await database.query(
+      'SELECT * FROM Events WHERE entity_id = $1',
+      [ 'id' ])
+
+    expect(res.rows[0]).to.deep.include({ name: 'Event1', version: 1 })
+  })
+
+  it('updates the version of the entity', async () => {
+    const event: Event = {
+      name: 'Event1',
+      details: { value: 1 },
+    }
+    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+
+    const res = await database.query(
+      'SELECT version FROM Entities WHERE id = $1',
+      [ 'id' ])
+
+    expect(res.rows[0]?.version).to.equal(1)
   })
 })
