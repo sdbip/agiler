@@ -20,7 +20,7 @@ describe('Item', () => {
     const item = Item.reconstitute('item', original.unpublishedEvents)
     expect(item.progress).to.equal(Progress.notStarted)
     expect(item.title).to.equal('Get it done')
-    expect(item.type).to.equal(ItemType.Task)
+    expect(item.itemType).to.equal(ItemType.Task)
   })
 
   it('adds event when completed', () => {
@@ -79,7 +79,7 @@ describe('Item', () => {
 
     const item = Item.reconstitute('id', original.unpublishedEvents)
 
-    expect(item.type).to.equal(ItemType.Story)
+    expect(item.itemType).to.equal(ItemType.Story)
   })
 
   it('has a unique id', () => {

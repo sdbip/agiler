@@ -1,23 +1,21 @@
 import { randomUUID } from 'crypto'
-import { Event } from '../es'
+import { Entity, EntityId, Event } from '../es/index.js'
 
 export enum ItemType {
   Task = 'Task',
   Story = 'Story',
 }
 
-export class Item {
-  readonly id: string
-  readonly unpublishedEvents: Event[] = []
+export class Item extends Entity {
   state: TaskState = { title: '', assignee: null, progress: Progress.notStarted }
-  type = ItemType.Task
+  itemType = ItemType.Task
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
   get assignee(): string | null { return this.state.assignee }
 
   promote() {
-    this.type = ItemType.Story
+    this.itemType = ItemType.Story
     this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
   }
   complete() {
@@ -44,7 +42,7 @@ export class Item {
       switch (event.name) {
       case 'Created':
         item.state.title = event.details.title
-        item.type = event.details.type
+        item.itemType = event.details.type
         break
       case 'ProgressChanged':
         item.state.progress = event.details.progress
@@ -53,18 +51,14 @@ export class Item {
         item.state.assignee = event.details.assignee
         break
       case 'TypeChanged':
-        item.type = event.details.type
+        item.itemType = event.details.type
         break
       }
     }
     return item
   }
 
-  private addEvent(event: Event) {
-    this.unpublishedEvents.push(event)
-  }
-
-  private constructor(id: string) { this.id = id }
+  private constructor(id: string) { super(new EntityId(id, 'Item')) }
 }
 
 export interface TaskState {

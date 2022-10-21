@@ -3,6 +3,7 @@ import { promises as fs } from 'fs'
 import { Progress, Item, ItemType } from '../../src/domain/item'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
+import { ItemDTO } from '../../src/dtos/item-dto'
 
 describe(PGItemRepository.name, () => {
   let repository: PGItemRepository
@@ -63,7 +64,7 @@ describe(PGItemRepository.name, () => {
 
   it('finds stored tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
-    await repository.add(item)
+    await repository.add(toDTO(item))
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     expect(storedItems).to.exist
@@ -73,7 +74,7 @@ describe(PGItemRepository.name, () => {
   it('ignores completed tasks', async () => {
     const item = Item.new('Completed Task')
     item.complete()
-    await repository.add(item)
+    await repository.add(toDTO(item))
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     expect(storedItems).to.exist
@@ -83,10 +84,21 @@ describe(PGItemRepository.name, () => {
   it('includes stories', async () => {
     const item = Item.new('Story')
     item.promote()
-    await repository.add(item)
+    await repository.add(toDTO(item))
 
     const storedItems = await repository.itemsWithProgress(Progress.notStarted)
     expect(storedItems).to.exist
     expect(storedItems.map(t => t.id)).to.contain(item.id)
   })
 })
+
+function toDTO(item: Item): ItemDTO {
+  return {
+    id: item.id,
+    type: item.itemType,
+    title: item.title,
+    progress: item.progress,
+    assignee: item.assignee,
+  }
+}
+
