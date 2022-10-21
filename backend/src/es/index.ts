@@ -2,6 +2,20 @@ export class Event {
   constructor(readonly name: string, readonly details: any) {}
 }
 
+export class EntityVersion {
+  static NotSaved = new EntityVersion(-5)
+  private constructor(readonly value: number) {}
+
+  static of(value: number) {
+    if (value < 0) throw new Error()
+    return new EntityVersion(value)
+  }
+
+  equals(other: EntityVersion) {
+    return other.value === this.value
+  }
+}
+
 export abstract class Entity {
   readonly unpublishedEvents: Event[] = []
 
