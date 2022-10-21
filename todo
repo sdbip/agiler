@@ -28,7 +28,7 @@
 
 # Tasks
 * Refactor to CQRS/ES
-  - try/catch in `PGEventPublisher` not tested (should it work like that anyway?)
+  - Add a Domain primitive for entityId: string, entityType: string?
   - Need `version` to order events
     - Version is always 0
   - Check for concurrent version changes

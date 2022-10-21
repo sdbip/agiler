@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai'
+import { expect } from 'chai'
 import { get, patch, post } from '../../shared/src/http'
 import { setEventRepository, setRepository, listenAtPort, stopListening, setPublisher, setEventProjection } from '../src/backend'
 import { InMemItemRepository } from './repository/in-mem-item-repository'
@@ -55,7 +55,7 @@ describe('backend', () => {
 
     const dto = JSON.parse(response.content)
     expect(dto.title).to.equal('Get Shit Done')
-    assert.ok(dto.id)
+    expect(dto.id).to.exist
   })
 
   it('promotes tasks [patch /task/:id/promote]', async () => {
@@ -195,7 +195,7 @@ describe('backend', () => {
 
     const dto = dtos[0]
     expect(dto.title).to.equal('Task')
-    assert.ok(dto.id)
+    expect(dto.id).to.exist
   })
 
   it('returns open tasks only [get /task]', async () => {
@@ -226,7 +226,7 @@ describe('backend', () => {
 
     const dto = dtos[0]
     expect(dto.title).to.equal('New task')
-    assert.ok(dto.id)
+    expect(dto.id).to.exist
   })
 
   it('yields an error if stopping twice', async () => {
@@ -239,7 +239,7 @@ describe('backend', () => {
     }
     catch (error) {
     }
-    if (isFailure) assert.fail('No error thrown')
+    if (isFailure) expect.fail('No error thrown')
   })
 
   it('can start and stop multiple times', async () => {

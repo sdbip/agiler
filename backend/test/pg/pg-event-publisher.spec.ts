@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
@@ -10,7 +10,7 @@ describe(PGEventPublisher.name, () => {
   
   before(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
-    if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
+    if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
     
     database = await PGDatabase.connect(databaseName)
     publisher = new PGEventPublisher(database)  
@@ -24,16 +24,35 @@ describe(PGEventPublisher.name, () => {
     database.close()
   })
 
-  it('can publish events', async () => {
+  it('can publish events for new entities', async () => {
     const event: Event = {
       name: 'TestEvent',
       details: { value: 1 },
     }
-    await publisher.publish('id', 'Item', [ event ])
+    await publisher.publish('new_entity', 'Item', [ event ])
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
-      [ 'id' ])
-    expect(res.rows[0]).to.deep.include({ entity_id: 'id', name: 'TestEvent', details: '{"value":1}' })
+      [ 'new_entity' ])
+    expect(res.rows[0]).to.exist
+    expect(res.rows[0]).to.deep.include({ entity_id: 'new_entity', name: 'TestEvent', details: '{"value":1}' })
+  })
+
+  it('can publish events for existing entities', async () => {
+    await database.query(
+      'INSERT INTO Entities VALUES ($1, $2, $3)',
+      [ 'existing_entity', 'type', 0 ])
+
+    const event: Event = {
+      name: 'TestEvent',
+      details: { value: 1 },
+    }
+    await publisher.publish('existing_entity', 'Item', [ event ])
+
+    const res = await database.query(
+      'SELECT * FROM Events WHERE entity_id = $1',
+      [ 'existing_entity' ])
+    expect(res.rows[0]).to.exist
+    expect(res.rows[0]).to.deep.include({ entity_id: 'existing_entity', name: 'TestEvent', details: '{"value":1}' })
   })
 })
