@@ -1,20 +1,21 @@
-import { Event, EventPublisher } from '../es'
+import { EntityId, Event, EventPublisher } from '../es'
 import { PGDatabase } from './pg-database'
 
 export class PGEventPublisher implements EventPublisher {
-  async publish(entityId: string, entityType: string, events: Event[]) {
-    await this.database.transaction(async () => {
-      if (!await this.exists(entityId))
-        await this.insertEntity(entityId, entityType)
-
-      for (const event of events)
-        await this.insertEvent(entityId, entityType, event)
-      return true
-    })
-  }
 
   constructor(readonly database: PGDatabase) {
     this.database = database
+  }
+
+  async publish(events: Event[], entity: EntityId) {
+    await this.database.transaction(async () => {
+      if (!await this.exists(entity.id))
+        await this.insertEntity(entity)
+
+      for (const event of events)
+        await this.insertEvent(event, entity)
+      return true
+    })
   }
 
   private async exists(entityId: string) {
@@ -22,20 +23,20 @@ export class PGEventPublisher implements EventPublisher {
     return count.rows[0].count > 0
   }
 
-  private async insertEntity(entityId: string, entityType: string) {
+  private async insertEntity(entity: EntityId) {
     await this.database.query('INSERT INTO Entities VALUES ($1, $2, $3)',
       [
-        entityId,
-        entityType,
+        entity.id,
+        entity.type,
         0,
       ])
   }
 
-  private async insertEvent(entityId: string, entityType: string, event: Event) {
+  private async insertEvent(event: Event, entity: EntityId) {
     await this.database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
-        entityId,
-        entityType,
+        entity.id,
+        entity.type,
         event.name,
         JSON.stringify(event.details),
         '', 0, 0, 0,

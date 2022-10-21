@@ -29,7 +29,7 @@ describe(PGEventPublisher.name, () => {
       name: 'TestEvent',
       details: { value: 1 },
     }
-    await publisher.publish('new_entity', 'Item', [ event ])
+    await publisher.publish([ event ], { id: 'new_entity', type: 'Item' })
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -47,7 +47,7 @@ describe(PGEventPublisher.name, () => {
       name: 'TestEvent',
       details: { value: 1 },
     }
-    await publisher.publish('existing_entity', 'Item', [ event ])
+    await publisher.publish([ event ], { id: 'existing_entity', type: 'Item' })
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',

@@ -1,10 +1,13 @@
-export type Event = {
-  get name(): string
-  get details(): any
+export class Event {
+  constructor(readonly name: string, readonly details: any) {}
+}
+
+export class EntityId {
+  constructor(readonly id: string, readonly type: string) {}
 }
 
 export interface EventPublisher {
-  publish(entityId: string, entityType: string, events: Event[]): Promise<void>;
+  publish(events: Event[], entity: EntityId): Promise<void>
 }
 
 export interface EventRepository {

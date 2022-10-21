@@ -25,7 +25,7 @@ server.get('/task', async () => {
 server.post('/task', async (request) => {
   const command = await readBody(request)
   const item = Item.new(command.title)
-  await publisher?.publish(item.id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(item.unpublishedEvents, { id: item.id, type: 'Item' })
   await projection?.project(item.id, item.unpublishedEvents)
   return {
     id: item.id,
@@ -41,7 +41,7 @@ server.patch('/task/:id/promote', async (request) => {
 
   const item = Item.reconstitute(id, events)
   item.promote()
-  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(item.unpublishedEvents, { id: item.id, type: 'Item' })
   await projection?.project(id, item.unpublishedEvents)
 
   return {}
@@ -57,7 +57,7 @@ server.patch('/task/:id/assign', async (request) => {
 
   const item = Item.reconstitute(id, events)
   item.assign(dto.member)
-  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(item.unpublishedEvents, { id: item.id, type: 'Item' })
   await projection?.project(id, item.unpublishedEvents)
 
   return {}
@@ -71,7 +71,7 @@ server.patch('/task/:id/complete', async (request) => {
 
   const item = Item.reconstitute(id, events)
   item.complete()
-  await publisher?.publish(id, 'Item', item.unpublishedEvents)
+  await publisher?.publish(item.unpublishedEvents, { id: item.id, type: 'Item' })
   await projection?.project(id, item.unpublishedEvents)
 
   return {}
