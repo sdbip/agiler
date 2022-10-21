@@ -2,18 +2,18 @@ import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Event } from '../../src/es'
+import { Entity, EntityId, Event } from '../../src/es'
 
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
   let database: PGDatabase
-  
+
   beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
-    
+
     database = await PGDatabase.connect(databaseName)
-    publisher = new PGEventPublisher(database)  
+    publisher = new PGEventPublisher(database)
 
     const tasks = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Events;DROP TABLE IF EXISTS Entities')
@@ -25,11 +25,10 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('can publish events for new entities', async () => {
-    const event: Event = {
-      name: 'TestEvent',
-      details: { value: 1 },
-    }
-    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+    const entity = new TestEntity(
+      { id: 'id', type: 'Item' },
+      [ new Event('TestEvent', { value: 1 }) ])
+    await publisher.publishChanges(entity)
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -43,11 +42,10 @@ describe(PGEventPublisher.name, () => {
       'INSERT INTO Entities VALUES ($1, $2, $3)',
       [ 'id', 'type', 0 ])
 
-    const event: Event = {
-      name: 'TestEvent',
-      details: { value: 1 },
-    }
-    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+    const entity = new TestEntity(
+      { id: 'id', type: 'Item' },
+      [ new Event('TestEvent', { value: 1 }) ])
+    await publisher.publishChanges(entity)
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -57,15 +55,13 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('sets increasing version number for each event', async () => {
-    const event1: Event = {
-      name: 'Event1',
-      details: { value: 1 },
-    }
-    const event2: Event = {
-      name: 'Event2',
-      details: { value: 1 },
-    }
-    await publisher.publish([ event1, event2 ], { id: 'id', type: 'Item' })
+    const entity = new TestEntity(
+      { id: 'id', type: 'Item' },
+      [
+        new Event('Event1', { value: 1 }),
+        new Event('Event2', { value: 1 }),
+      ])
+    await publisher.publishChanges(entity)
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1 ORDER BY version',
@@ -80,11 +76,10 @@ describe(PGEventPublisher.name, () => {
       'INSERT INTO Entities VALUES ($1, $2, $3)',
       [ 'id', 'type', 1 ])
 
-    const event: Event = {
-      name: 'Event1',
-      details: { value: 1 },
-    }
-    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+    const entity = new TestEntity(
+      { id: 'id', type: 'Item' },
+      [ new Event('Event1', { value: 1 }) ])
+    await publisher.publishChanges(entity)
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -94,11 +89,10 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('updates the version of the entity', async () => {
-    const event: Event = {
-      name: 'Event1',
-      details: { value: 1 },
-    }
-    await publisher.publish([ event ], { id: 'id', type: 'Item' })
+    const entity = new TestEntity(
+      { id: 'id', type: 'Item' },
+      [ new Event('Event1', { value: 1 }) ])
+    await publisher.publishChanges(entity)
 
     const res = await database.query(
       'SELECT version FROM Entities WHERE id = $1',
@@ -107,3 +101,11 @@ describe(PGEventPublisher.name, () => {
     expect(res.rows[0]?.version).to.equal(1)
   })
 })
+
+class TestEntity extends Entity {
+  constructor(entityId: EntityId, events: Event[]) {
+    super(entityId)
+    for (const event of events)
+      this.addEvent(event)
+  }
+}

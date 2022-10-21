@@ -20,7 +20,7 @@ export class EntityId {
 }
 
 export interface EventPublisher {
-  publish(events: Event[], entity: EntityId): Promise<void>
+  publishChanges(entity: Entity): Promise<void>
 }
 
 export interface EventRepository {

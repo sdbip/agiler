@@ -1,4 +1,4 @@
-import { EntityId, Event, EventPublisher } from '../es'
+import { Entity, EntityId, Event, EventPublisher } from '../es'
 import { PGDatabase } from './pg-database'
 
 export class PGEventPublisher implements EventPublisher {
@@ -7,15 +7,15 @@ export class PGEventPublisher implements EventPublisher {
     this.database = database
   }
 
-  async publish(events: Event[], entity: EntityId) {
+  async publishChanges(entity: Entity) {
     await this.database.transaction(async () => {
       const storedVersion = await this.getVersion(entity.id)
       if (storedVersion === null)
-        await this.insertEntity(entity)
+        await this.insertEntity(entity.entityId)
 
       let version = storedVersion ?? 0
-      for (const event of events)
-        await this.insertEvent(event, entity, version++)
+      for (const event of entity.unpublishedEvents)
+        await this.insertEvent(event, entity.entityId, version++)
 
       await this.setEntityVersion(entity.id, version)
       return true

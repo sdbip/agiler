@@ -1,4 +1,4 @@
-import { EntityId, Event, EventPublisher, EventRepository } from '../../src/es'
+import { Entity, Event, EventPublisher, EventRepository } from '../../src/es'
 
 export class InMemEventStore implements EventRepository, EventPublisher {
   entityTypes: {[id: string]: string} = {}
@@ -8,8 +8,8 @@ export class InMemEventStore implements EventRepository, EventPublisher {
     return this.events[entityId]
   }
 
-  async publish(events: Event[], entity: EntityId) {
+  async publishChanges(entity: Entity): Promise<void> {
     this.entityTypes[entity.id] = entity.type
-    this.events[entity.id] = [ ...this.events[entity.id] ?? [], ...events ]
+    this.events[entity.id] = [ ...this.events[entity.id] ?? [], ...entity.unpublishedEvents ]
   }
 }
