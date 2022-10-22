@@ -25,8 +25,7 @@ server.get('/task', async () => {
 server.post('/task', async (request) => {
   const command = await readBody(request)
   const item = Item.new(command.title)
-  await publisher?.publishChanges(item)
-  await projection?.project(item.id, item.unpublishedEvents)
+  await publishChanges(item)
   return {
     id: item.id,
     title: item.title,
@@ -34,46 +33,29 @@ server.post('/task', async (request) => {
 })
 
 server.patch('/task/:id/promote', async (request) => {
-  const id = request.params.id
-
-  const history = await eventRepository?.getHistoryFor(id)
-  if (!history) return NOT_FOUND
-
-  const item = Item.reconstitute(id, history.version, history.events)
+  const item = await reconstituteItem(request.params.id)
+  if (!item) return NOT_FOUND
   item.promote()
-  await publisher?.publishChanges(item)
-  await projection?.project(id, item.unpublishedEvents)
-
+  await publishChanges(item)
   return {}
 })
 
 server.patch('/task/:id/assign', async (request) => {
-  const id = request.params.id
-  
-  const history = await eventRepository?.getHistoryFor(id)
-  if (!history) return NOT_FOUND
+  const item = await reconstituteItem(request.params.id)
+  if (!item) return NOT_FOUND
 
   const dto = await readBody(request)
-
-  const item = Item.reconstitute(id, history.version, history.events)
   item.assign(dto.member)
-  await publisher?.publishChanges(item)
-  await projection?.project(id, item.unpublishedEvents)
-
+  await publishChanges(item)
   return {}
 })
 
 server.patch('/task/:id/complete', async (request) => {
-  const id = request.params.id
+  const item = await reconstituteItem(request.params.id)
+  if (!item) return NOT_FOUND
 
-  const history = await eventRepository?.getHistoryFor(id)
-  if (!history) return NOT_FOUND
-
-  const item = Item.reconstitute(id, history.version, history.events)
   item.complete()
-  await publisher?.publishChanges(item)
-  await projection?.project(id, item.unpublishedEvents)
-
+  await publishChanges(item)
   return {}
 })
 
@@ -94,8 +76,8 @@ export default {
   setRepository,
 }
 
-function readBody(request: Request): Promise<any> {
-  return new Promise((resolve, reject) => {
+const readBody = async (request: Request): Promise<any> => {
+  return await new Promise((resolve, reject) => {
     request.setEncoding('utf-8')
     let body = ''
     request.on('data', data => { body += data })
@@ -107,4 +89,14 @@ function readBody(request: Request): Promise<any> {
       }
     })
   })
+}
+
+const reconstituteItem = async (id: string) => {
+  const history = await eventRepository?.getHistoryFor(id)
+  return history && Item.reconstitute(id, history.version, history.events)
+}
+
+const publishChanges = async (item: Item) => {
+  await publisher?.publishChanges(item)
+  await projection?.project(item.id, item.unpublishedEvents)
 }
