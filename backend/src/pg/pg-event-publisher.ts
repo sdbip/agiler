@@ -12,6 +12,8 @@ export class PGEventPublisher implements EventPublisher {
       const storedVersion = await this.getVersionOf(entity.id)
       if (storedVersion === null)
         await this.insertEntity(entity.entityId)
+      else if (storedVersion !== entity.version.value)
+        throw new Error('Concurrent Update Detected')
 
       const priorPositionResult = await this.database.query('SELECT MAX(position) FROM Events')
       const position = priorPositionResult.rows[0].max !== null

@@ -106,6 +106,26 @@ describe(PGEventPublisher.name, () => {
     expect(res.rows[0]?.version).to.equal(1)
   })
 
+  it('throws if the stored version has changed', async () => {
+    await database.query(
+      'INSERT INTO Entities VALUES ($1, $2, $3)',
+      [ 'id', 'type', 1 ])
+
+    const entity = new TestEntity(
+      new EntityId('id', 'Item'),
+      EntityVersion.of(0),
+      [ new Event('Event1', { value: 1 }) ])
+
+    let didThrow = false
+    try {
+      await publisher.publishChanges(entity)
+    } catch (error) {
+      didThrow = true
+    }
+
+    if (!didThrow) expect.fail('this should fail')
+  })
+
   it('sets position to 0 for first published events', async () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
