@@ -94,6 +94,6 @@ const reconstituteItem = async (id: string) => {
 }
 
 const publishChanges = async (item: Item) => {
-  await publisher?.publishChanges(item)
+  await publisher?.publishChanges(item, 'system_actor')
   await projection?.project(item.id, item.unpublishedEvents)
 }

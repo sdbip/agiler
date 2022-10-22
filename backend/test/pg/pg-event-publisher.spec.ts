@@ -29,7 +29,7 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new Event('TestEvent', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -47,7 +47,7 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.of(0),
       [ new Event('TestEvent', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -64,7 +64,7 @@ describe(PGEventPublisher.name, () => {
         new Event('Event1', { value: 1 }),
         new Event('Event2', { value: 1 }),
       ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1 ORDER BY version',
@@ -83,7 +83,7 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.of(1),
       [ new Event('Event1', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -97,7 +97,7 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new Event('Event1', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT version FROM Entities WHERE id = $1',
@@ -118,7 +118,7 @@ describe(PGEventPublisher.name, () => {
 
     let didThrow = false
     try {
-      await publisher.publishChanges(entity)
+      await publisher.publishChanges(entity, '')
     } catch (error) {
       didThrow = true
     }
@@ -131,7 +131,7 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new Event('TestEvent', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT * FROM Events WHERE entity_id = $1',
@@ -161,13 +161,25 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new Event('TestEvent', { value: 1 }) ])
-    await publisher.publishChanges(entity)
+    await publisher.publishChanges(entity, '')
 
     const res = await database.query(
-      'SELECT * FROM Events WHERE entity_id = $1',
+      'SELECT position FROM Events WHERE entity_id = $1',
       [ 'id' ])
-    expect(res.rows[0]).to.exist
     expect(res.rows[0].position).to.equal(1)
+  })
+
+  it('sets actor', async () => {
+    const entity = new TestEntity(
+      new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
+      [ new Event('TestEvent', { value: 1 }) ])
+    await publisher.publishChanges(entity, 'actor')
+
+    const res = await database.query(
+      'SELECT actor FROM Events WHERE entity_id = $1',
+      [ 'id' ])
+    expect(res.rows[0]?.actor).to.equal('actor')
   })
 })
   

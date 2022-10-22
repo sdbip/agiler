@@ -52,7 +52,7 @@ export class EntityHistory {
 }
 
 export interface EventPublisher {
-  publishChanges(entity: Entity): Promise<void>
+  publishChanges(entity: Entity, actor: string): Promise<void>
 }
 
 export interface EventRepository {

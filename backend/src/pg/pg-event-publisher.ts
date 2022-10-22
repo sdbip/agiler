@@ -1,13 +1,20 @@
 import { Entity, EntityId, Event, EventPublisher } from '../es/source'
 import { PGDatabase } from './pg-database'
 
+type EventMetadataInternal = {
+  actor: string
+  version: number
+  position: number
+  timestamp: number
+}
+
 export class PGEventPublisher implements EventPublisher {
 
   constructor(readonly database: PGDatabase) {
     this.database = database
   }
 
-  async publishChanges(entity: Entity) {
+  async publishChanges(entity: Entity, actor: string) {
     await this.database.transaction(async () => {
       const storedVersion = await this.getVersionOf(entity.id)
       if (storedVersion === null)
@@ -20,8 +27,10 @@ export class PGEventPublisher implements EventPublisher {
         ? 1 + priorPositionResult.rows[0].max
         : 0
       let version = storedVersion ?? 0
-      for (const event of entity.unpublishedEvents)
-        await this.insertEvent(event, entity.entityId, version++, position)
+      for (const event of entity.unpublishedEvents) {
+        await this.insertEvent(event, entity.entityId, { version, position, actor, timestamp: 0 })
+        version++        
+      }
 
       await this.setEntityVersion(entity.id, version)
       return true
@@ -42,19 +51,17 @@ export class PGEventPublisher implements EventPublisher {
       ])
   }
 
-  private async insertEvent(event: Event, entity: EntityId, version: number, position: number) {
-    const actor = ''
-    const timestamp = 0
+  private async insertEvent(event: Event, entity: EntityId, metadata: EventMetadataInternal) {
     await this.database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         entity.id,
         entity.type,
         event.name,
         JSON.stringify(event.details),
-        actor,
-        timestamp,
-        version,
-        position,
+        metadata.actor,
+        metadata.timestamp,
+        metadata.version,
+        metadata.position,
       ])
   }
 

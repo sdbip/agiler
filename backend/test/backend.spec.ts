@@ -35,7 +35,7 @@ describe('backend', () => {
     expect(
       Object.values(itemRepository.items)
         .map(i => ({ title: i[1].title })),
-      ).to.eql([ { title: 'Get Shit Done' } ])
+      ).to.deep.equal([ { title: 'Get Shit Done' } ])
   })
 
   it('publishes "Created" event when tasks are added [post /task]', async () => {
@@ -45,8 +45,8 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(Object.values(eventStore.events)[0])
-      .to.eql([ { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
-    expect(Object.values(eventStore.entities)[0][1]).to.eql('Item')
+      .to.deep.equal([ { name: 'Created', actor: 'system_actor', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
+    expect(Object.values(eventStore.entities)[0][1]).to.equal('Item')
   })
 
   it('returns task details [post /task]', async () => {
@@ -85,8 +85,8 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id'])
-      .to.eql([ { name: 'TypeChanged', details: { type: ItemType.Story } } ])
-    expect(eventStore.entities['id'][1]).to.eql('Item')
+      .to.deep.equal([ { name: 'TypeChanged', actor: 'system_actor', details: { type: ItemType.Story } } ])
+    expect(eventStore.entities['id'][1]).to.equal('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/promote]', async () => {
@@ -122,8 +122,8 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id']).to.deep.include
-      .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
-    expect(eventStore.entities['id'][1]).to.eql('Item')
+      .members([ { name: 'AssigneeChanged', actor: 'system_actor', details: { assignee:'Johan' } } ])
+    expect(eventStore.entities['id'][1]).to.equal('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/assign]', async () => {
@@ -158,8 +158,8 @@ describe('backend', () => {
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id'])
-      .to.eql([ { name: 'ProgressChanged', details: { progress: Progress.completed } } ])
-    expect(eventStore.entities['id'][1]).to.eql('Item')
+      .to.deep.equal([ { name: 'ProgressChanged', actor: 'system_actor', details: { progress: Progress.completed } } ])
+    expect(eventStore.entities['id'][1]).to.equal('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {
@@ -251,5 +251,4 @@ describe('backend', () => {
       expect(response.statusCode).to.equal(200)
     }
   })
-
 })
