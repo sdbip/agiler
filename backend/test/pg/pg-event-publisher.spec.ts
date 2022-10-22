@@ -105,8 +105,52 @@ describe(PGEventPublisher.name, () => {
 
     expect(res.rows[0]?.version).to.equal(1)
   })
-})
 
+  it('sets position to 0 for first published events', async () => {
+    const entity = new TestEntity(
+      new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
+      [ new Event('TestEvent', { value: 1 }) ])
+    await publisher.publishChanges(entity)
+
+    const res = await database.query(
+      'SELECT * FROM Events WHERE entity_id = $1',
+      [ 'id' ])
+    expect(res.rows[0]).to.exist
+    expect(res.rows[0].position).to.equal(0)
+  })
+
+  it('sets position to the next value for existing entities', async () => {
+    await database.query(
+      'INSERT INTO Entities VALUES ($1, $2, $3)',
+      [ 'other_id', 'type', 1 ])
+    const priorPosition = 0
+    await database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [
+        'other_id',
+        'type',
+        'prior_event',
+        '{}',
+        '',
+        0.0,
+        0,
+        priorPosition,
+      ])
+   
+    const entity = new TestEntity(
+      new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
+      [ new Event('TestEvent', { value: 1 }) ])
+    await publisher.publishChanges(entity)
+
+    const res = await database.query(
+      'SELECT * FROM Events WHERE entity_id = $1',
+      [ 'id' ])
+    expect(res.rows[0]).to.exist
+    expect(res.rows[0].position).to.equal(1)
+  })
+})
+  
 class TestEntity extends Entity {
   constructor(entityId: EntityId, version: EntityVersion, events: Event[]) {
     super(entityId, version)

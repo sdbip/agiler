@@ -27,6 +27,8 @@
 - Split Feature
 
 # Tasks
+- Verify version
+- Set actor & timestamp
 
 # Ice Box
 - move frontend.ts to a different folder.
@@ -40,6 +42,3 @@
     - `UnpublishedEvent` with object details
     - `PublishedEvent` with stringified details
     - `Event` with entity id/type for projection
-- Position is always 0; set the same position for all
-  events added at the same time
-- Set actor & timestamp

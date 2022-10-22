@@ -9,20 +9,24 @@ export class PGEventPublisher implements EventPublisher {
 
   async publishChanges(entity: Entity) {
     await this.database.transaction(async () => {
-      const storedVersion = await this.getVersion(entity.id)
+      const storedVersion = await this.getVersionOf(entity.id)
       if (storedVersion === null)
         await this.insertEntity(entity.entityId)
 
+      const priorPositionResult = await this.database.query('SELECT MAX(position) FROM Events')
+      const position = priorPositionResult.rows[0].max !== null
+        ? 1 + priorPositionResult.rows[0].max
+        : 0
       let version = storedVersion ?? 0
       for (const event of entity.unpublishedEvents)
-        await this.insertEvent(event, entity.entityId, version++)
+        await this.insertEvent(event, entity.entityId, version++, position)
 
       await this.setEntityVersion(entity.id, version)
       return true
     })
   }
 
-  private async getVersion(entityId: string) {
+  private async getVersionOf(entityId: string) {
     const result = await this.database.query('SELECT version FROM Entities WHERE id = $1', [ entityId ])
     return result.rows[0]?.version ?? null
   }
@@ -36,10 +40,9 @@ export class PGEventPublisher implements EventPublisher {
       ])
   }
 
-  private async insertEvent(event: Event, entity: EntityId, version: number) {
+  private async insertEvent(event: Event, entity: EntityId, version: number, position: number) {
     const actor = ''
     const timestamp = 0
-    const position = 0
     await this.database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         entity.id,
