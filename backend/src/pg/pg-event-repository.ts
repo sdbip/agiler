@@ -1,4 +1,4 @@
-import { EventRepository } from '../es'
+import { EntityHistory, EventRepository } from '../es/index.js'
 import { PGDatabase } from './pg-database'
 
 export class PGEventRepository implements EventRepository {
@@ -6,6 +6,10 @@ export class PGEventRepository implements EventRepository {
 
   constructor(database: PGDatabase) {
     this.database = database
+  }
+
+  async getHistoryFor(entityId: string) {
+    return new EntityHistory(await this.getEvents(entityId))
   }
 
   async getEvents(entityId: string) {

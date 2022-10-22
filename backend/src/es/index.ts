@@ -33,10 +33,15 @@ export class EntityId {
   constructor(readonly id: string, readonly type: string) {}
 }
 
+export class EntityHistory {
+  constructor(readonly events: Event[]) {}
+}
+
 export interface EventPublisher {
   publishChanges(entity: Entity): Promise<void>
 }
 
 export interface EventRepository {
+  getHistoryFor(entityId: string): Promise<EntityHistory>
   getEvents(entityId: string): Promise<Event[]>
 }

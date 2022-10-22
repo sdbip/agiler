@@ -36,7 +36,11 @@ server.post('/task', async (request) => {
 server.patch('/task/:id/promote', async (request) => {
   const id = request.params.id
 
-  const events = await eventRepository?.getEvents(id)
+  const history = await eventRepository?.getHistoryFor(id)
+  if (!history) return NOT_FOUND
+
+  const events = history.events
+  // TODO: This should not be possible (but now it is)
   if (!events) return NOT_FOUND
 
   const item = Item.reconstitute(id, events)
@@ -50,7 +54,11 @@ server.patch('/task/:id/promote', async (request) => {
 server.patch('/task/:id/assign', async (request) => {
   const id = request.params.id
   
-  const events = await eventRepository?.getEvents(id)
+  const history = await eventRepository?.getHistoryFor(id)
+  if (!history) return NOT_FOUND
+
+  const events = history.events
+  // TODO: This should not be possible (but now it is)
   if (!events) return NOT_FOUND
 
   const dto = await readBody(request)
@@ -66,7 +74,11 @@ server.patch('/task/:id/assign', async (request) => {
 server.patch('/task/:id/complete', async (request) => {
   const id = request.params.id
 
-  const events = await eventRepository?.getEvents(id)
+  const history = await eventRepository?.getHistoryFor(id)
+  if (!history) return NOT_FOUND
+
+  const events = history.events
+  // TODO: This should not be possible (but now it is)
   if (!events) return NOT_FOUND
 
   const item = Item.reconstitute(id, events)
