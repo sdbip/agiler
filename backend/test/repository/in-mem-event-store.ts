@@ -4,12 +4,10 @@ export class InMemEventStore implements EventRepository, EventPublisher {
   entityTypes: {[id: string]: string} = {}
   events: {[id: string]: Event[]} = {}
 
-  async getEvents(entityId: string) {
-    return this.events[entityId]
-  }
-
   async getHistoryFor(entityId: string) {
-    return new EntityHistory(await this.getEvents(entityId))
+    return this.entityTypes[entityId]
+      ? new EntityHistory(this.events[entityId])
+      : null
   }
 
   async publishChanges(entity: Entity): Promise<void> {

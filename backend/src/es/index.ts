@@ -34,7 +34,9 @@ export class EntityId {
 }
 
 export class EntityHistory {
-  constructor(readonly events: Event[]) {}
+  constructor(readonly events: Event[]) {
+    failFast.unlessArrayOf(Event, { argument: events, name: 'events' })
+  }
 }
 
 export interface EventPublisher {
@@ -42,6 +44,19 @@ export interface EventPublisher {
 }
 
 export interface EventRepository {
-  getHistoryFor(entityId: string): Promise<EntityHistory>
-  getEvents(entityId: string): Promise<Event[]>
+  getHistoryFor(entityId: string): Promise<EntityHistory | null>
+}
+
+// Fail fast stuff
+// Move to a library?
+
+const failFast = {
+  unlessArrayOf: (type: any, { argument, name }:{argument:any, name:string}) => {
+  if (argument === null || argument === undefined)
+    throw new Error(`argument ${name} must not be null nor undefined`)
+  if (!(argument instanceof Array))
+    throw new Error(`argument ${name} must be an array`)
+  if (argument.some(e => !(e instanceof type)))
+    throw new Error(`argument ${name} must only contain elements of type ${type}`)
+  },
 }

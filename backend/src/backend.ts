@@ -39,11 +39,7 @@ server.patch('/task/:id/promote', async (request) => {
   const history = await eventRepository?.getHistoryFor(id)
   if (!history) return NOT_FOUND
 
-  const events = history.events
-  // TODO: This should not be possible (but now it is)
-  if (!events) return NOT_FOUND
-
-  const item = Item.reconstitute(id, events)
+  const item = Item.reconstitute(id, history.events)
   item.promote()
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)
@@ -57,13 +53,9 @@ server.patch('/task/:id/assign', async (request) => {
   const history = await eventRepository?.getHistoryFor(id)
   if (!history) return NOT_FOUND
 
-  const events = history.events
-  // TODO: This should not be possible (but now it is)
-  if (!events) return NOT_FOUND
-
   const dto = await readBody(request)
 
-  const item = Item.reconstitute(id, events)
+  const item = Item.reconstitute(id, history.events)
   item.assign(dto.member)
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)
@@ -77,11 +69,7 @@ server.patch('/task/:id/complete', async (request) => {
   const history = await eventRepository?.getHistoryFor(id)
   if (!history) return NOT_FOUND
 
-  const events = history.events
-  // TODO: This should not be possible (but now it is)
-  if (!events) return NOT_FOUND
-
-  const item = Item.reconstitute(id, events)
+  const item = Item.reconstitute(id, history.events)
   item.complete()
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)

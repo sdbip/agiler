@@ -7,7 +7,7 @@ describe(PGEventRepository.name, () => {
   let repository: PGEventRepository
   let database: PGDatabase
   
-  before(async () => {
+  beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
     
@@ -19,7 +19,7 @@ describe(PGEventRepository.name, () => {
     await database.query(schema.toString('utf-8'))
   })
 
-  after(async () => {
+  afterEach(async () => {
     database.close()
   })
 
@@ -28,10 +28,15 @@ describe(PGEventRepository.name, () => {
     database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
       [ 'id', 'type', 'event', '{"test":"value"}', 'actor', 0, 0, 0 ])
 
-    const events = await repository.getEvents('id')
-    expect(events[0]).to.eql({
+    const history = await repository.getHistoryFor('id')
+    expect(history?.events[0]).to.deep.equal({
       name: 'event',
       details: { test: 'value' },
     })
+  })
+
+  it('returns null if the entity does not exist', async () => {
+    const history = await repository.getHistoryFor('id')
+    expect(history).to.equal(null)
   })
 })
