@@ -26,7 +26,7 @@ describe(PGEventPublisher.name, () => {
 
   it('can publish events for new entities', async () => {
     const entity = new TestEntity(
-      { id: 'id', type: 'Item' },
+      new EntityId('id', 'Item'),
       [ new Event('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -43,7 +43,7 @@ describe(PGEventPublisher.name, () => {
       [ 'id', 'type', 0 ])
 
     const entity = new TestEntity(
-      { id: 'id', type: 'Item' },
+      new EntityId('id', 'Item'),
       [ new Event('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -56,7 +56,7 @@ describe(PGEventPublisher.name, () => {
 
   it('sets increasing version number for each event', async () => {
     const entity = new TestEntity(
-      { id: 'id', type: 'Item' },
+      new EntityId('id', 'Item'),
       [
         new Event('Event1', { value: 1 }),
         new Event('Event2', { value: 1 }),
@@ -77,7 +77,7 @@ describe(PGEventPublisher.name, () => {
       [ 'id', 'type', 1 ])
 
     const entity = new TestEntity(
-      { id: 'id', type: 'Item' },
+      new EntityId('id', 'Item'),
       [ new Event('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -90,7 +90,7 @@ describe(PGEventPublisher.name, () => {
 
   it('updates the version of the entity', async () => {
     const entity = new TestEntity(
-      { id: 'id', type: 'Item' },
+      new EntityId('id', 'Item'),
       [ new Event('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity)
 

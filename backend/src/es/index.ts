@@ -27,7 +27,9 @@ export abstract class Entity {
   get id() { return this.entityId.id }
   get type() { return this.entityId.type }
 
-  constructor(readonly entityId: EntityId) {}
+  constructor(readonly entityId: EntityId) {
+    failFast.unlessInstanceOf(EntityId)(entityId, 'entityId')
+  }
 
   protected addEvent(event: Event) {
     this.unpublishedEvents.push(event)
