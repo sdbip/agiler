@@ -1,7 +1,7 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { ItemDTO } from './dtos/item-dto.js'
-import { Event, EventPublisher, EventRepository } from './es/index.js'
+import { Event, EventPublisher, EventRepository } from './es/source.js'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>

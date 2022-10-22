@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Entity, EntityId, EntityVersion, Event } from '../es/index.js'
+import { Entity, EntityId, EntityVersion, Event } from '../es/source.js'
 
 export enum ItemType {
   Task = 'Task',

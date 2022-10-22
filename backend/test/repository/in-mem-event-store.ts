@@ -1,4 +1,4 @@
-import { Entity, EntityHistory, EntityVersion, Event, EventPublisher, EventRepository } from '../../src/es'
+import { Entity, EntityHistory, EntityVersion, Event, EventPublisher, EventRepository } from '../../src/es/source'
 
 export class InMemEventStore implements EventRepository, EventPublisher {
   entities: {[id: string]: [EntityVersion, string]} = {}

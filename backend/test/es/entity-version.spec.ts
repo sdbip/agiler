@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { EntityVersion } from '../../src/es'
+import { EntityVersion } from '../../src/es/source'
 
 describe(EntityVersion.name, () => {
   it('NotSaved which is negative', () => {

@@ -1,4 +1,4 @@
-import { Entity, EntityId, Event, EventPublisher } from '../es'
+import { Entity, EntityId, Event, EventPublisher } from '../es/source'
 import { PGDatabase } from './pg-database'
 
 export class PGEventPublisher implements EventPublisher {

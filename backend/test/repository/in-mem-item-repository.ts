@@ -1,7 +1,7 @@
 import { EventProjection, ItemRepository } from '../../src/backend'
 import { Progress, ItemType, TaskState } from '../../src/domain/item'
 import { ItemDTO } from '../../src/dtos/item-dto'
-import { Event } from '../../src/es'
+import { Event } from '../../src/es/source'
 
 export class InMemItemRepository implements ItemRepository, EventProjection {
   items: { [id: string]: [ItemType, TaskState] } = {}

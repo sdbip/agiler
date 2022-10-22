@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Event } from '../../src/es'
+import { Event } from '../../src/es/source'
 
 describe(Event.name, () => {
   it('throws if details is missing', () => {

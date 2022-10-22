@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { Progress, Item, ItemType } from '../../src/domain/item'
-import { EntityVersion } from '../../src/es'
+import { EntityVersion } from '../../src/es/source'
 
 describe('Item', () => {
 

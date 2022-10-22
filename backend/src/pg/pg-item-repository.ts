@@ -1,7 +1,7 @@
 import { EventProjection, ItemRepository } from '../backend'
 import { Progress, Item } from '../domain/item.js'
 import { ItemDTO } from '../dtos/item-dto'
-import { Event } from '../es'
+import { Event } from '../es/source'
 import { PGDatabase } from './pg-database'
 
 export class PGItemRepository implements ItemRepository, EventProjection {

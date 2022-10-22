@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { EntityId } from '../../src/es'
+import { EntityId } from '../../src/es/source'
 
 describe(EntityId.name, () => {
   it('throws if id is missing', () => {

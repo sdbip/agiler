@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Entity, EntityId, EntityVersion, Event } from '../../src/es'
+import { Entity, EntityId, EntityVersion, Event } from '../../src/es/source'
 
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher

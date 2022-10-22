@@ -4,7 +4,7 @@ import { setEventRepository, setRepository, listenAtPort, stopListening, setPubl
 import { InMemItemRepository } from './repository/in-mem-item-repository'
 import { InMemEventStore } from './repository/in-mem-event-store'
 import { ItemType, Progress } from '../src/domain/item'
-import { EntityVersion } from '../src/es'
+import { EntityVersion } from '../src/es/source'
 
 const itemRepository = new InMemItemRepository()
 const eventStore = new InMemEventStore()

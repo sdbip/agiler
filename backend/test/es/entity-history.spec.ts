@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { EntityHistory, EntityVersion } from '../../src/es'
+import { EntityHistory, EntityVersion } from '../../src/es/source'
 
 describe(EntityHistory.name, () => {
 

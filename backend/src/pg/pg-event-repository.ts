@@ -1,4 +1,4 @@
-import { EntityHistory, EntityVersion, Event, EventRepository } from '../es/index.js'
+import { EntityHistory, EntityVersion, Event, EventRepository } from '../es/source.js'
 import { PGDatabase } from './pg-database'
 
 export class PGEventRepository implements EventRepository {
