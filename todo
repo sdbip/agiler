@@ -27,8 +27,6 @@
 - Split Feature
 
 # Tasks
-* Refactor to CQRS/ES
-  - Check for concurrent version changes
 
 # Ice Box
 - move frontend.ts to a different folder.
