@@ -27,8 +27,9 @@ export abstract class Entity {
   get id() { return this.entityId.id }
   get type() { return this.entityId.type }
 
-  constructor(readonly entityId: EntityId) {
+  constructor(readonly entityId: EntityId, readonly version: EntityVersion) {
     failFast.unlessInstanceOf(EntityId)(entityId, 'entityId')
+    failFast.unlessInstanceOf(EntityVersion)(version, 'version')
   }
 
   protected addEvent(event: Event) {

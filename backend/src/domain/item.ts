@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Entity, EntityId, Event } from '../es/index.js'
+import { Entity, EntityId, EntityVersion, Event } from '../es/index.js'
 
 export enum ItemType {
   Task = 'Task',
@@ -30,14 +30,14 @@ export class Item extends Entity {
   }
 
   static new(title: string): Item {
-    const item = new Item(randomUUID())
+    const item = new Item(randomUUID(), EntityVersion.NotSaved)
     item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
     item.state.title = title
     return item
   }
 
-  static reconstitute(id: string, events: Event[]) {
-    const item = new Item(id)
+  static reconstitute(id: string, version: EntityVersion, events: Event[]) {
+    const item = new Item(id, version)
     for (const event of events) {
       switch (event.name) {
       case 'Created':
@@ -58,7 +58,7 @@ export class Item extends Entity {
     return item
   }
 
-  private constructor(id: string) { super(new EntityId(id, 'Item')) }
+  private constructor(id: string, version: EntityVersion) { super(new EntityId(id, 'Item'), version) }
 }
 
 export interface TaskState {

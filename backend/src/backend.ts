@@ -1,7 +1,7 @@
 import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { ItemDTO } from './dtos/item-dto.js'
-import { Event, EventPublisher, EventRepository } from './es'
+import { Event, EventPublisher, EventRepository } from './es/index.js'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
@@ -39,7 +39,7 @@ server.patch('/task/:id/promote', async (request) => {
   const history = await eventRepository?.getHistoryFor(id)
   if (!history) return NOT_FOUND
 
-  const item = Item.reconstitute(id, history.events)
+  const item = Item.reconstitute(id, history.version, history.events)
   item.promote()
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)
@@ -55,7 +55,7 @@ server.patch('/task/:id/assign', async (request) => {
 
   const dto = await readBody(request)
 
-  const item = Item.reconstitute(id, history.events)
+  const item = Item.reconstitute(id, history.version, history.events)
   item.assign(dto.member)
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)
@@ -69,7 +69,7 @@ server.patch('/task/:id/complete', async (request) => {
   const history = await eventRepository?.getHistoryFor(id)
   if (!history) return NOT_FOUND
 
-  const item = Item.reconstitute(id, history.events)
+  const item = Item.reconstitute(id, history.version, history.events)
   item.complete()
   await publisher?.publishChanges(item)
   await projection?.project(id, item.unpublishedEvents)

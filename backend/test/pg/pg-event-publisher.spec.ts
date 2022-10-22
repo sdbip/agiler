@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Entity, EntityId, Event } from '../../src/es'
+import { Entity, EntityId, EntityVersion, Event } from '../../src/es'
 
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
@@ -27,6 +27,7 @@ describe(PGEventPublisher.name, () => {
   it('can publish events for new entities', async () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
       [ new Event('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -44,6 +45,7 @@ describe(PGEventPublisher.name, () => {
 
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
+      EntityVersion.of(0),
       [ new Event('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -57,6 +59,7 @@ describe(PGEventPublisher.name, () => {
   it('sets increasing version number for each event', async () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
       [
         new Event('Event1', { value: 1 }),
         new Event('Event2', { value: 1 }),
@@ -78,6 +81,7 @@ describe(PGEventPublisher.name, () => {
 
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
+      EntityVersion.of(1),
       [ new Event('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -91,6 +95,7 @@ describe(PGEventPublisher.name, () => {
   it('updates the version of the entity', async () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
+      EntityVersion.NotSaved,
       [ new Event('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity)
 
@@ -103,8 +108,8 @@ describe(PGEventPublisher.name, () => {
 })
 
 class TestEntity extends Entity {
-  constructor(entityId: EntityId, events: Event[]) {
-    super(entityId)
+  constructor(entityId: EntityId, version: EntityVersion, events: Event[]) {
+    super(entityId, version)
     for (const event of events)
       this.addEvent(event)
   }

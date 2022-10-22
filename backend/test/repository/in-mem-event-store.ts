@@ -11,7 +11,12 @@ export class InMemEventStore implements EventRepository, EventPublisher {
   }
 
   async publishChanges(entity: Entity): Promise<void> {
-    this.entities[entity.id] = [ EntityVersion.NotSaved, entity.type ]
+    const storedVersion = this.entities[entity.id]?.[0]
+    if ((storedVersion && !storedVersion.equals(entity.version)) ||
+        !storedVersion && entity.version !== EntityVersion.NotSaved)
+      throw new Error('Wrong version')
+
+    this.entities[entity.id] = [ entity.version, entity.type ]
     this.events[entity.id] = [ ...this.events[entity.id] ?? [], ...entity.unpublishedEvents ]
   }
 }
