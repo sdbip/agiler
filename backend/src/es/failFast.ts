@@ -23,6 +23,11 @@ const requireObject = (argument: any, name: string) => {
   requireValueSetWithType('an object')(argument, name)
 }
 
+const requireInstanceOf = (type: any, { argument, name }:{argument:any, name:string}) => {
+  requireValueSet(argument, name)
+  requireCondition(argument instanceof type, `argument ${name} must be an instance of ${type}`)
+}
+
 const requireArrayOf = (type: any, { argument, name }:{argument:any, name:string}) => {
   requireValueSet(argument, name)
   requireCondition(argument instanceof Array, `argument ${name} must be an array`)
@@ -36,5 +41,6 @@ export const failFast = {
   unlessNumber: requireNumber,
   unlessString: requireString,
   unlessObject: requireObject,
+  unlessInstanceOf: (type: any) => (argument: any, name: string) => requireInstanceOf(type, { argument, name }),
   unlessArrayOf: (type: any) => (argument: any, name: string) => requireArrayOf(type, { argument, name }),
 }

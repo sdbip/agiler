@@ -4,6 +4,7 @@ import { setEventRepository, setRepository, listenAtPort, stopListening, setPubl
 import { InMemItemRepository } from './repository/in-mem-item-repository'
 import { InMemEventStore } from './repository/in-mem-event-store'
 import { ItemType, Progress } from '../src/domain/item'
+import { EntityVersion } from '../src/es'
 
 const itemRepository = new InMemItemRepository()
 const eventStore = new InMemEventStore()
@@ -15,7 +16,7 @@ setEventRepository(eventStore)
 describe('backend', () => {
 
   beforeEach(() => {
-    eventStore.entityTypes = {}
+    eventStore.entities = {}
     eventStore.events = {}
     itemRepository.items = {}
     listenAtPort(9090)
@@ -45,7 +46,7 @@ describe('backend', () => {
     expect(response.statusCode).to.equal(200)
     expect(Object.values(eventStore.events)[0])
       .to.eql([ { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } } ])
-    expect(Object.values(eventStore.entityTypes)[0]).to.eql('Item')
+    expect(Object.values(eventStore.entities)[0][1]).to.eql('Item')
   })
 
   it('returns task details [post /task]', async () => {
@@ -59,7 +60,7 @@ describe('backend', () => {
   })
 
   it('promotes tasks [patch /task/:id/promote]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     itemRepository.items = {
       id: [
@@ -78,14 +79,14 @@ describe('backend', () => {
   })
 
   it('publishes "TypeChanged" event when tasks are promoted [post /task]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/promote')
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id'])
       .to.eql([ { name: 'TypeChanged', details: { type: ItemType.Story } } ])
-    expect(eventStore.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entities['id'][1]).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/promote]', async () => {
@@ -95,7 +96,7 @@ describe('backend', () => {
   })
 
   it('assigns task [patch /task/:id/assign]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     itemRepository.items = {
       id: [
@@ -115,14 +116,14 @@ describe('backend', () => {
   })
 
   it('publishes events when tasks are assigned [post /task]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id']).to.deep.include
       .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
-    expect(eventStore.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entities['id'][1]).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/assign]', async () => {
@@ -132,7 +133,7 @@ describe('backend', () => {
   })
 
   it('completes task [patch /task/:id/complete]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     itemRepository.items = {
       id: [
@@ -151,14 +152,14 @@ describe('backend', () => {
   })
 
   it('publishes "ProgressChanged" event when tasks are completed [post /task]', async () => {
-    eventStore.entityTypes = { id: 'Item' }
+    eventStore.entities = { id: [ EntityVersion.of(0), 'Item' ] }
     eventStore.events = { id: [] }
     const response = await patch('http://localhost:9090/task/id/complete')
 
     expect(response.statusCode).to.equal(200)
     expect(eventStore.events['id'])
       .to.eql([ { name: 'ProgressChanged', details: { progress: Progress.completed } } ])
-    expect(eventStore.entityTypes['id']).to.eql('Item')
+    expect(eventStore.entities['id'][1]).to.eql('Item')
   })
 
   it('returns 404 if not found [patch /task/:id/complete]', async () => {

@@ -42,7 +42,8 @@ export class EntityId {
 }
 
 export class EntityHistory {
-  constructor(readonly events: Event[]) {
+  constructor(readonly version: EntityVersion, readonly events: Event[]) {
+    failFast.unlessInstanceOf(EntityVersion)(version, 'version')
     failFast.unlessArrayOf(Event)(events, 'events')
   }
 }
