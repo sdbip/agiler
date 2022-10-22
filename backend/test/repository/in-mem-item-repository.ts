@@ -1,4 +1,5 @@
-import { EventProjection, ItemRepository } from '../../src/backend'
+import { ItemRepository } from '../../src/backend'
+import { EventProjection } from '../../src/es/projection'
 import { Progress, ItemType, TaskState } from '../../src/domain/item'
 import { ItemDTO } from '../../src/dtos/item-dto'
 import { Event } from '../../src/es/source'
