@@ -5,7 +5,6 @@ type EventMetadataInternal = {
   actor: string
   version: number
   position: number
-  timestamp: number
 }
 
 export class PGEventPublisher implements EventPublisher {
@@ -28,7 +27,7 @@ export class PGEventPublisher implements EventPublisher {
         : 0
       let version = storedVersion ?? 0
       for (const event of entity.unpublishedEvents) {
-        await this.insertEvent(event, entity.entityId, { version, position, actor, timestamp: 0 })
+        await this.insertEvent(event, entity.entityId, { version, position, actor })
         version++        
       }
 
@@ -52,14 +51,16 @@ export class PGEventPublisher implements EventPublisher {
   }
 
   private async insertEvent(event: Event, entity: EntityId, metadata: EventMetadataInternal) {
-    await this.database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+    await this.database.query(
+      'INSERT INTO Events ' +
+      '(entity_id, entity_type, name, details, actor, version, position)' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7)',
       [
         entity.id,
         entity.type,
         event.name,
         JSON.stringify(event.details),
         metadata.actor,
-        metadata.timestamp,
         metadata.version,
         metadata.position,
       ])
