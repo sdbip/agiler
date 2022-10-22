@@ -1,5 +1,9 @@
+import { failFast } from './failFast.js'
+
 export class Event {
-  constructor(readonly name: string, readonly details: any) {}
+  constructor(readonly name: string, readonly details: any) {
+    failFast.unlessObject(details, 'details')
+  }
 }
 
 export class EntityVersion {
@@ -7,7 +11,8 @@ export class EntityVersion {
   private constructor(readonly value: number) {}
 
   static of(value: number) {
-    if (value < 0) throw new Error()
+    failFast.unlessNumber(value, 'version')
+    failFast.unless(value >= 0, 'version must not be negative')
     return new EntityVersion(value)
   }
 
@@ -30,12 +35,15 @@ export abstract class Entity {
 }
 
 export class EntityId {
-  constructor(readonly id: string, readonly type: string) {}
+  constructor(readonly id: string, readonly type: string) {
+    failFast.unlessString(id, 'id')
+    failFast.unlessString(type, 'type')
+  }
 }
 
 export class EntityHistory {
   constructor(readonly events: Event[]) {
-    failFast.unlessArrayOf(Event, { argument: events, name: 'events' })
+    failFast.unlessArrayOf(Event)(events, 'events')
   }
 }
 
@@ -45,18 +53,4 @@ export interface EventPublisher {
 
 export interface EventRepository {
   getHistoryFor(entityId: string): Promise<EntityHistory | null>
-}
-
-// Fail fast stuff
-// Move to a library?
-
-const failFast = {
-  unlessArrayOf: (type: any, { argument, name }:{argument:any, name:string}) => {
-  if (argument === null || argument === undefined)
-    throw new Error(`argument ${name} must not be null nor undefined`)
-  if (!(argument instanceof Array))
-    throw new Error(`argument ${name} must be an array`)
-  if (argument.some(e => !(e instanceof type)))
-    throw new Error(`argument ${name} must only contain elements of type ${type}`)
-  },
 }
