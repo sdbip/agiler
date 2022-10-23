@@ -9,7 +9,7 @@ export class PGEventPublisher implements EventPublisher {
     await this.repository.database.transaction(async () => {
       const expectedVersion = await this.repository.getVersionOf(entity.id)
       if (expectedVersion === undefined)
-        await this.repository.insertEntity(entity.entityId)
+        await this.repository.insertEntity(entity.entityId, EntityVersion.of(0))
       else if (!expectedVersion.equals(entity.version))
         throw new Error('Concurrent Update Detected')
 

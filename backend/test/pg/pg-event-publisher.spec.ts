@@ -8,13 +8,15 @@ import { PGRepository } from '../../src/pg/pg-repository'
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
   let database: PGDatabase
+  let repository: PGRepository
 
   beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
 
     database = await PGDatabase.connect(databaseName)
-    publisher = new PGEventPublisher(new PGRepository(database))
+    repository = new PGRepository(database)
+    publisher = new PGEventPublisher(repository)
 
     const schemaDDL = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Events;DROP TABLE IF EXISTS Entities')
@@ -40,9 +42,7 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('can publish events for existing entities', async () => {
-    await database.query(
-      'INSERT INTO Entities VALUES ($1, $2, $3)',
-      [ 'id', 'type', 0 ])
+    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(0))
 
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
@@ -76,9 +76,7 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('sets the first event\'s version to the current version of the entity', async () => {
-    await database.query(
-      'INSERT INTO Entities VALUES ($1, $2, $3)',
-      [ 'id', 'type', 1 ])
+    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(1))
 
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
@@ -100,17 +98,11 @@ describe(PGEventPublisher.name, () => {
       [ new Event('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
-    const res = await database.query(
-      'SELECT version FROM Entities WHERE id = $1',
-      [ 'id' ])
-
-    expect(res.rows[0]?.version).to.equal(1)
+    expect(await repository.getVersionOf('id')).to.deep.equal(EntityVersion.of(1))
   })
 
   it('throws if the stored version has changed', async () => {
-    await database.query(
-      'INSERT INTO Entities VALUES ($1, $2, $3)',
-      [ 'id', 'type', 1 ])
+    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(1))
 
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
@@ -142,21 +134,16 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('sets position to the next value for existing entities', async () => {
-    await database.query(
-      'INSERT INTO Entities VALUES ($1, $2, $3)',
-      [ 'other_id', 'type', 1 ])
+    await repository.insertEntity(new EntityId('other_id', 'type'), EntityVersion.of(1))
     const priorPosition = 0
-    await database.query('INSERT INTO Events VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-      [
-        'other_id',
-        'type',
-        'prior_event',
-        '{}',
-        '',
-        0.0,
-        0,
-        priorPosition,
-      ])
+    await repository.insertEvent(
+      new Event('prior_event', {}),
+      new EntityId('other_id', 'type'),
+      {
+        actor: '',
+        position: priorPosition,
+        version: EntityVersion.of(0),
+      })
    
     const entity = new TestEntity(
       new EntityId('id', 'Item'),

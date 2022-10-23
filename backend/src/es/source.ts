@@ -60,5 +60,5 @@ export interface EventPublisher {
 }
 
 export interface EventRepository {
-  getHistoryFor(entityId: string): Promise<EntityHistory | null>
+  getHistoryFor(entityId: string): Promise<EntityHistory | undefined>
 }

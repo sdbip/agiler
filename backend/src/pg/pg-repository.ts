@@ -21,12 +21,20 @@ export class PGRepository {
       [ entityId, version.value ])
   }
 
-  async insertEntity(entity: EntityId) {
+  async getEventsFor(entityId: string) {
+    const result = await this.database.query(
+      'SELECT * FROM Events WHERE entity_id = $1',
+      [ entityId ])
+
+    return result.rows.map(r => new Event(r.name, JSON.parse(r.details)))
+  }
+
+  async insertEntity(entity: EntityId, version: EntityVersion) {
     await this.database.query('INSERT INTO Entities VALUES ($1, $2, $3)',
       [
         entity.id,
         entity.type,
-        0,
+        version.value,
       ])
   }
 

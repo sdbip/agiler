@@ -1,34 +1,15 @@
-import { EntityHistory, EntityVersion, Event, EventRepository } from '../es/source.js'
-import { PGDatabase } from './pg-database'
+import { EntityHistory, EventRepository } from '../es/source.js'
+import { PGRepository } from './pg-repository.js'
 
 export class PGEventRepository implements EventRepository {
-  private readonly database: PGDatabase
 
-  constructor(database: PGDatabase) {
-    this.database = database
-  }
+  constructor(readonly repository: PGRepository) {}
 
   async getHistoryFor(entityId: string) {
-    const version = await this.getVersionFor(entityId)
-    if (version === null) return null
+    const version = await this.repository.getVersionOf(entityId)
+    if (!version) return undefined
 
-    const events = await this.getEvents(entityId)
+    const events = await this.repository.getEventsFor(entityId)
     return new EntityHistory(version, events)
-  }
-
-  private async getVersionFor(entityId: string) {
-    const result = await this.database.query(
-      'SELECT version FROM Entities WHERE id = $1',
-      [ entityId ])
-    if (result.rowCount === 0) return null
-    return EntityVersion.of(result.rows[0].version)
-  }
-
-  private async getEvents(entityId: string) {
-    const result = await this.database.query(
-      'SELECT * FROM Events WHERE entity_id = $1',
-      [ entityId ])
-
-    return result.rows.map(r => new Event(r.name, JSON.parse(r.details)))
   }
 }

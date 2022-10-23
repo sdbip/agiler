@@ -26,7 +26,7 @@ export class MockEventProjection implements EventProjection {
 }
 
 export class MockEventRepository implements EventRepository {
-  nextHistory: EntityHistory | null = null
+  nextHistory?: EntityHistory
   lastRequestedEntityId?: string
 
   async getHistoryFor(entityId: string) {
