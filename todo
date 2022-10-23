@@ -13,7 +13,9 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-- Make tasks children of stories
+* Make tasks children of stories
+  * Rename `task/` endpoint to `item/`
+  - We don't use inProgress. Backend only requests notStarted items
   - Add Task to Story
   - Add text-box for adding a task to a story
   - Add chevron to collapse/expand a story
@@ -34,9 +36,11 @@
 - Publish to Heroku. Or somewhere else?
 - Matcher/Specification pattern
 - Design a reporter for Web Test Runner?
-- Poll for new events
+- Poll for events instead of pushing to Items table
   - Find new events by `position` > last processed
   - `Event` should be split in three versions
     - `UnpublishedEvent` with object details
     - `PublishedEvent` with stringified details
     - `Event` with entity id/type for projection
+- Add back `tasks/` with a different implementation?
+    “What are the available tasks that I could do right now?”
