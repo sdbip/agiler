@@ -3,6 +3,7 @@ import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { Entity, EntityId, EntityVersion, Event } from '../../src/es/source'
+import { PGRepository } from '../../src/pg/pg-repository'
 
 describe(PGEventPublisher.name, () => {
   let publisher: PGEventPublisher
@@ -13,7 +14,7 @@ describe(PGEventPublisher.name, () => {
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
 
     database = await PGDatabase.connect(databaseName)
-    publisher = new PGEventPublisher(database)
+    publisher = new PGEventPublisher(new PGRepository(database))
 
     const schemaDDL = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Events;DROP TABLE IF EXISTS Entities')

@@ -6,6 +6,14 @@ describe(EntityVersion.name, () => {
     expect(EntityVersion.NotSaved.value).to.lessThan(0)
   })
 
+  it('can be incremented', () => {
+    expect(EntityVersion.of(0).next()).to.deep.equal(EntityVersion.of(1))
+  })
+
+  it('starts at zero', () => {
+    expect(EntityVersion.NotSaved.next()).to.deep.equal(EntityVersion.of(0))
+  })
+
   it('is equal if value is equal', () => {
     expect(EntityVersion.of(1).equals(EntityVersion.of(1)))
       .to.equal(true, '1 should equal 1')

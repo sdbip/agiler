@@ -7,7 +7,7 @@ export class Event {
 }
 
 export class EntityVersion {
-  static NotSaved = new EntityVersion(-5)
+  static NotSaved = new EntityVersion(-1)
   private constructor(readonly value: number) {}
 
   static of(value: number) {
@@ -18,6 +18,10 @@ export class EntityVersion {
 
   equals(other: EntityVersion) {
     return other.value === this.value
+  }
+
+  next(): EntityVersion {
+    return EntityVersion.of(this.value + 1)
   }
 }
 
