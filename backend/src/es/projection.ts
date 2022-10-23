@@ -1,5 +1,5 @@
-import { failFast } from './failFast'
-import { EntityId } from './source'
+import { failFast } from './failFast.js'
+import { EntityId } from './source.js'
 
 export class Event {
   constructor(readonly entity: EntityId, readonly name: string, readonly details: any) {

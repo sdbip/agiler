@@ -14,7 +14,6 @@
 
 # Stories
 * Make tasks children of stories
-  * Rename `task/` endpoint to `item/`
   - We don't use inProgress. Backend only requests notStarted items
   - Add Task to Story
   - Add text-box for adding a task to a story
@@ -29,6 +28,7 @@
 - Split Feature
 
 # Tasks
+- Why do some imports need `.js`?
 
 # Ice Box
 - move frontend.ts to a different folder.

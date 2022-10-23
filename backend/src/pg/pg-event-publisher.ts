@@ -1,4 +1,4 @@
-import { Entity, EntityVersion, EventPublisher } from '../es/source'
+import { Entity, EntityVersion, EventPublisher } from '../es/source.js'
 import { PGRepository } from './pg-repository'
 
 export class PGEventPublisher implements EventPublisher {

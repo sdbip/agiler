@@ -1,4 +1,4 @@
-import { EntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../es/source'
+import { EntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../es/source.js'
 import { PGDatabase } from './pg-database'
 
 export class PGRepository {
