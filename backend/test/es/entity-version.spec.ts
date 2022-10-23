@@ -23,16 +23,4 @@ describe(EntityVersion.name, () => {
     expect(EntityVersion.of(0).equals(EntityVersion.of(1)))
       .to.equal(false, '0 should not equal 1')
   })
-
-  it('throws if set to negative', () => {
-    expect(() => EntityVersion.of(-1)).to.throw('version must not be negative')
-  })
-
-  it('throws if not set', () => {
-    expect(() => EntityVersion.of(null as any)).to.throw('version must be set')
-  })
-
-  it('throws if not a number', () => {
-    expect(() => EntityVersion.of('kalle' as any)).to.throw('version must be a number')
-  })
 })

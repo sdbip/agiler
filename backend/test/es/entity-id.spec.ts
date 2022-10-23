@@ -2,19 +2,16 @@ import { expect } from 'chai'
 import { EntityId } from '../../src/es/source'
 
 describe(EntityId.name, () => {
-  it('throws if id is missing', () => {
-    expect(() => new EntityId(null as any, 'type')).to.throw('id must be set')
+
+  it('equals if same id and type', () => {
+    expect(new EntityId('id', 'type').equals(new EntityId('id', 'type'))).to.be.true
   })
 
-  it('throws if id is not a string', () => {
-    expect(() => new EntityId(42 as any, 'type')).to.throw('id must be a string')
+  it('does not equal if id is different', () => {
+    expect(new EntityId('id', 'type').equals(new EntityId('other_id', 'type'))).to.be.false
   })
-
-  it('throws if type is missing', () => {
-    expect(() => new EntityId('id', null as any)).to.throw('type must be set')
-  })
-
-  it('throws if type is missing', () => {
-    expect(() => new EntityId('id', 42 as any)).to.throw('type must be a string')
+  
+  it('does not equal if type is different', () => {
+    expect(new EntityId('id', 'type').equals(new EntityId('id', 'other_type'))).to.be.false
   })
 })

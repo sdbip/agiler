@@ -54,6 +54,10 @@ export class EntityId {
     failFast.unlessString(id, 'id')
     failFast.unlessString(type, 'type')
   }
+
+  equals(other: EntityId): any {
+    return other.id === this.id && other.type === this.type
+  }
 }
 
 export class EntityHistory {
