@@ -2,7 +2,7 @@ import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { ItemDTO } from './dtos/item-dto.js'
 import { EventPublisher, EventRepository } from './es/source.js'
-import { EventProjection } from './es/projection'
+import { Event, EventProjection } from './es/projection'
 
 export interface ItemRepository {
   itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
@@ -95,5 +95,5 @@ const reconstituteItem = async (id: string) => {
 
 const publishChanges = async (item: Item) => {
   await publisher?.publishChanges(item, 'system_actor')
-  await projection?.project(item.id, item.unpublishedEvents)
+  await projection?.project(item.unpublishedEvents.map(e => new Event(item.entityId, e.name, e.details)))
 }

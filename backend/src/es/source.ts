@@ -1,8 +1,16 @@
 import { failFast } from './failFast.js'
 
-export class Event {
+export class UnpublishedEvent {
   constructor(readonly name: string, readonly details: any) {
+    failFast.unlessString(name, 'name')
     failFast.unlessObject(details, 'details')
+  }
+}
+
+export class PublishedEvent {
+  constructor(readonly name: string, readonly details: string) {
+    failFast.unlessString(name, 'name')
+    failFast.unlessString(details, 'details')
   }
 }
 
@@ -26,7 +34,7 @@ export class EntityVersion {
 }
 
 export abstract class Entity {
-  readonly unpublishedEvents: Event[] = []
+  readonly unpublishedEvents: UnpublishedEvent[] = []
 
   get id() { return this.entityId.id }
   get type() { return this.entityId.type }
@@ -36,7 +44,7 @@ export abstract class Entity {
     failFast.unlessInstanceOf(EntityVersion)(version, 'version')
   }
 
-  protected addEvent(event: Event) {
+  protected addEvent(event: UnpublishedEvent) {
     this.unpublishedEvents.push(event)
   }
 }
@@ -49,9 +57,9 @@ export class EntityId {
 }
 
 export class EntityHistory {
-  constructor(readonly version: EntityVersion, readonly events: Event[]) {
+  constructor(readonly version: EntityVersion, readonly events: PublishedEvent[]) {
     failFast.unlessInstanceOf(EntityVersion)(version, 'version')
-    failFast.unlessArrayOf(Event)(events, 'events')
+    failFast.unlessArrayOf(PublishedEvent)(events, 'events')
   }
 }
 

@@ -123,7 +123,7 @@ describe('backend', () => {
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(1)
       expect(eventProjection.projectedEvents[0])
-        .to.deep.equal({ name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
+        .to.deep.include({ name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
     })
 
     it('returns task details [post /item]', async () => {
@@ -162,7 +162,7 @@ describe('backend', () => {
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(1)
       expect(eventProjection.projectedEvents[0])
-        .to.deep.equal({ name: 'TypeChanged', details: { type: ItemType.Story } })
+        .to.deep.include({ name: 'TypeChanged', details: { type: ItemType.Story } })
     })
 
     it('returns 404 if not found [patch /item/promote]', async () => {
@@ -196,8 +196,8 @@ describe('backend', () => {
 
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(2)
-      expect(eventProjection.projectedEvents).to.deep.include
-        .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
+      expect(eventProjection.projectedEvents.map(e => ({ name: e.name, details: e.details }))).to
+        .deep.include.members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
     })
 
     it('returns 404 if not found [patch /item/assign]', async () => {
@@ -232,7 +232,7 @@ describe('backend', () => {
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(1)
       expect(eventProjection.projectedEvents[0])
-        .to.deep.equal({ name: 'ProgressChanged', details: { progress: Progress.completed } })
+        .to.deep.include({ name: 'ProgressChanged', details: { progress: Progress.completed } })
     })
 
     it('returns 404 if not found [patch /item/complete]', async () => {

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Entity, EntityId, EntityVersion, Event } from '../es/source.js'
+import { Entity, EntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
 
 export enum ItemType {
   Task = 'Task',
@@ -36,7 +36,7 @@ export class Item extends Entity {
     return item
   }
 
-  static reconstitute(id: string, version: EntityVersion, events: Event[]) {
+  static reconstitute(id: string, version: EntityVersion, events: UnpublishedEvent[]) {
     const item = new Item(id, version)
     for (const event of events) {
       switch (event.name) {

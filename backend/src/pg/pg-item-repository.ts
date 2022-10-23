@@ -1,8 +1,7 @@
 import { ItemRepository } from '../backend'
-import { EventProjection } from '../es/projection'
+import { Event, EventProjection } from '../es/projection'
 import { Progress, Item } from '../domain/item.js'
 import { ItemDTO } from '../dtos/item-dto'
-import { Event } from '../es/source'
 import { PGDatabase } from './pg-database'
 
 export class PGItemRepository implements ItemRepository, EventProjection {
@@ -19,28 +18,28 @@ export class PGItemRepository implements ItemRepository, EventProjection {
     return res.rows
   }
 
-  async project(id: string, events: Event[]) {
+  async project(events: Event[]) {
     for (const event of events) {
       switch (event.name) {
         case 'Created':
           await this.database.query(
             'INSERT INTO Items (id, title, progress, type) VALUES ($1, $2, $3, $4)',
-            [ id, event.details.title, Progress.notStarted, event.details.type ])
+            [ event.entity.id, event.details.title, Progress.notStarted, event.details.type ])
           break
         case 'ProgressChanged':
           await this.database.query(
             'UPDATE Items SET progress = $2 WHERE id = $1',
-            [ id, event.details.progress ])
+            [ event.entity.id, event.details.progress ])
           break
         case 'TypeChanged':
           await this.database.query(
             'UPDATE Items SET type = $2 WHERE id = $1',
-            [ id, event.details.type ])
+            [ event.entity.id, event.details.type ])
           break
         case 'AssigneeChanged':
           await this.database.query(
             'UPDATE Items SET assignee = $2 WHERE id = $1',
-            [ id, event.details.assignee ])
+            [ event.entity.id, event.details.assignee ])
           break
       }
     }

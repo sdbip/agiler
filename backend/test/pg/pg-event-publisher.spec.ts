@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Entity, EntityId, EntityVersion, Event } from '../../src/es/source'
+import { Entity, EntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
 import { PGRepository } from '../../src/pg/pg-repository'
 
 describe(PGEventPublisher.name, () => {
@@ -31,7 +31,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new Event('TestEvent', { value: 1 }) ])
+      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
@@ -47,7 +47,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.of(0),
-      [ new Event('TestEvent', { value: 1 }) ])
+      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
@@ -62,8 +62,8 @@ describe(PGEventPublisher.name, () => {
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [
-        new Event('Event1', { value: 1 }),
-        new Event('Event2', { value: 1 }),
+        new UnpublishedEvent('Event1', { value: 1 }),
+        new UnpublishedEvent('Event2', { value: 1 }),
       ])
     await publisher.publishChanges(entity, '')
 
@@ -81,7 +81,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.of(1),
-      [ new Event('Event1', { value: 1 }) ])
+      [ new UnpublishedEvent('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
@@ -95,7 +95,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new Event('Event1', { value: 1 }) ])
+      [ new UnpublishedEvent('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     expect(await repository.getVersionOf('id')).to.deep.equal(EntityVersion.of(1))
@@ -107,7 +107,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.of(0),
-      [ new Event('Event1', { value: 1 }) ])
+      [ new UnpublishedEvent('Event1', { value: 1 }) ])
 
     let didThrow = false
     try {
@@ -123,7 +123,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new Event('TestEvent', { value: 1 }) ])
+      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
@@ -137,7 +137,7 @@ describe(PGEventPublisher.name, () => {
     await repository.insertEntity(new EntityId('other_id', 'type'), EntityVersion.of(1))
     const priorPosition = 0
     await repository.insertEvent(
-      new Event('prior_event', {}),
+      new UnpublishedEvent('prior_event', {}),
       new EntityId('other_id', 'type'),
       {
         actor: '',
@@ -148,7 +148,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new Event('TestEvent', { value: 1 }) ])
+      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
@@ -161,7 +161,7 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new EntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new Event('TestEvent', { value: 1 }) ])
+      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, 'actor')
 
     const res = await database.query(
@@ -172,7 +172,7 @@ describe(PGEventPublisher.name, () => {
 })
   
 class TestEntity extends Entity {
-  constructor(entityId: EntityId, version: EntityVersion, events: Event[]) {
+  constructor(entityId: EntityId, version: EntityVersion, events: UnpublishedEvent[]) {
     super(entityId, version)
     for (const event of events)
       this.addEvent(event)

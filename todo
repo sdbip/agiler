@@ -38,10 +38,6 @@
 - Design a reporter for Web Test Runner?
 - Poll for events instead of pushing to Items table
   - Find new events by `position` > last processed
-  - `Event` should be split in three versions
-    - `UnpublishedEvent` with object details
-    - `PublishedEvent` with stringified details
-    - `Event` with entity id/type for projection
 - Add back `task/` with a different implementation?
     “What are the available tasks that I could do right now?”
 - No test fails if the client uses the wrong endpoints

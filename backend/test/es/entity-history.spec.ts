@@ -12,7 +12,7 @@ describe(EntityHistory.name, () => {
   })
 
   it('throws if events contains non-events', () => {
-    expect(() => new EntityHistory(EntityVersion.NotSaved, [ 'not an event' ] as any)).to.throw('argument events must only contain elements of type class Event')
+    expect(() => new EntityHistory(EntityVersion.NotSaved, [ 'not an event' ] as any)).to.throw('argument events must only contain elements of type class PublishedEvent')
   })
 
   it('throws if version is not set', () => {

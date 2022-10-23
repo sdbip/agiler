@@ -4,6 +4,8 @@ import { Progress, Item, ItemType } from '../../src/domain/item'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { ItemDTO } from '../../src/dtos/item-dto'
+import { EntityId, UnpublishedEvent } from '../../src/es/source'
+import { Event } from '../../src/es/projection'
 
 describe(PGItemRepository.name, () => {
   let repository: PGItemRepository
@@ -27,7 +29,7 @@ describe(PGItemRepository.name, () => {
 
   it('can add tasks and find them again', async () => {
     const item = Item.new('Make PGItemRepository work')
-    await repository.project(item.id, item.unpublishedEvents)
+    await projectEvents(item.entityId, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.id).to.equal(item.id)
@@ -38,7 +40,7 @@ describe(PGItemRepository.name, () => {
   it('can complete tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
     item.complete()
-    await repository.project(item.id, item.unpublishedEvents)
+    await projectEvents(item.entityId, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.progress).to.equal(Progress.completed)
@@ -47,7 +49,7 @@ describe(PGItemRepository.name, () => {
   it('can promote tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
     item.promote()
-    await repository.project(item.id, item.unpublishedEvents)
+    await projectEvents(item.entityId, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.type).to.equal(ItemType.Story)
@@ -56,7 +58,7 @@ describe(PGItemRepository.name, () => {
   it('can assign tasks', async () => {
     const item = Item.new('Make PGItemRepository work')
     item.assign('Agent 47')
-    await repository.project(item.id, item.unpublishedEvents)
+    await projectEvents(item.entityId, item.unpublishedEvents)
 
     const itemInRepository = await repository.get(item.id)
     expect(itemInRepository?.assignee).to.equal('Agent 47')
@@ -90,6 +92,10 @@ describe(PGItemRepository.name, () => {
     expect(storedItems).to.exist
     expect(storedItems.map(t => t.id)).to.contain(item.id)
   })
+
+  async function projectEvents(entity: EntityId, unpublishedEvents: UnpublishedEvent[]) {
+    await repository.project(unpublishedEvents.map(e => new Event(entity, e.name, e.details)))
+  }
 })
 
 function toDTO(item: Item): ItemDTO {

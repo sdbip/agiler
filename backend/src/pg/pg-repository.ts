@@ -1,4 +1,4 @@
-import { EntityId, EntityVersion, Event } from '../es/source'
+import { EntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../es/source'
 import { PGDatabase } from './pg-database'
 
 export class PGRepository {
@@ -26,7 +26,7 @@ export class PGRepository {
       'SELECT * FROM Events WHERE entity_id = $1',
       [ entityId ])
 
-    return result.rows.map(r => new Event(r.name, JSON.parse(r.details)))
+    return result.rows.map(r => new PublishedEvent(r.name, r.details))
   }
 
   async insertEntity(entity: EntityId, version: EntityVersion) {
@@ -38,7 +38,7 @@ export class PGRepository {
       ])
   }
 
-  async insertEvent(event: Event, entity: EntityId, metadata: EventMetadataInternal) {
+  async insertEvent(event: UnpublishedEvent, entity: EntityId, metadata: EventMetadataInternal) {
     await this.database.query(
       'INSERT INTO Events ' +
       '(entity_id, entity_type, name, details, actor, version, position)' +
