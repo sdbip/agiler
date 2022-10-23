@@ -15,8 +15,8 @@ if (!databaseName) {
 const database = await PGDatabase.connect(databaseName)
 const itemRepository = new PGItemRepository(database)
 
-const schema = await fs.readFile('./schema/schema.sql')
-await database.query(schema.toString('utf-8'))
+const schemaDDL = await fs.readFile('./schema/schema.sql')
+await database.query(schemaDDL.toString('utf-8'))
 
 backend.setRepository(itemRepository)
 backend.setEventProjection(itemRepository)

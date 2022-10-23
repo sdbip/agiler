@@ -16,9 +16,9 @@ describe(PGItemRepository.name, () => {
     database = await PGDatabase.connect(databaseName)
     repository = new PGItemRepository(database)
 
-    const schema = await fs.readFile('./schema/schema.sql')
+    const schemaDDL = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Items')
-    await database.query(schema.toString('utf-8'))
+    await database.query(schemaDDL.toString('utf-8'))
   })
 
   after(async () => {

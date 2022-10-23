@@ -53,7 +53,7 @@ describe('backend', () => {
       expect(dto.id).to.exist
     })
   
-    it('requests open tasks only [get /item]', async () => {
+    it('requests open items only [get /item]', async () => {
       const response = await get('http://localhost:9090/item')
   
       expect(response.statusCode).to.equal(200)
@@ -136,7 +136,7 @@ describe('backend', () => {
       expect(dto.id).to.exist
     })
 
-    it('publishes "TypeChanged" event when tasks are promoted [post /item]', async () => {
+    it('publishes "TypeChanged" event when tasks are promoted [patch /item/promote]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/promote')
@@ -154,7 +154,7 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects "TypeChanged" event when tasks are promoted [post /item]', async () => {
+    it('projects "TypeChanged" event when tasks are promoted [patch /item/promote]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/promote')
@@ -165,13 +165,13 @@ describe('backend', () => {
         .to.deep.equal({ name: 'TypeChanged', details: { type: ItemType.Story } })
     })
 
-    it('returns 404 if not found [patch /item/:id/promote]', async () => {
+    it('returns 404 if not found [patch /item/promote]', async () => {
       const response = await patch('http://localhost:9090/item/id/promote')
 
       expect(response.statusCode).to.equal(404)
     })
 
-    it('publishes events when tasks are assigned [post /item]', async () => {
+    it('publishes events when items are assigned [patch /item/assign]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/assign', { member:'Johan' })
@@ -189,7 +189,7 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects events when tasks are assigned [post /item]', async () => {
+    it('projects events when items are assigned [patch /item/assign]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/assign', { member:'Johan' })
@@ -200,13 +200,13 @@ describe('backend', () => {
         .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
     })
 
-    it('returns 404 if not found [patch /item/:id/assign]', async () => {
+    it('returns 404 if not found [patch /item/assign]', async () => {
       const response = await patch('http://localhost:9090/item/id/assign')
 
       expect(response.statusCode).to.equal(404)
     })
 
-    it('publishes "ProgressChanged" event when tasks are completed [post /item]', async () => {
+    it('publishes "ProgressChanged" event when items are completed [patch /item/complete]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/complete')
@@ -224,7 +224,7 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects "ProgressChanged" event when tasks are completed [post /item]', async () => {
+    it('projects "ProgressChanged" event when items are completed [patch /item/complete]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
       const response = await patch('http://localhost:9090/item/id/complete')
@@ -235,7 +235,7 @@ describe('backend', () => {
         .to.deep.equal({ name: 'ProgressChanged', details: { progress: Progress.completed } })
     })
 
-    it('returns 404 if not found [patch /item/:id/complete]', async () => {
+    it('returns 404 if not found [patch /item/complete]', async () => {
       const response = await patch('http://localhost:9090/item/id/complete')
 
       expect(response.statusCode).to.equal(404)

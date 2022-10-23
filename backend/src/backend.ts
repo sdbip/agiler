@@ -15,8 +15,8 @@ let eventRepository: EventRepository | undefined
 let publisher: EventPublisher | undefined
 
 server.get('/item', async () => {
-  const tasks = await itemRepository.itemsWithProgress(Progress.notStarted)
-  return tasks.map(t => ({ id:t.id, title: t.title, type: t.type }))
+  const items = await itemRepository.itemsWithProgress(Progress.notStarted)
+  return items.map(t => ({ id:t.id, title: t.title, type: t.type }))
 })
 
 server.post('/item', async (request) => {

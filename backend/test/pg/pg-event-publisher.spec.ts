@@ -15,9 +15,9 @@ describe(PGEventPublisher.name, () => {
     database = await PGDatabase.connect(databaseName)
     publisher = new PGEventPublisher(database)
 
-    const tasks = await fs.readFile('./schema/schema.sql')
+    const schemaDDL = await fs.readFile('./schema/schema.sql')
     await database.query('DROP TABLE IF EXISTS Events;DROP TABLE IF EXISTS Entities')
-    await database.query(tasks.toString('utf-8'))
+    await database.query(schemaDDL.toString('utf-8'))
   })
 
   afterEach(async () => {

@@ -2,7 +2,7 @@ import globals from './globals'
 
 const baseURL = globals.BACKEND_URL
 
-export const fetchTasks = async () => {
+export const fetchItems = async () => {
   const response = await fetch(`${baseURL}/item`)
   return await response.json()
 }
@@ -33,7 +33,7 @@ export const promoteTask = async (id: string) => {
 }
 
 export default {
-  fetchTasks,
+  fetchItems,
   completeTask,
   addTask,
   promoteTask,

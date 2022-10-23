@@ -1,4 +1,4 @@
-{{#tasks}}
+{{#items}}
 <div class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" onclick="toggle({element: this, event})">
   {{#canPromote}}
   <span class="promote-button" id="promote-{{id}}" onclick="promote({element: this, event})">✵</span>
@@ -11,5 +11,5 @@
   {{/canComplete}}
   <span>{{title}}</span>
 </div>
-{{/tasks}}
+{{/items}}
  

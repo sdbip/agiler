@@ -5,7 +5,7 @@ import { delay } from './delay'
 import { addClass, removeClass } from './class'
 import { getElement, getElements } from './getElements'
 
-updateTasks()
+updateItems()
 
 // EVENT HANDLERS
 
@@ -24,7 +24,7 @@ globals.toggle = async function({ element, event }: EventArgs<HTMLDivElement | H
 
   await backend.completeTask(checkbox.id)
   await delay(200)
-  await updateTasks()
+  await updateItems()
 }
 
 globals.addTaskIfEnter = async function({ event }: EventArgs<void, KeyboardEvent>) {
@@ -35,34 +35,36 @@ globals.addTaskIfEnter = async function({ event }: EventArgs<void, KeyboardEvent
 }
 
 globals.addTask = async function() {
-  const titleInput = getElement('#task-title') as HTMLInputElement
+  const titleInput = getElement('#item-title') as HTMLInputElement
   if (!titleInput.value) return
   
   console.log('add task', await backend.addTask(titleInput.value))
   titleInput.value = ''
-  await updateTasks()
+  await updateItems()
 }
 
 globals.promote = async function({ element }: EventArgs<HTMLElement, Event>) {
   await backend.promoteTask(element.id.replace(/^promote-/, ''))
-  await updateTasks()
+  await updateItems()
 }
 
-async function updateTasks() {
-  const tasks = await backend.fetchTasks()
+// END EVENT HANDLERS
 
-  const taskListElement = getElement('#task-list')  
-  if (taskListElement) {
-    const newTasks = findNewTasks(taskListElement, tasks)
-    const oldElements = findObsoleteElements(taskListElement, tasks)
+async function updateItems() {
+  const items = await backend.fetchItems()
+
+  const itemListElement = getElement('#item-list')  
+  if (itemListElement) {
+    const newItems = findNewItems(itemListElement, items)
+    const oldElements = findObsoleteElements(itemListElement, items)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     for (const element of oldElements) addClass(element.parentElement!, 'hidden')
-    for (const task of newTasks) task.isNew = true
+    for (const item of newItems) item.isNew = true
 
     await delay(500)
-    taskListElement.innerHTML = await render('task-list', {
-      tasks,
+    itemListElement.innerHTML = await render('item-list', {
+      items,
       canComplete: () => function(this: any, text: string, render: any) {
         return this.type === 'Task' ? render(text) : ''
       },
@@ -72,17 +74,17 @@ async function updateTasks() {
     })
     await delay(1)
 
-    for (const element of getElements('.hidden', taskListElement))
+    for (const element of getElements('.hidden', itemListElement))
       removeClass(element, 'hidden')
   }
 }
 
-const findObsoleteElements = (taskListElement: HTMLElement, tasks: any[]) =>
-  getElements('input', taskListElement)
-    .filter(el => tasks.every((t: any) => t.id !== el.id))
+const findObsoleteElements = (itemListElement: HTMLElement, items: any[]) =>
+  getElements('input', itemListElement)
+    .filter(el => items.every((t: any) => t.id !== el.id))
 
-const findNewTasks = (taskListElement: HTMLElement, tasks: any) => {
-  const existingIds = getElements('input', taskListElement)
+const findNewItems = (itemListElement: HTMLElement, items: any) => {
+  const existingIds = getElements('input', itemListElement)
       .map(el => el.id)
-  return tasks.filter((t: any) => existingIds.indexOf(t.id) < 0)
+  return items.filter((t: any) => existingIds.indexOf(t.id) < 0)
 }
