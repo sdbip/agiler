@@ -3,7 +3,7 @@ import { promises as fs } from 'fs'
 import { PGEventRepository } from '../../src/pg/pg-event-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { PGRepository } from '../../src/pg/pg-repository'
-import { EntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
+import { CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
 
 describe(PGEventRepository.name, () => {
   let eventRepository: PGEventRepository
@@ -28,10 +28,10 @@ describe(PGEventRepository.name, () => {
   })
 
   it('finds stored events', async () => {
-    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(0))
+    await repository.insertEntity(new CanonicalEntityId('id', 'type'), EntityVersion.of(0))
     await repository.insertEvent(
       new UnpublishedEvent('event', { test: 'value' }),
-      new EntityId('id', 'type'),
+      new CanonicalEntityId('id', 'type'),
       {
         actor: 'actor',
         position: 0,

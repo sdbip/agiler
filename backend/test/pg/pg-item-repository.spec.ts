@@ -4,7 +4,7 @@ import { Progress, Item, ItemType } from '../../src/domain/item'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { ItemDTO } from '../../src/dtos/item-dto'
-import { EntityId, UnpublishedEvent } from '../../src/es/source'
+import { CanonicalEntityId, UnpublishedEvent } from '../../src/es/source'
 import { Event } from '../../src/es/projection'
 
 describe(PGItemRepository.name, () => {
@@ -93,7 +93,7 @@ describe(PGItemRepository.name, () => {
     expect(storedItems.map(t => t.id)).to.contain(item.id)
   })
 
-  async function projectEvents(entity: EntityId, unpublishedEvents: UnpublishedEvent[]) {
+  async function projectEvents(entity: CanonicalEntityId, unpublishedEvents: UnpublishedEvent[]) {
     await repository.project(unpublishedEvents.map(e => new Event(entity, e.name, e.details)))
   }
 })

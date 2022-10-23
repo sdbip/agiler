@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Entity, EntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
+import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
 
 export enum ItemType {
   Task = 'Task',
@@ -58,7 +58,7 @@ export class Item extends Entity {
     return item
   }
 
-  private constructor(id: string, version: EntityVersion) { super(new EntityId(id, 'Item'), version) }
+  private constructor(id: string, version: EntityVersion) { super(new CanonicalEntityId(id, 'Item'), version) }
 }
 
 export interface TaskState {

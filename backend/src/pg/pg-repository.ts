@@ -1,4 +1,4 @@
-import { EntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../es/source.js'
+import { CanonicalEntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../es/source.js'
 import { PGDatabase } from './pg-database'
 
 export class PGRepository {
@@ -29,7 +29,7 @@ export class PGRepository {
     return result.rows.map(r => new PublishedEvent(r.name, r.details))
   }
 
-  async insertEntity(entity: EntityId, version: EntityVersion) {
+  async insertEntity(entity: CanonicalEntityId, version: EntityVersion) {
     await this.database.query('INSERT INTO Entities VALUES ($1, $2, $3)',
       [
         entity.id,
@@ -38,7 +38,7 @@ export class PGRepository {
       ])
   }
 
-  async insertEvent(event: UnpublishedEvent, entity: EntityId, metadata: EventMetadataInternal) {
+  async insertEvent(event: UnpublishedEvent, entity: CanonicalEntityId, metadata: EventMetadataInternal) {
     await this.database.query(
       'INSERT INTO Events ' +
       '(entity_id, entity_type, name, details, actor, version, position)' +

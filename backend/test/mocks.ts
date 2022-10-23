@@ -1,7 +1,7 @@
 import { ItemRepository } from '../src/backend'
 import { Progress } from '../src/domain/item'
 import {
-  Entity, EntityHistory, EntityId, EntityVersion,
+  Entity, EntityHistory, CanonicalEntityId, EntityVersion,
   UnpublishedEvent, EventPublisher, EventRepository,
 } from '../src/es/source'
 import { Event, EventProjection } from '../src/es/projection'
@@ -37,7 +37,7 @@ export class MockEventRepository implements EventRepository {
 
 export class MockEventPublisher implements EventPublisher {
   expectedVersion?: EntityVersion
-  publishedEvents: {actor: string, entity: EntityId, event: UnpublishedEvent}[] = []
+  publishedEvents: {actor: string, entity: CanonicalEntityId, event: UnpublishedEvent}[] = []
 
   async publishChanges(entity: Entity, actor: string): Promise<void> {
     this.publishedEvents = [ ...this.publishedEvents, ...entity.unpublishedEvents.map(event => ({ actor, entity: entity.entityId, event })) ]

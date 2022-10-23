@@ -39,8 +39,8 @@ export abstract class Entity {
   get id() { return this.entityId.id }
   get type() { return this.entityId.type }
 
-  constructor(readonly entityId: EntityId, readonly version: EntityVersion) {
-    failFast.unlessInstanceOf(EntityId)(entityId, 'entityId')
+  constructor(readonly entityId: CanonicalEntityId, readonly version: EntityVersion) {
+    failFast.unlessInstanceOf(CanonicalEntityId)(entityId, 'entityId')
     failFast.unlessInstanceOf(EntityVersion)(version, 'version')
   }
 
@@ -49,13 +49,13 @@ export abstract class Entity {
   }
 }
 
-export class EntityId {
+export class CanonicalEntityId {
   constructor(readonly id: string, readonly type: string) {
     failFast.unlessString(id, 'id')
     failFast.unlessString(type, 'type')
   }
 
-  equals(other: EntityId): any {
+  equals(other: CanonicalEntityId): any {
     return other.id === this.id && other.type === this.type
   }
 }

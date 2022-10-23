@@ -1,11 +1,11 @@
 import { failFast } from './failFast.js'
-import { EntityId } from './source.js'
+import { CanonicalEntityId } from './source.js'
 
 export class Event {
-  constructor(readonly entity: EntityId, readonly name: string, readonly details: any) {
+  constructor(readonly entity: CanonicalEntityId, readonly name: string, readonly details: any) {
     failFast.unlessObject(details, 'details')
     failFast.unlessString(name, 'name')
-    failFast.unlessInstanceOf(EntityId)(entity, 'entity')
+    failFast.unlessInstanceOf(CanonicalEntityId)(entity, 'entity')
   }
 }
 export interface EventProjection {

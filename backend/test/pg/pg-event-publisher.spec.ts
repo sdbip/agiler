@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventPublisher } from '../../src/pg/pg-event-publisher'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { Entity, EntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
+import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
 import { PGRepository } from '../../src/pg/pg-repository'
 
 describe(PGEventPublisher.name, () => {
@@ -29,7 +29,7 @@ describe(PGEventPublisher.name, () => {
 
   it('can publish events for new entities', async () => {
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -42,10 +42,10 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('can publish events for existing entities', async () => {
-    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(0))
+    await repository.insertEntity(new CanonicalEntityId('id', 'type'), EntityVersion.of(0))
 
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.of(0),
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -59,7 +59,7 @@ describe(PGEventPublisher.name, () => {
 
   it('sets increasing version number for each event', async () => {
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [
         new UnpublishedEvent('Event1', { value: 1 }),
@@ -76,10 +76,10 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('sets the first event\'s version to the current version of the entity', async () => {
-    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(1))
+    await repository.insertEntity(new CanonicalEntityId('id', 'type'), EntityVersion.of(1))
 
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.of(1),
       [ new UnpublishedEvent('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -93,7 +93,7 @@ describe(PGEventPublisher.name, () => {
 
   it('updates the version of the entity', async () => {
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new UnpublishedEvent('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -102,10 +102,10 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('throws if the stored version has changed', async () => {
-    await repository.insertEntity(new EntityId('id', 'type'), EntityVersion.of(1))
+    await repository.insertEntity(new CanonicalEntityId('id', 'type'), EntityVersion.of(1))
 
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.of(0),
       [ new UnpublishedEvent('Event1', { value: 1 }) ])
 
@@ -121,7 +121,7 @@ describe(PGEventPublisher.name, () => {
 
   it('sets position to 0 for first published events', async () => {
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -134,11 +134,11 @@ describe(PGEventPublisher.name, () => {
   })
 
   it('sets position to the next value for existing entities', async () => {
-    await repository.insertEntity(new EntityId('other_id', 'type'), EntityVersion.of(1))
+    await repository.insertEntity(new CanonicalEntityId('other_id', 'type'), EntityVersion.of(1))
     const priorPosition = 0
     await repository.insertEvent(
       new UnpublishedEvent('prior_event', {}),
-      new EntityId('other_id', 'type'),
+      new CanonicalEntityId('other_id', 'type'),
       {
         actor: '',
         position: priorPosition,
@@ -146,7 +146,7 @@ describe(PGEventPublisher.name, () => {
       })
    
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
@@ -159,7 +159,7 @@ describe(PGEventPublisher.name, () => {
 
   it('sets actor', async () => {
     const entity = new TestEntity(
-      new EntityId('id', 'Item'),
+      new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, 'actor')
@@ -172,7 +172,7 @@ describe(PGEventPublisher.name, () => {
 })
   
 class TestEntity extends Entity {
-  constructor(entityId: EntityId, version: EntityVersion, events: UnpublishedEvent[]) {
+  constructor(entityId: CanonicalEntityId, version: EntityVersion, events: UnpublishedEvent[]) {
     super(entityId, version)
     for (const event of events)
       this.addEvent(event)
