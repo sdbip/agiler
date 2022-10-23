@@ -24,7 +24,7 @@ describe('backend', () => {
       backend.setRepository(itemRepository)
     })
   
-    it('returns the items of the repository [get /task]', async () => {
+    it('returns the items of the repository [get /item]', async () => {
       itemRepository.itemsToReturn = [
         {
           id: 'one',
@@ -41,7 +41,7 @@ describe('backend', () => {
           assignee: null,
         },
       ]
-      const response = await get('http://localhost:9090/task')
+      const response = await get('http://localhost:9090/item')
   
       expect(response.statusCode).to.equal(200)
   
@@ -53,8 +53,8 @@ describe('backend', () => {
       expect(dto.id).to.exist
     })
   
-    it('requests open tasks only [get /task]', async () => {
-      const response = await get('http://localhost:9090/task')
+    it('requests open tasks only [get /item]', async () => {
+      const response = await get('http://localhost:9090/item')
   
       expect(response.statusCode).to.equal(200)
       expect(itemRepository.lastRequestedProgress).to.equal(Progress.notStarted)
@@ -75,7 +75,7 @@ describe('backend', () => {
       for (let i = 0; i < 5; i++) {
         await backend.stopListening()
         backend.listenAtPort(9090)
-        const response = await get('http://localhost:9090/task')
+        const response = await get('http://localhost:9090/item')
         expect(response.statusCode).to.equal(200)
       }
     })
@@ -98,8 +98,8 @@ describe('backend', () => {
       backend.setPublisher(publisher)
     })
   
-    it('publishes "Created" event when tasks are added [post /task]', async () => {
-      const response = await post('http://localhost:9090/task', {
+    it('publishes "Created" event when tasks are added [post /item]', async () => {
+      const response = await post('http://localhost:9090/item', {
         title: 'Get Shit Done',
       })
 
@@ -115,8 +115,8 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects "Created" event when tasks are added [post /task]', async () => {
-      const response = await post('http://localhost:9090/task', {
+    it('projects "Created" event when tasks are added [post /item]', async () => {
+      const response = await post('http://localhost:9090/item', {
         title: 'Get Shit Done',
       })
 
@@ -126,8 +126,8 @@ describe('backend', () => {
         .to.deep.equal({ name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
     })
 
-    it('returns task details [post /task]', async () => {
-      const response = await post('http://localhost:9090/task', {
+    it('returns task details [post /item]', async () => {
+      const response = await post('http://localhost:9090/item', {
         title: 'Get Shit Done',
       })
 
@@ -136,10 +136,10 @@ describe('backend', () => {
       expect(dto.id).to.exist
     })
 
-    it('publishes "TypeChanged" event when tasks are promoted [post /task]', async () => {
+    it('publishes "TypeChanged" event when tasks are promoted [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/promote')
+      const response = await patch('http://localhost:9090/item/id/promote')
 
       expect(response.statusCode).to.equal(200)
       expect(eventRepository.lastRequestedEntityId).to.equal('id')
@@ -154,10 +154,10 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects "TypeChanged" event when tasks are promoted [post /task]', async () => {
+    it('projects "TypeChanged" event when tasks are promoted [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/promote')
+      const response = await patch('http://localhost:9090/item/id/promote')
 
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(1)
@@ -165,16 +165,16 @@ describe('backend', () => {
         .to.deep.equal({ name: 'TypeChanged', details: { type: ItemType.Story } })
     })
 
-    it('returns 404 if not found [patch /task/:id/promote]', async () => {
-      const response = await patch('http://localhost:9090/task/id/promote')
+    it('returns 404 if not found [patch /item/:id/promote]', async () => {
+      const response = await patch('http://localhost:9090/item/id/promote')
 
       expect(response.statusCode).to.equal(404)
     })
 
-    it('publishes events when tasks are assigned [post /task]', async () => {
+    it('publishes events when tasks are assigned [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
+      const response = await patch('http://localhost:9090/item/id/assign', { member:'Johan' })
 
       expect(response.statusCode).to.equal(200)
       expect(eventRepository.lastRequestedEntityId).to.equal('id')
@@ -189,10 +189,10 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects events when tasks are assigned [post /task]', async () => {
+    it('projects events when tasks are assigned [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/assign', { member:'Johan' })
+      const response = await patch('http://localhost:9090/item/id/assign', { member:'Johan' })
 
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(2)
@@ -200,16 +200,16 @@ describe('backend', () => {
         .members([ { name: 'AssigneeChanged', details: { assignee:'Johan' } } ])
     })
 
-    it('returns 404 if not found [patch /task/:id/assign]', async () => {
-      const response = await patch('http://localhost:9090/task/id/assign')
+    it('returns 404 if not found [patch /item/:id/assign]', async () => {
+      const response = await patch('http://localhost:9090/item/id/assign')
 
       expect(response.statusCode).to.equal(404)
     })
 
-    it('publishes "ProgressChanged" event when tasks are completed [post /task]', async () => {
+    it('publishes "ProgressChanged" event when tasks are completed [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/complete')
+      const response = await patch('http://localhost:9090/item/id/complete')
 
       expect(response.statusCode).to.equal(200)
       expect(eventRepository.lastRequestedEntityId).to.equal('id')
@@ -224,10 +224,10 @@ describe('backend', () => {
       expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
     })
 
-    it('projects "ProgressChanged" event when tasks are completed [post /task]', async () => {
+    it('projects "ProgressChanged" event when tasks are completed [post /item]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       publisher.expectedVersion = EntityVersion.of(0)
-      const response = await patch('http://localhost:9090/task/id/complete')
+      const response = await patch('http://localhost:9090/item/id/complete')
 
       expect(response.statusCode).to.equal(200)
       expect(eventProjection.projectedEvents).to.have.lengthOf(1)
@@ -235,8 +235,8 @@ describe('backend', () => {
         .to.deep.equal({ name: 'ProgressChanged', details: { progress: Progress.completed } })
     })
 
-    it('returns 404 if not found [patch /task/:id/complete]', async () => {
-      const response = await patch('http://localhost:9090/task/id/complete')
+    it('returns 404 if not found [patch /item/:id/complete]', async () => {
+      const response = await patch('http://localhost:9090/item/id/complete')
 
       expect(response.statusCode).to.equal(404)
     })

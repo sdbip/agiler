@@ -42,5 +42,6 @@
     - `UnpublishedEvent` with object details
     - `PublishedEvent` with stringified details
     - `Event` with entity id/type for projection
-- Add back `tasks/` with a different implementation?
+- Add back `task/` with a different implementation?
     “What are the available tasks that I could do right now?”
+- No test fails if the client uses the wrong endpoints

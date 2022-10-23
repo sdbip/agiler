@@ -14,12 +14,12 @@ let projection: EventProjection | undefined
 let eventRepository: EventRepository | undefined
 let publisher: EventPublisher | undefined
 
-server.get('/task', async () => {
+server.get('/item', async () => {
   const tasks = await itemRepository.itemsWithProgress(Progress.notStarted)
   return tasks.map(t => ({ id:t.id, title: t.title, type: t.type }))
 })
 
-server.post('/task', async (request) => {
+server.post('/item', async (request) => {
   const command = await readBody(request)
   const item = Item.new(command.title)
   await publishChanges(item)
@@ -29,7 +29,7 @@ server.post('/task', async (request) => {
   }
 })
 
-server.patch('/task/:id/promote', async (request) => {
+server.patch('/item/:id/promote', async (request) => {
   const item = await reconstituteItem(request.params.id)
   if (!item) return NOT_FOUND
   item.promote()
@@ -37,7 +37,7 @@ server.patch('/task/:id/promote', async (request) => {
   return {}
 })
 
-server.patch('/task/:id/assign', async (request) => {
+server.patch('/item/:id/assign', async (request) => {
   const item = await reconstituteItem(request.params.id)
   if (!item) return NOT_FOUND
 
@@ -47,7 +47,7 @@ server.patch('/task/:id/assign', async (request) => {
   return {}
 })
 
-server.patch('/task/:id/complete', async (request) => {
+server.patch('/item/:id/complete', async (request) => {
   const item = await reconstituteItem(request.params.id)
   if (!item) return NOT_FOUND
 
