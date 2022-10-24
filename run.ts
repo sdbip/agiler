@@ -1,4 +1,5 @@
-import backend from './backend/src/backend.js'
+import readModel from './backend/src/read-model.js'
+import writeModel from './backend/src/write-model.js'
 import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
 import { PGDatabase } from './backend/src/pg/pg-database.js'
@@ -20,17 +21,21 @@ const itemRepository = new PGItemRepository(database)
 const schemaDDL = await fs.readFile('./schema/schema.sql')
 await database.query(schemaDDL.toString('utf-8'))
 
-backend.setRepository(itemRepository)
-backend.setEventProjection(itemRepository)
-backend.setEventRepository(new PGEventRepository(repository))
-backend.setPublisher(new PGEventPublisher(repository))
-backend.listenAtPort(8000)
+readModel.setRepository(itemRepository)
+readModel.listenAtPort(8000)
 
-frontend.setBackendURL('http://localhost:8000')
+writeModel.setEventProjection(itemRepository)
+writeModel.setEventRepository(new PGEventRepository(repository))
+writeModel.setPublisher(new PGEventPublisher(repository))
+writeModel.listenAtPort(9000)
+
+frontend.setReadModelURL('http://localhost:8000')
+frontend.setWriteModelURL('http://localhost:9000')
 frontend.listenAtPort(80)
 
 process.on('SIGINT', async () => {
-  await stop(backend)
+  await stop(readModel)
+  await stop(writeModel)
   await stop(frontend)
 
   async function stop(server: { stopListening(): Promise<void> }) {

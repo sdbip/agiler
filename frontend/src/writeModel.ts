@@ -1,11 +1,6 @@
 import globals from './globals'
 
-const baseURL = globals.BACKEND_URL
-
-export const fetchItems = async () => {
-  const response = await fetch(`${baseURL}/item`)
-  return await response.json()
-}
+const baseURL = globals.WRITE_MODEL_URL
 
 export const completeTask = async (id: string)  =>{
   console.log(`PATCH ${baseURL}/item/${id}/complete`)
@@ -33,7 +28,6 @@ export const promoteTask = async (id: string) => {
 }
 
 export default {
-  fetchItems,
   completeTask,
   addTask,
   promoteTask,

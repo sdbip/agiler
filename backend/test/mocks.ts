@@ -1,4 +1,4 @@
-import { ItemRepository } from '../src/backend'
+import { ItemRepository } from '../src/read-model'
 import { Progress } from '../src/domain/item'
 import {
   Entity, EntityHistory, CanonicalEntityId, EntityVersion,

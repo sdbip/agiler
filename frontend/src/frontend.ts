@@ -3,7 +3,8 @@ import { setupServer } from '../../shared/src/server.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-let backendURL: string
+let readModelURL: string
+let writeModelURL: string
 const server = setupServer({})
 
 server.public(resolve('../public'))
@@ -15,19 +16,24 @@ server.get('/', async () => {
       .toString('utf-8')
       .replace(
         '<script rel="env">',
-        `<script rel="env" type="text/javascript">window.BACKEND_URL = '${backendURL}'`),
+        `<script rel="env" type="text/javascript">
+        window.READ_MODEL_URL = '${readModelURL}'
+        window.WRITE_MODEL_URL = '${writeModelURL}'
+        `),
   }
 })
 
 const s = server.finalize()
-export function setBackendURL(url: string) {backendURL = url}
+export function setReadModelURL(url: string) {readModelURL = url}
+export function setWriteModelURL(url: string) {writeModelURL = url}
 export const listenAtPort = s.listenAtPort.bind(s)
 export const stopListening = s.stopListening.bind(s)
 
 export default {
   listenAtPort,
   stopListening,
-  setBackendURL,
+  setReadModelURL,
+  setWriteModelURL,
 }
 
 function resolve(relPath: string) {

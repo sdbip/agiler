@@ -1,5 +1,6 @@
 import globals from './globals'
-import backend from './backend'
+import readModel from './readModel'
+import writeModel from './writeModel'
 import { render } from './Templates'
 import { delay } from './delay'
 import { addClass, removeClass } from './class'
@@ -22,7 +23,7 @@ globals.toggle = async function({ element, event }: EventArgs<HTMLDivElement | H
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
   checkbox.disabled = true
 
-  await backend.completeTask(checkbox.id)
+  await writeModel.completeTask(checkbox.id)
   await delay(200)
   await updateItems()
 }
@@ -38,20 +39,20 @@ globals.addTask = async function() {
   const titleInput = getElement('#item-title') as HTMLInputElement
   if (!titleInput.value) return
   
-  console.log('add task', await backend.addTask(titleInput.value))
+  console.log('add task', await writeModel.addTask(titleInput.value))
   titleInput.value = ''
   await updateItems()
 }
 
 globals.promote = async function({ element }: EventArgs<HTMLElement, Event>) {
-  await backend.promoteTask(element.id.replace(/^promote-/, ''))
+  await writeModel.promoteTask(element.id.replace(/^promote-/, ''))
   await updateItems()
 }
 
 // END EVENT HANDLERS
 
 async function updateItems() {
-  const items = await backend.fetchItems()
+  const items = await readModel.fetchItems()
 
   const itemListElement = getElement('#item-list')  
   if (itemListElement) {

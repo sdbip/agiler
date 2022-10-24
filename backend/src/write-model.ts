@@ -1,24 +1,16 @@
-import { Progress, Item } from './domain/item.js'
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
-import { ItemDTO } from './dtos/item-dto.js'
-import { EventPublisher, EventRepository } from './es/source.js'
+import { Item } from './domain/item.js'
 import { Event, EventProjection } from './es/projection.js'
+import { EventPublisher, EventRepository } from './es/source.js'
 
-export interface ItemRepository {
-  itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
-}
-
-const server = setupServer({})
-let itemRepository: ItemRepository
 let projection: EventProjection | undefined
 let eventRepository: EventRepository | undefined
 let publisher: EventPublisher | undefined
+export function setEventProjection(p: EventProjection) { projection = p }
+export function setEventRepository(r: EventRepository) { eventRepository = r }
+export function setPublisher(p: EventPublisher) { publisher = p }
 
-server.get('/item', async () => {
-  const items = await itemRepository.itemsWithProgress(Progress.notStarted)
-  return items.map(t => ({ id:t.id, title: t.title, type: t.type }))
-})
-
+export const server = setupServer({})
 server.post('/item', async (request) => {
   const command = await readBody(request)
   const item = Item.new(command.title)
@@ -57,10 +49,6 @@ server.patch('/item/:id/complete', async (request) => {
 })
 
 const s = server.finalize()
-export function setEventProjection(p: EventProjection) { projection = p }
-export function setEventRepository(r: EventRepository) { eventRepository = r }
-export function setRepository(r: ItemRepository) { itemRepository = r }
-export function setPublisher(p: EventPublisher) { publisher = p }
 export const listenAtPort = s.listenAtPort.bind(s)
 export const stopListening = s.stopListening.bind(s)
 
@@ -68,9 +56,8 @@ export default {
   listenAtPort,
   stopListening,
   setEventProjection,
-  setEventRepository, 
-  setPublisher, 
-  setRepository,
+  setEventRepository,
+  setPublisher,
 }
 
 const readBody = async (request: Request): Promise<any> => {
