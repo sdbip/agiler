@@ -1,4 +1,5 @@
 import { ItemType, Progress } from '../domain/item'
+export { ItemType, Progress } from '../domain/item'
 
 export type ItemDTO = {
   readonly id: string

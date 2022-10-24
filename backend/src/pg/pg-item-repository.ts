@@ -1,7 +1,6 @@
 import { ItemRepository } from '../backend'
 import { Event, EventProjection } from '../es/projection'
-import { Progress, Item } from '../domain/item.js'
-import { ItemDTO } from '../dtos/item-dto'
+import { ItemDTO, Progress } from '../dtos/item-dto'
 import { PGDatabase } from './pg-database'
 
 export class PGItemRepository implements ItemRepository, EventProjection {
@@ -45,7 +44,7 @@ export class PGItemRepository implements ItemRepository, EventProjection {
     }
   }
 
-  async get(id: string): Promise<Item | undefined> {
+  async get(id: string): Promise<ItemDTO | undefined> {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE id = $1',
       [ id ])
