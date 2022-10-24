@@ -7,12 +7,12 @@ export enum ItemType {
 }
 
 export class Item extends Entity {
-  state: TaskState = { title: '', assignee: null, progress: Progress.notStarted }
+  state: TaskState = { title: '', progress: Progress.notStarted }
   itemType = ItemType.Task
   
   get title(): string { return this.state.title }
   get progress() { return this.state.progress }
-  get assignee(): string | null { return this.state.assignee }
+  get assignee(): string | undefined { return this.state.assignee }
 
   promote() {
     this.itemType = ItemType.Story
@@ -63,7 +63,7 @@ export class Item extends Entity {
 
 export interface TaskState {
   title: string
-  assignee: string | null
+  assignee?: string
   progress: Progress
 }
 

@@ -31,14 +31,12 @@ describe('backend', () => {
           type: ItemType.Task,
           title: 'Task',
           progress: Progress.notStarted,
-          assignee: null,
         },
         {
           id: 'two',
           type: ItemType.Story,
           title: 'Story',
           progress: Progress.notStarted,
-          assignee: null,
         },
       ]
       const response = await get('http://localhost:9090/item')

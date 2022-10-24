@@ -1,9 +1,9 @@
 import { ItemType, Progress } from '../domain/item'
 
 export type ItemDTO = {
-  get id(): string
-  get type(): ItemType
-  get title(): string
-  get progress(): Progress
-  get assignee(): string | null
+  readonly id: string
+  readonly type: ItemType
+  readonly title: string
+  readonly progress: Progress
+  readonly assignee?: string
 }
