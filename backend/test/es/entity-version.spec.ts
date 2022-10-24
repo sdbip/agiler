@@ -15,12 +15,10 @@ describe(EntityVersion.name, () => {
   })
 
   it('is equal if value is equal', () => {
-    expect(EntityVersion.of(1).equals(EntityVersion.of(1)))
-      .to.equal(true, '1 should equal 1')
+    expect(EntityVersion.of(1).equals(EntityVersion.of(1))).is.true
   })
 
   it('is not equal if value differs', () => {
-    expect(EntityVersion.of(0).equals(EntityVersion.of(1)))
-      .to.equal(false, '0 should not equal 1')
+    expect(EntityVersion.of(0).equals(EntityVersion.of(1))).is.false
   })
 })

@@ -68,11 +68,11 @@ describe(PGEventPublisher.name, () => {
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
-      'SELECT * FROM Events WHERE entity_id = $1 ORDER BY version',
+      'SELECT version FROM Events WHERE entity_id = $1 ORDER BY version',
       [ 'id' ])
 
-    expect(res.rows[0]).to.deep.include({ name: 'Event1', version: 0 })
-    expect(res.rows[1]).to.deep.include({ name: 'Event2', version: 1 })
+    expect(res.rows[0]?.version).to.equal(0)
+    expect(res.rows[1]?.version).to.equal(1)
   })
 
   it('sets the first event\'s version to the current version of the entity', async () => {
@@ -85,10 +85,12 @@ describe(PGEventPublisher.name, () => {
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
-      'SELECT * FROM Events WHERE entity_id = $1',
+      'SELECT version FROM Events WHERE entity_id = $1',
       [ 'id' ])
 
-    expect(res.rows[0]).to.deep.include({ name: 'Event1', version: 1 })
+    expect(res.rowCount).is.greaterThan(0)
+    for (const row of res.rows)
+      expect(row.version).to.equal(1)
   })
 
   it('updates the version of the entity', async () => {
@@ -123,14 +125,19 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
+      [
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+      ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
-      'SELECT * FROM Events WHERE entity_id = $1',
+      'SELECT position FROM Events WHERE entity_id = $1',
       [ 'id' ])
-    expect(res.rows[0]).to.exist
-    expect(res.rows[0].position).to.equal(0)
+    expect(res.rowCount).to.equal(3)
+    for (const row of res.rows)
+      expect(row.position).to.equal(0)
   })
 
   it('sets position to the next value for existing entities', async () => {
@@ -148,26 +155,38 @@ describe(PGEventPublisher.name, () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
+      [
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+      ])
     await publisher.publishChanges(entity, '')
 
     const res = await database.query(
       'SELECT position FROM Events WHERE entity_id = $1',
       [ 'id' ])
-    expect(res.rows[0].position).to.equal(1)
+    expect(res.rowCount).to.equal(3)
+    for (const row of res.rows)
+      expect(row.position).to.equal(1)
   })
 
   it('sets actor', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
       EntityVersion.NotSaved,
-      [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
+      [
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+        new UnpublishedEvent('TestEvent', { value: 1 }),
+      ])
     await publisher.publishChanges(entity, 'actor')
 
     const res = await database.query(
       'SELECT actor FROM Events WHERE entity_id = $1',
       [ 'id' ])
-    expect(res.rows[0]?.actor).to.equal('actor')
+    expect(res.rowCount).to.equal(3)
+    for (const row of res.rows)
+      expect(row.actor).to.equal('actor')
   })
 })
   
