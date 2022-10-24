@@ -9,7 +9,8 @@ export enum ItemType {
 
 export class Item extends Entity {
   itemType = ItemType.Task
-  
+  parent?: string
+
   promote() {
     this.failFastUnlessTask()
 
@@ -17,11 +18,21 @@ export class Item extends Entity {
     this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
   }
 
+  add(task: Item) {
+    failFast.unless(this.itemType === ItemType.Story, `Only ${ItemType.Story} items may have children`)
+    task.failFastUnlessTask()
+    failFast.unless(task.parent === undefined, 'Task must not have other parent')
+
+    this.addEvent(new UnpublishedEvent('ChildrenAdded', { children: [ task.id ] }))
+    task.addEvent(new UnpublishedEvent('ParentChanged', { parent: this.id }))
+  }
+
   complete() {
     this.failFastUnlessTask()
 
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
+
   assign(member: string) {
     this.failFastUnlessTask()
 
@@ -38,16 +49,16 @@ export class Item extends Entity {
   static reconstitute(id: string, version: EntityVersion, events: UnpublishedEvent[]) {
     const item = new Item(id, version)
     for (const event of events) {
+      const details = JSON.parse(event.details)
       switch (event.name) {
-      case 'Created':
-        item.itemType = event.details.type
-        break
-      case 'ProgressChanged':
-      case 'AssigneeChanged':
-        break
-      case 'TypeChanged':
-        item.itemType = event.details.type
-        break
+        case 'Created':
+        case 'TypeChanged':
+          item.itemType = details.type
+          break
+        case 'ParentChanged':
+          item.parent = details.parent
+          break
+        default: break
       }
     }
     return item
@@ -56,7 +67,8 @@ export class Item extends Entity {
   private constructor(id: string, version: EntityVersion) { super(new CanonicalEntityId(id, 'Item'), version) }
 
   private failFastUnlessTask() {
-    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
+    const type = ItemType.Task
+    failFast.unless(this.itemType === type, `Only ${type} items may be promoted`)
   }
 }
 

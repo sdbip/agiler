@@ -1,12 +1,15 @@
 import { Item, ItemType } from '../../src/domain/item'
 import { EntityVersion, PublishedEvent } from '../../src/es/source'
 
-export const reconstituteStory = (id: string) => {
-  return Item.reconstitute(id, EntityVersion.new, [
+export const reconstituteStory = (id: string) =>
+  Item.reconstitute(id, EntityVersion.new, [
     new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
   ])
-}
 
-export const reconstituteTask = (id: string) => {
-  return Item.reconstitute(id, EntityVersion.new, [])
-}
+export const reconstituteTask = (id: string) =>
+  Item.reconstitute(id, EntityVersion.new, [])
+
+export const reconstituteTaskWithParent = (parentId: string, id: string) =>
+  Item.reconstitute(id, EntityVersion.new, [
+    new PublishedEvent('ParentChanged', JSON.stringify({ parent: parentId })),
+  ])
