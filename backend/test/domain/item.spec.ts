@@ -6,7 +6,7 @@ describe('Item', () => {
 
   it('is NotSaved when created', () => {
     const item = Item.new('Get it done')
-    expect(item.version).to.equal(EntityVersion.NotSaved)
+    expect(item.version).to.equal(EntityVersion.new)
   })
 
   it('adds Created event', () => {
@@ -23,14 +23,14 @@ describe('Item', () => {
   it('can be reconstituted from Created event', () => {
     const original = Item.new('Get it done')
 
-    const item = Item.reconstitute('item', EntityVersion.NotSaved, original.unpublishedEvents)
+    const item = Item.reconstitute('item', EntityVersion.new, original.unpublishedEvents)
     expect(item.progress).to.equal(Progress.notStarted)
     expect(item.title).to.equal('Get it done')
     expect(item.itemType).to.equal(ItemType.Task)
   })
 
   it('adds event when completed', () => {
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const item = Item.reconstitute('id', EntityVersion.new, [])
     item.complete()
     expect(item.unpublishedEvents.length).to.equal(1)
 
@@ -40,15 +40,15 @@ describe('Item', () => {
   })
 
   it('can be reconstituted as completed', () => {
-    const original = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const original = Item.reconstitute('id', EntityVersion.new, [])
     original.complete()
 
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, original.unpublishedEvents)
+    const item = Item.reconstitute('id', EntityVersion.new, original.unpublishedEvents)
     expect(item.progress).to.equal(Progress.completed)
   })
 
   it('adds event when assigned', () => {
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const item = Item.reconstitute('id', EntityVersion.new, [])
     item.assign('Johan')
     expect(item.unpublishedEvents.length).to.equal(2)
 
@@ -62,15 +62,15 @@ describe('Item', () => {
   })
 
   it('can be assigned', () => {
-    const original = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const original = Item.reconstitute('id', EntityVersion.new, [])
     original.assign('Kenny Starfighter')
 
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, original.unpublishedEvents)
+    const item = Item.reconstitute('id', EntityVersion.new, original.unpublishedEvents)
     expect(item.assignee).to.equal('Kenny Starfighter')
   })
 
   it('adds event when promoted', () => {
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const item = Item.reconstitute('id', EntityVersion.new, [])
     item.promote()
     expect(item.unpublishedEvents.length).to.equal(1)
 
@@ -80,10 +80,10 @@ describe('Item', () => {
   })
 
   it('can be reconstituted as story', () => {
-    const original = Item.reconstitute('id', EntityVersion.NotSaved, [])
+    const original = Item.reconstitute('id', EntityVersion.new, [])
     original.promote()
 
-    const item = Item.reconstitute('id', EntityVersion.NotSaved, original.unpublishedEvents)
+    const item = Item.reconstitute('id', EntityVersion.new, original.unpublishedEvents)
 
     expect(item.itemType).to.equal(ItemType.Story)
   })

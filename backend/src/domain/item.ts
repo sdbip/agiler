@@ -30,7 +30,7 @@ export class Item extends Entity {
   }
 
   static new(title: string): Item {
-    const item = new Item(randomUUID(), EntityVersion.NotSaved)
+    const item = new Item(randomUUID(), EntityVersion.new)
     item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
     item.state.title = title
     return item

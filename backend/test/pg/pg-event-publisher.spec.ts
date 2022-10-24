@@ -30,7 +30,7 @@ describe(PGEventPublisher.name, () => {
   it('can publish events for new entities', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [ new UnpublishedEvent('TestEvent', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
@@ -60,7 +60,7 @@ describe(PGEventPublisher.name, () => {
   it('sets increasing version number for each event', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [
         new UnpublishedEvent('Event1', { value: 1 }),
         new UnpublishedEvent('Event2', { value: 1 }),
@@ -96,7 +96,7 @@ describe(PGEventPublisher.name, () => {
   it('updates the version of the entity', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [ new UnpublishedEvent('Event1', { value: 1 }) ])
     await publisher.publishChanges(entity, '')
 
@@ -124,7 +124,7 @@ describe(PGEventPublisher.name, () => {
   it('sets position to 0 for first published events', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [
         new UnpublishedEvent('TestEvent', { value: 1 }),
         new UnpublishedEvent('TestEvent', { value: 1 }),
@@ -154,7 +154,7 @@ describe(PGEventPublisher.name, () => {
    
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [
         new UnpublishedEvent('TestEvent', { value: 1 }),
         new UnpublishedEvent('TestEvent', { value: 1 }),
@@ -173,7 +173,7 @@ describe(PGEventPublisher.name, () => {
   it('sets actor', async () => {
     const entity = new TestEntity(
       new CanonicalEntityId('id', 'Item'),
-      EntityVersion.NotSaved,
+      EntityVersion.new,
       [
         new UnpublishedEvent('TestEvent', { value: 1 }),
         new UnpublishedEvent('TestEvent', { value: 1 }),

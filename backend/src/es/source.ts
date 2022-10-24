@@ -15,7 +15,8 @@ export class PublishedEvent {
 }
 
 export class EntityVersion {
-  static NotSaved = new EntityVersion(-1)
+  static new = new EntityVersion(-1)
+
   private constructor(readonly value: number) {}
 
   static of(value: number) {
@@ -25,6 +26,7 @@ export class EntityVersion {
   }
 
   equals(other: EntityVersion) {
+    failFast.unlessInstanceOf(EntityVersion)(other, 'other')
     return other.value === this.value
   }
 
