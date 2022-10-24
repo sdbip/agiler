@@ -1,4 +1,4 @@
-import { failFast } from './failFast.js'
+import { failFast } from '../../../shared/src/failFast.js'
 import { CanonicalEntityId } from './source.js'
 
 export class Event {

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { failFast } from '../es/failFast.js'
+import { failFast } from '../../../shared/src/failFast.js'
 import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
 
 export enum ItemType {

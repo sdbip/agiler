@@ -1,4 +1,4 @@
-import { failFast } from './failFast.js'
+import { failFast } from '../../../shared/src/failFast.js'
 
 export class UnpublishedEvent {
   constructor(readonly name: string, readonly details: any) {
