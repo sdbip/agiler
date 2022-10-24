@@ -1,10 +1,11 @@
 import { expect } from 'chai'
 import { Item, ItemType } from '../../src/domain/item'
-import { EntityVersion, PublishedEvent } from '../../src/es/source'
+import { EntityVersion } from '../../src/es/source'
+import { reconstituteStory } from './reconstitute'
 
 describe('Item.promote', () => {
 
-  it('is changed to a Story when promoted', () => {
+  it('promotes a Task to a Story', () => {
     const item = Item.reconstitute('id', EntityVersion.new, [])
     item.promote()
     expect(item.unpublishedEvents.length).to.equal(1)
@@ -14,9 +15,7 @@ describe('Item.promote', () => {
   })
 
   it('throws if promoted from Story', () => {
-    const item = Item.reconstitute('id', EntityVersion.new, [
-      new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
-    ])
+    const item = reconstituteStory('id')
     expect(() => item.promote()).to.throw()
     expect(item.unpublishedEvents).has.lengthOf(0)
   })

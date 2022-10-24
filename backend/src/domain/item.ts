@@ -11,18 +11,19 @@ export class Item extends Entity {
   itemType = ItemType.Task
   
   promote() {
-    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
+    this.failFastUnlessTask()
 
     this.itemType = ItemType.Story
     this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
   }
+
   complete() {
-    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
+    this.failFastUnlessTask()
 
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
   assign(member: string) {
-    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
+    this.failFastUnlessTask()
 
     this.addEvent({ name: 'AssigneeChanged', details: { assignee: member } })
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.inProgress } })
@@ -53,6 +54,10 @@ export class Item extends Entity {
   }
 
   private constructor(id: string, version: EntityVersion) { super(new CanonicalEntityId(id, 'Item'), version) }
+
+  private failFastUnlessTask() {
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
+  }
 }
 
 export enum Progress {
