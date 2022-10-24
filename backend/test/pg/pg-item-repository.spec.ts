@@ -1,11 +1,8 @@
 import { expect } from 'chai'
 import { promises as fs } from 'fs'
-import { Progress, Item, ItemType } from '../../src/domain/item'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { ItemDTO } from '../../src/dtos/item-dto'
-import { CanonicalEntityId, UnpublishedEvent } from '../../src/es/source'
-import { Event } from '../../src/es/projection'
+import { ItemType, Progress } from '../../src/dtos/item-dto'
 
 describe(PGItemRepository.name, () => {
   let repository: PGItemRepository
@@ -27,84 +24,42 @@ describe(PGItemRepository.name, () => {
     database.close()
   })
 
-  it('can add tasks and find them again', async () => {
-    const item = Item.new('Make PGItemRepository work')
-    await projectEvents(item.entityId, item.unpublishedEvents)
-
-    const itemInRepository = await repository.get(item.id)
-    expect(itemInRepository?.id).to.equal(item.id)
-    expect(itemInRepository?.progress).to.equal(item.progress)
-    expect(itemInRepository?.title).to.equal(item.title)
-  })
-
-  it('can complete tasks', async () => {
-    const item = Item.new('Make PGItemRepository work')
-    item.complete()
-    await projectEvents(item.entityId, item.unpublishedEvents)
-
-    const itemInRepository = await repository.get(item.id)
-    expect(itemInRepository?.progress).to.equal(Progress.completed)
-  })
-
-  it('can promote tasks', async () => {
-    const item = Item.new('Make PGItemRepository work')
-    item.promote()
-    await projectEvents(item.entityId, item.unpublishedEvents)
-
-    const itemInRepository = await repository.get(item.id)
-    expect(itemInRepository?.type).to.equal(ItemType.Story)
-  })
-
-  it('can assign tasks', async () => {
-    const item = Item.new('Make PGItemRepository work')
-    item.assign('Agent 47')
-    await projectEvents(item.entityId, item.unpublishedEvents)
-
-    const itemInRepository = await repository.get(item.id)
-    expect(itemInRepository?.assignee).to.equal('Agent 47')
-  })
-
   it('finds stored tasks', async () => {
-    const item = Item.new('Make PGItemRepository work')
-    await repository.add(toDTO(item))
+    await repository.add({
+      id: 'task',
+      type: ItemType.Task,
+      title: 'Task',
+      progress: Progress.notStarted,
+    })
 
-    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    expect(storedItems).to.exist
-    expect(storedItems.map(t => t.id)).contain(item.id)
+    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).contain('task')
   })
 
   it('ignores completed tasks', async () => {
-    const item = Item.new('Completed Task')
-    item.complete()
-    await repository.add(toDTO(item))
+    await repository.add({
+      id: 'completed',
+      type: ItemType.Task,
+      title: 'Completed Task',
+      progress: Progress.completed,
+    })
 
-    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    expect(storedItems).to.exist
-    expect(storedItems.map(t => t.id)).not.contain(item.id)
+    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).not.contain('completed')
   })
 
   it('includes stories', async () => {
-    const item = Item.new('Story')
-    item.promote()
-    await repository.add(toDTO(item))
+    await repository.add({
+      id: 'story',
+      type: ItemType.Story,
+      title: 'Completed Story',
+      progress: Progress.notStarted,
+    })
 
-    const storedItems = await repository.itemsWithProgress(Progress.notStarted)
-    expect(storedItems).to.exist
-    expect(storedItems.map(t => t.id)).to.contain(item.id)
+    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).to.contain('story')
   })
-
-  async function projectEvents(entity: CanonicalEntityId, unpublishedEvents: UnpublishedEvent[]) {
-    await repository.project(unpublishedEvents.map(e => new Event(entity, e.name, e.details)))
-  }
 })
-
-function toDTO(item: Item): ItemDTO {
-  return {
-    id: item.id,
-    type: item.itemType,
-    title: item.title,
-    progress: item.progress,
-    assignee: item.assignee,
-  }
-}
-

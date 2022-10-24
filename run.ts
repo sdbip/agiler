@@ -4,6 +4,7 @@ import frontend from './frontend/src/frontend.js'
 import { env, exit } from 'process'
 import { PGDatabase } from './backend/src/pg/pg-database.js'
 import { PGItemRepository } from './backend/src/pg/pg-item-repository.js'
+import { PGItemProjection } from './backend/src/pg/pg-item-projection.js'
 import { PGEventPublisher } from './backend/src/pg/pg-event-publisher.js'
 import { PGEventRepository } from './backend/src/pg/pg-event-repository.js'
 import { promises as fs } from 'fs'
@@ -16,15 +17,14 @@ if (!databaseName) {
 }
 const database = await PGDatabase.connect(databaseName)
 const repository = new PGRepository(database)
-const itemRepository = new PGItemRepository(database)
 
 const schemaDDL = await fs.readFile('./schema/schema.sql')
 await database.query(schemaDDL.toString('utf-8'))
 
-readModel.setRepository(itemRepository)
+readModel.setRepository(new PGItemRepository(database))
 readModel.listenAtPort(8000)
 
-writeModel.setEventProjection(itemRepository)
+writeModel.setEventProjection(new PGItemProjection(database))
 writeModel.setEventRepository(new PGEventRepository(repository))
 writeModel.setPublisher(new PGEventPublisher(repository))
 writeModel.listenAtPort(9000)
