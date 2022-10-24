@@ -28,9 +28,9 @@
 - Split Feature
 
 # Tasks
-- Why do some imports need `.js`?
 
 # Ice Box
+- Why do some imports need `.js`?
 - move frontend.ts to a different folder.
   The other code runs in the browser
 - Publish to Heroku. Or somewhere else?
@@ -41,3 +41,6 @@
 - Add back `task/` with a different implementation?
     “What are the available tasks that I could do right now?”
 - No test fails if the client uses the wrong endpoints
+  - Sure, when they're directly imported from run.js, but what about others. Only sometimes...
+- There is an ESLint rule for enforcing file-extensions, but the resolver throws a fit 
+    just from adding `plugin:import/recommended` ("eslint-plugin-import": "^2.26.0")
