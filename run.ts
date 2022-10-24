@@ -34,15 +34,12 @@ frontend.setWriteModelURL('http://localhost:9000')
 frontend.listenAtPort(80)
 
 process.on('SIGINT', async () => {
-  await stop(readModel)
-  await stop(writeModel)
-  await stop(frontend)
-
-  async function stop(server: { stopListening(): Promise<void> }) {
-    try {
-      await server.stopListening()
-    } catch (err) { }
-  }
+  await Promise.all([
+    database.close(),
+    readModel.stopListening(),
+    writeModel.stopListening(),
+    frontend.stopListening(),
+  ])
 })
 
 console.log('Ready')
