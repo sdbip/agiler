@@ -58,14 +58,10 @@ describe('backend write model', () => {
       .to.deep.include({ name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
   })
 
-  it('returns task details [post /item]', async () => {
-    const response = await post('http://localhost:9090/item', {
-      title: 'Get Shit Done',
-    })
+  it('returns task id [post /item]', async () => {
+    const response = await post('http://localhost:9090/item', { title: 'Get Shit Done' })
 
-    const dto = JSON.parse(response.content)
-    expect(dto.title).to.equal('Get Shit Done')
-    expect(dto.id).to.exist
+    expect(JSON.parse(response.content).id).to.exist
   })
 
   it('publishes "TypeChanged" event when tasks are promoted [patch /item/promote]', async () => {

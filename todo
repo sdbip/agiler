@@ -14,8 +14,8 @@
 
 # Stories
 * Make tasks children of stories
+  * Add Task to Story
   - We don't use inProgress. Backend only requests notStarted items
-  - Add Task to Story
   - Add text-box for adding a task to a story
   - Add chevron to collapse/expand a story
 - Prioritise stories
@@ -28,6 +28,9 @@
 - Split Feature
 
 # Tasks
+- Endpoints
+  - Add new task to story
+  - Set parent of existing task
 
 # Ice Box
 - Why do some imports need `.js`?

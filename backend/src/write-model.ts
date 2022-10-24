@@ -15,10 +15,7 @@ server.post('/item', async (request) => {
   const command = await readBody(request)
   const item = Item.new(command.title)
   await publishChanges(item)
-  return {
-    id: item.id,
-    title: item.title,
-  }
+  return { id: item.id }
 })
 
 server.patch('/item/:id/promote', async (request) => {

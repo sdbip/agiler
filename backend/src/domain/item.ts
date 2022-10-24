@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+import { failFast } from '../es/failFast.js'
 import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
 
 export enum ItemType {
@@ -7,24 +8,22 @@ export enum ItemType {
 }
 
 export class Item extends Entity {
-  state: TaskState = { title: '', progress: Progress.notStarted }
   itemType = ItemType.Task
   
-  get title(): string { return this.state.title }
-  get progress() { return this.state.progress }
-  get assignee(): string | undefined { return this.state.assignee }
-
   promote() {
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
+
     this.itemType = ItemType.Story
     this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
   }
   complete() {
-    this.state.progress = Progress.completed
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
+
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
   assign(member: string) {
-    this.state.assignee = member
-    this.state.progress = Progress.inProgress
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
+
     this.addEvent({ name: 'AssigneeChanged', details: { assignee: member } })
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.inProgress } })
   }
@@ -32,7 +31,6 @@ export class Item extends Entity {
   static new(title: string): Item {
     const item = new Item(randomUUID(), EntityVersion.new)
     item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
-    item.state.title = title
     return item
   }
 
@@ -41,14 +39,10 @@ export class Item extends Entity {
     for (const event of events) {
       switch (event.name) {
       case 'Created':
-        item.state.title = event.details.title
         item.itemType = event.details.type
         break
       case 'ProgressChanged':
-        item.state.progress = event.details.progress
-        break
       case 'AssigneeChanged':
-        item.state.assignee = event.details.assignee
         break
       case 'TypeChanged':
         item.itemType = event.details.type
@@ -59,12 +53,6 @@ export class Item extends Entity {
   }
 
   private constructor(id: string, version: EntityVersion) { super(new CanonicalEntityId(id, 'Item'), version) }
-}
-
-export interface TaskState {
-  title: string
-  assignee?: string
-  progress: Progress
 }
 
 export enum Progress {
