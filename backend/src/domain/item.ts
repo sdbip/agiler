@@ -12,7 +12,7 @@ export class Item extends Entity {
   parent?: string
 
   promote() {
-    this.failFastUnlessTask()
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
 
     this.itemType = ItemType.Story
     this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
@@ -20,7 +20,7 @@ export class Item extends Entity {
 
   add(task: Item) {
     failFast.unless(this.itemType === ItemType.Story, `Only ${ItemType.Story} items may have children`)
-    task.failFastUnlessTask()
+    failFast.unless(task.itemType === ItemType.Task, `Only ${ItemType.Task} items may be added`)
     failFast.unless(task.parent === undefined, 'Task must not have other parent')
 
     this.addEvent(new UnpublishedEvent('ChildrenAdded', { children: [ task.id ] }))
@@ -37,13 +37,13 @@ export class Item extends Entity {
   }
 
   complete() {
-    this.failFastUnlessTask()
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be completed`)
 
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
   }
 
   assign(member: string) {
-    this.failFastUnlessTask()
+    failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
 
     this.addEvent({ name: 'AssigneeChanged', details: { assignee: member } })
     this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.inProgress } })
@@ -74,11 +74,6 @@ export class Item extends Entity {
   }
 
   private constructor(id: string, version: EntityVersion) { super(new CanonicalEntityId(id, 'Item'), version) }
-
-  private failFastUnlessTask() {
-    const type = ItemType.Task
-    failFast.unless(this.itemType === type, `Only ${type} items may be promoted`)
-  }
 
   private removeEventMatching(predicate: (e: UnpublishedEvent) => boolean) {
     const existingEvent = this.unpublishedEvents.findIndex(predicate)
