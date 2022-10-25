@@ -19,6 +19,20 @@ server.post('/item', async (request) => {
   return { id: item.id }
 })
 
+server.post('/item/:id/task', async (request) => {
+
+  const story = await reconstituteItem(request.params.id)
+  if (!story) return NOT_FOUND
+
+  const command = await readBody(request)
+  const item = Item.new(command.title)
+  story.add(item)
+
+  await publishChanges(story)
+  await publishChanges(item)
+  return { id: item.id }
+})
+
 server.patch('/item/:id/promote', async (request) => {
   const item = await reconstituteItem(request.params.id)
   if (!item) return NOT_FOUND

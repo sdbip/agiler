@@ -1,7 +1,7 @@
 import { ItemRepository } from '../src/read-model'
 import { Progress } from '../src/domain/item'
 import {
-  Entity, EntityHistory, CanonicalEntityId, EntityVersion,
+  Entity, EntityHistory, CanonicalEntityId,
   UnpublishedEvent, EventPublisher, EventRepository,
 } from '../src/es/source'
 import { Event, EventProjection } from '../src/es/projection'
@@ -36,12 +36,9 @@ export class MockEventRepository implements EventRepository {
 }
 
 export class MockEventPublisher implements EventPublisher {
-  expectedVersion?: EntityVersion
   publishedEvents: {actor: string, entity: CanonicalEntityId, event: UnpublishedEvent}[] = []
 
   async publishChanges(entity: Entity, actor: string): Promise<void> {
     this.publishedEvents = [ ...this.publishedEvents, ...entity.unpublishedEvents.map(event => ({ actor, entity: entity.entityId, event })) ]
-    if (this.expectedVersion && !this.expectedVersion.equals(entity.version))
-      throw new Error('Wrong version')
   }
 }
