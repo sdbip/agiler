@@ -24,11 +24,14 @@ export class Item extends Entity {
     failFast.unless(task.parent === undefined, 'Task must not have other parent')
 
     this.addEvent(new UnpublishedEvent('ChildrenAdded', { children: [ task.id ] }))
+
+    task.removeEventMatching(e => e.name === 'ParentChanged')
     task.addEvent(new UnpublishedEvent('ParentChanged', { parent: this.id }))
   }
 
   remove(task: Item) {
     if (task.parent !== this.id) return
+    task.parent = undefined
     this.addEvent(new UnpublishedEvent('ChildrenRemoved', { children: [ task.id ] }))
     task.addEvent(new UnpublishedEvent('ParentChanged', { parent: null }))
   }
@@ -75,6 +78,11 @@ export class Item extends Entity {
   private failFastUnlessTask() {
     const type = ItemType.Task
     failFast.unless(this.itemType === type, `Only ${type} items may be promoted`)
+  }
+
+  private removeEventMatching(predicate: (e: UnpublishedEvent) => boolean) {
+    const existingEvent = this.unpublishedEvents.findIndex(predicate)
+    this.unpublishedEvents.splice(existingEvent, 1)
   }
 }
 

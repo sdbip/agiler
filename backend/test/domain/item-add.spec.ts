@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { reconstituteStory, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
+import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.add', () => {
 
@@ -17,6 +17,26 @@ describe('Item.add', () => {
     story.add(task)
     const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
     expect(event?.details.parent).to.equal(story.id)
+  })
+
+  it('only updates parent once', () => {
+    const previousParent = reconstituteStoryWithChildren([ 'task_id' ], 'old_parent_id')
+    const newParent = reconstituteStory('new_parent_id')
+    const task = reconstituteTaskWithParent('old_parent_id', 'task_id')
+    previousParent.remove(task)
+    newParent.add(task)
+    const events = task.unpublishedEvents.filter(e => e.name === 'ParentChanged')
+    expect(events).to.have.lengthOf(1)
+  })
+
+  it('sets the last parent', () => {
+    const previousParent = reconstituteStoryWithChildren([ 'task_id' ], 'old_parent_id')
+    const newParent = reconstituteStory('new_parent_id')
+    const task = reconstituteTaskWithParent('old_parent_id', 'task_id')
+    previousParent.remove(task)
+    newParent.add(task)
+    const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    expect(event?.details.parent).to.equal(newParent.id)
   })
 
   it('throws if the Task already has a parent', () => {
