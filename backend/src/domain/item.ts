@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 import { failFast } from '../../../shared/src/failFast.js'
-import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../es/source.js'
+import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent, PublishedEvent } from '../es/source.js'
 
 export enum ItemType {
   Task = 'Task',
@@ -55,17 +55,16 @@ export class Item extends Entity {
     return item
   }
 
-  static reconstitute(id: string, version: EntityVersion, events: UnpublishedEvent[]) {
+  static reconstitute(id: string, version: EntityVersion, events: PublishedEvent[]) {
     const item = new Item(id, version)
     for (const event of events) {
-      const details = JSON.parse(event.details)
       switch (event.name) {
         case 'Created':
         case 'TypeChanged':
-          item.itemType = details.type
+          item.itemType = event.details.type
           break
         case 'ParentChanged':
-          item.parent = details.parent
+          item.parent = event.details.parent
           break
         default: break
       }

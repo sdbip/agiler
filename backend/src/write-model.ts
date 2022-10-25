@@ -79,5 +79,8 @@ const reconstituteItem = async (id: string) => {
 
 const publishChanges = async (item: Item) => {
   await publisher?.publishChanges(item, 'system_actor')
-  await projection?.project(item.unpublishedEvents.map(e => new Event(item.entityId, e.name, e.details)))
+  await projection?.project(convertUnpublishedEvents(item))
 }
+
+const convertUnpublishedEvents = (entity: Item) =>
+  entity.unpublishedEvents.map(e => new Event(entity.entityId, e.name, JSON.stringify(e.details)))

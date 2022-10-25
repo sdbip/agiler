@@ -61,7 +61,7 @@ describe(PGItemProjection.name, () => {
 })
 
 const convertUnpublishedEvents = (entity: Item) =>
-  entity.unpublishedEvents.map(e => new Event(entity.entityId, e.name, e.details))
+  entity.unpublishedEvents.map(e => new Event(entity.entityId, e.name, JSON.stringify(e.details)))
 
 
 const getItemRow = async(id: string, database: PGDatabase) => {

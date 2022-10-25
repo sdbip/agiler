@@ -2,8 +2,13 @@ import { failFast } from '../../../shared/src/failFast.js'
 import { CanonicalEntityId } from './source.js'
 
 export class Event {
-  constructor(readonly entity: CanonicalEntityId, readonly name: string, readonly details: any) {
-    failFast.unlessObject(details, 'details')
+
+  get details() {
+    return JSON.parse(this.detailsJSON)
+  }
+
+  constructor(readonly entity: CanonicalEntityId, readonly name: string, readonly detailsJSON: string) {
+    failFast.unlessString(detailsJSON, 'detailsJSON')
     failFast.unlessString(name, 'name')
     failFast.unlessInstanceOf(CanonicalEntityId)(entity, 'entity')
   }

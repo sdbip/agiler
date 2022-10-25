@@ -41,7 +41,7 @@ describe(PGEventRepository.name, () => {
     const history = await eventRepository.getHistoryFor('id')
     expect(history?.events[0]).to.deep.equal({
       name: 'event',
-      details: '{"test":"value"}',
+      detailsJSON: '{"test":"value"}',
     })
   })
 

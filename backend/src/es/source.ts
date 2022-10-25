@@ -8,16 +8,20 @@ export class UnpublishedEvent {
 }
 
 export class PublishedEvent {
-  constructor(readonly name: string, readonly details: string) {
+  get details() {
+    return JSON.parse(this.detailsJSON)
+  }
+
+  constructor(readonly name: string, readonly detailsJSON: string) {
     failFast.unlessString(name, 'name')
-    failFast.unlessString(details, 'details')
+    failFast.unlessString(detailsJSON, 'details')
   }
 }
 
 export class EntityVersion {
   static new = new EntityVersion(-1)
 
-  private constructor(readonly value: number) {}
+  private constructor(readonly value: number) { }
 
   static of(value: number) {
     failFast.unlessNumber(value, 'version')
