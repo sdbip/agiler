@@ -1,12 +1,13 @@
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
 import { Item } from './domain/item.js'
-import { Event, EventProjection } from './es/projection.js'
+import { EventProjection } from './es/projection.js'
 import { EventPublisher, EventRepository } from './es/source.js'
+import { ImmediateSyncSystem } from './immediate-sync-system.js'
 
-let projection: EventProjection | undefined
+let immediate: ImmediateSyncSystem | undefined
 let eventRepository: EventRepository | undefined
 let publisher: EventPublisher | undefined
-export function setEventProjection(p: EventProjection) { projection = p }
+export function setEventProjection(p: EventProjection) { immediate = new ImmediateSyncSystem(p) }
 export function setEventRepository(r: EventRepository) { eventRepository = r }
 export function setPublisher(p: EventPublisher) { publisher = p }
 
@@ -79,8 +80,5 @@ const reconstituteItem = async (id: string) => {
 
 const publishChanges = async (item: Item) => {
   await publisher?.publishChanges(item, 'system_actor')
-  await projection?.project(convertUnpublishedEvents(item))
+  await immediate?.sync(item)
 }
-
-const convertUnpublishedEvents = (entity: Item) =>
-  entity.unpublishedEvents.map(e => new Event(entity.entityId, e.name, JSON.stringify(e.details)))
