@@ -27,6 +27,12 @@ export class Item extends Entity {
     task.addEvent(new UnpublishedEvent('ParentChanged', { parent: this.id }))
   }
 
+  remove(task: Item) {
+    if (task.parent !== this.id) return
+    this.addEvent(new UnpublishedEvent('ChildrenRemoved', { children: [ task.id ] }))
+    task.addEvent(new UnpublishedEvent('ParentChanged', { parent: null }))
+  }
+
   complete() {
     this.failFastUnlessTask()
 

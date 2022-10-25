@@ -6,6 +6,12 @@ export const reconstituteStory = (id: string) =>
     new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
   ])
 
+export const reconstituteStoryWithChildren = (childIds: string[], id: string) =>
+  Item.reconstitute(id, EntityVersion.new, [
+    new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
+    new PublishedEvent('ChildrenAdded', JSON.stringify({ children: childIds })),
+  ])
+
 export const reconstituteTask = (id: string) =>
   Item.reconstitute(id, EntityVersion.new, [])
 
