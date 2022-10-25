@@ -4,6 +4,7 @@
 - Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 - Higher purpose of the product?
+- Unformed ideas/Ice box
 
 - Let tasks depend on other tasks
 - Assign developers to tasks (we don't have developers yet)
@@ -33,17 +34,3 @@
   - Set parent of existing task
 
 # Ice Box
-- Why do some imports need `.js`?
-- move frontend.ts to a different folder.
-  The other code runs in the browser
-- Publish to Heroku. Or somewhere else?
-- Matcher/Specification pattern
-- Design a reporter for Web Test Runner?
-- Poll for events instead of pushing to Items table
-  - Find new events by `position` > last processed
-- Add back `task/` with a different implementation?
-    “What are the available tasks that I could do right now?”
-- No test fails if the client uses the wrong endpoints
-  - Sure, when they're directly imported from run.js, but what about others. Only sometimes...
-- There is an ESLint rule for enforcing file-extensions, but the resolver throws a fit 
-    just from adding `plugin:import/recommended` ("eslint-plugin-import": "^2.26.0")
