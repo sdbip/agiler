@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import { Item } from '../../src/domain/item'
 import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.add', () => {
@@ -32,6 +33,17 @@ describe('Item.add', () => {
     newParent.add(task)
 
     const events = task.unpublishedEvents.filter(e => e.name === 'ParentChanged')
+    expect(events).to.have.lengthOf(1)
+  })
+
+  it('doesn\'t remove "Created" event', () => {
+    const storyId = 'story_id'
+
+    const task = Item.new('New task')
+    const story = reconstituteStory(storyId)
+    story.add(task)
+
+    const events = task.unpublishedEvents.filter(e => e.name === 'Created')
     expect(events).to.have.lengthOf(1)
   })
 

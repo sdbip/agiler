@@ -18,7 +18,7 @@ export class MockItemRepository implements ItemRepository {
 }
 
 export class MockEventProjection implements EventProjection {
-  projectedEvents: UnpublishedEvent[] = []
+  projectedEvents: Event[] = []
 
   async project(events: Event[]) {
     this.projectedEvents = [ ...this.projectedEvents, ...events ]

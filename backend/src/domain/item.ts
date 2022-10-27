@@ -76,6 +76,7 @@ export class Item extends Entity {
 
   private removeEventMatching(predicate: (e: UnpublishedEvent) => boolean) {
     const existingEvent = this.unpublishedEvents.findIndex(predicate)
+    if (existingEvent < 0) return
     this.unpublishedEvents.splice(existingEvent, 1)
   }
 }
