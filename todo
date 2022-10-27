@@ -19,7 +19,6 @@
 
 # Tasks
 - Display children in UI
-  - Project ParentChanged to set the parent column
   - Request children when expanding a story
 
 # Ice Box

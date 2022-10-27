@@ -32,6 +32,11 @@ export class PGItemProjection implements EventProjection {
             'UPDATE Items SET assignee = $2 WHERE id = $1',
             [ event.entity.id, event.details.assignee ])
           break
+        case 'ParentChanged':
+          await this.database.query(
+            'UPDATE Items SET parent_id = $2 WHERE id = $1',
+          [ event.entity.id, event.details.parent ])
+        break
       }
     }
   }

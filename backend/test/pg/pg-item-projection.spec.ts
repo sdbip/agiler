@@ -57,9 +57,21 @@ describe(PGItemProjection.name, () => {
     const row = await getItemRow(item.id, database)
     expect(row?.assignee).to.equal('Agent 47')
   })
+
+  it('can update task parent', async () => {
+    const story = Item.new('This is the parent')
+    const task = Item.new('This is the child')
+    story.promote()
+    story.add(task)
+
+    await immediate.sync(task)
+
+    const row = await getItemRow(task.id, database)
+    expect(row?.parent_id).to.equal(story.id)
+  })
 })
 
 const getItemRow = async (id: string, database: PGDatabase) => {
   const res = await database.query('SELECT * FROM Items WHERE id = $1', [ id ])
   return res.rows[0]
-}  
+}
