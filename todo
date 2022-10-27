@@ -2,35 +2,35 @@
 + Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 * Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
+  - Upgrade Story to Feature
+  - Split Feature
 - Objectives and goals?
-- Higher purpose of the product?
+- Higher purpose of the product? Vision?
 - Unformed ideas/Ice box
 
 - Let tasks depend on other tasks
 - Assign developers to tasks (we don't have developers yet)
 - Prioritise features and stories
-- Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
-- Mark tasks as started
 - Use socket.io to remove finished tasks automatically
 
 # Stories
 * Make tasks children of stories
-  * Add Task to Story
-  - We don't use inProgress. Backend only requests notStarted items
-  - Add text-box for adding a task to a story
-  - Add chevron to collapse/expand a story
-- Prioritise stories
-- Finish task automatically when last task is done
-- Add story details
-- Allow story title to be changed
-- Add text describing the purpose of a story
-- Add text describing the purpose of a task
-- Upgrade Story to Feature
-- Split Feature
+- Finish story automatically when last task is done
 
 # Tasks
-- Update the frontend to use new APIs
 - Display children in UI
-- Bug: Children are not "Created"
+  - Add parent column to Items
+  - Project ParentChanged to set the parent column
+  - Exclude parented item in get/ (all)
+  - Request children when expanding a story
 
 # Ice Box
+- Create a propery sync function
+  - Update database by polling
+  - Or maintain a complete state in memory
+- Allow story title to be changed
+- Prioritise stories
+- Add story details
+- Add text describing the purpose of a story
+- Add text describing the purpose of a task
+- Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
