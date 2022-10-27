@@ -1,12 +1,12 @@
 export const addClass = (element: Element, className: string) => {
   if (hasClass(element, className)) return
-  element.className = `${element.className} ${className}`
+  element.className = `${element.className} ${className}`.trim()
 }
 
 export const removeClass = (element: Element, className: string) => {
   while (hasClass(element, className)) {
     const index = indexOfClassName(element.className, className, 0)
-    element.className = `${element.className.substring(0, index)}${element.className.substring(index + className.length)}`
+    element.className = `${element.className.substring(0, index)}${element.className.substring(index + className.length)}`.trim()
   }
 }
 
@@ -24,6 +24,13 @@ const indexOfClassName = (s: string, className: string, index: number) => {
     if (isGoodStart() && isGoodEnd()) return index
 
     index++
-  } while(index >= 0)
+  } while (index >= 0)
   return index
+}
+
+export const toggleClass = (element: Element, className: string) => {
+  if (hasClass(element, className))
+    removeClass(element, className)
+  else
+    addClass(element, className)
 }

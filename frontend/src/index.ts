@@ -3,7 +3,7 @@ import readModel from './readModel'
 import writeModel from './writeModel'
 import { render } from './Templates'
 import { delay } from './delay'
-import { addClass, removeClass } from './class'
+import { addClass, removeClass, toggleClass } from './class'
 import { getElement, getElements } from './getElements'
 
 updateItems()
@@ -13,9 +13,9 @@ updateItems()
 type EventArgs<
     ElementType extends HTMLElement | void,
     EventType extends Event | void
-  > = {element: ElementType, event: EventType}
+  > = {element: ElementType, event: EventType, id: string}
 
-globals.toggle = async function({ element, event }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+globals.completeTask = async function({ element, event, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
   if (event.target !== element) return
 
   const wasCheckboxClicked = element instanceof HTMLInputElement
@@ -23,30 +23,38 @@ globals.toggle = async function({ element, event }: EventArgs<HTMLDivElement | H
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
   checkbox.disabled = true
 
-  await writeModel.completeTask(checkbox.id)
+  await writeModel.completeTask(id)
   await delay(200)
   await updateItems()
 }
 
-globals.addTaskIfEnter = async function({ event }: EventArgs<void, KeyboardEvent>) {
+globals.addTaskIfEnter = async function({ event, id }: EventArgs<void, KeyboardEvent>) {
   if (event.metaKey || event.ctrlKey || event.altKey) return
   if (event.key !== 'Enter') return
 
-  await globals.addTask()
+  await globals.addTask({ id })
 }
 
-globals.addTask = async function() {
-  const titleInput = getElement('#item-title') as HTMLInputElement
+globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
+  const titleInput = getElement(id ? `#item-title-${id}` : '#item-title') as HTMLInputElement
   if (!titleInput.value) return
-  
-  console.log('add task', await writeModel.addTask(titleInput.value))
+
+  console.log('add task', await writeModel.addTask(titleInput.value, id))
   titleInput.value = ''
   await updateItems()
 }
 
-globals.promote = async function({ element }: EventArgs<HTMLElement, Event>) {
-  await writeModel.promoteTask(element.id.replace(/^promote-/, ''))
+globals.promote = async function({ id }: EventArgs<HTMLElement, Event>) {
+  await writeModel.promoteTask(id)
   await updateItems()
+}
+
+globals.toggleDisclosed = async function({ element, id }: EventArgs<HTMLElement, Event>) {
+  const collapsibleId = `#collapsible-story-${id}`
+  const collapsible = getElement(collapsibleId)
+  if (collapsible) toggleClass(collapsible, 'collapsed')
+
+  toggleClass(element, 'disclosed')
 }
 
 // END EVENT HANDLERS
@@ -54,7 +62,7 @@ globals.promote = async function({ element }: EventArgs<HTMLElement, Event>) {
 async function updateItems() {
   const items = await readModel.fetchItems()
 
-  const itemListElement = getElement('#item-list')  
+  const itemListElement = getElement('#item-list')
   if (itemListElement) {
     const newItems = findNewItems(itemListElement, items)
     const oldElements = findObsoleteElements(itemListElement, items)
@@ -71,6 +79,9 @@ async function updateItems() {
       },
       canPromote: () => function(this: any, text: string, render: any) {
         return this.type === 'Task' ? render(text) : ''
+      },
+      hasChildren: () => function(this: any, text: string, render: any) {
+        return this.type !== 'Task' ? render(text) : ''
       },
     })
     await delay(1)

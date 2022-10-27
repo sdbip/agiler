@@ -29,5 +29,8 @@
 - Split Feature
 
 # Tasks
+- Update the frontend to use new APIs
+- Display children in UI
+- Bug: Children are not "Created"
 
 # Ice Box
