@@ -11,8 +11,8 @@ export class PGItemRepository implements ItemRepository {
 
   async itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]> {
     const res = await this.database.query(
-      'SELECT * FROM Items WHERE progress = $1',
-      [ specification.progress ])
+      `SELECT * FROM Items WHERE ${whereClause(specification)}`,
+      parameters(specification))
     return res.rows
   }
 
@@ -25,7 +25,18 @@ export class PGItemRepository implements ItemRepository {
 
   async add(item: ItemDTO) {
     await this.database.query(
-      'INSERT INTO Items (id, title, progress, type) VALUES ($1, $2, $3, $4)',
-      [ item.id, item.title, item.progress, item.type ])
+      'INSERT INTO Items (id, title, progress, type, parent_id) VALUES ($1, $2, $3, $4, $5)',
+      [ item.id, item.title, item.progress, item.type, item.parentId ])
   }
+}
+
+const whereClause = (specification: ItemSpecification) => {
+  const result = []
+  if (specification.progress) result.push('progress = $1')
+  if (specification.parent === null) result.push('parent_id IS NULL')
+  return result.join(' AND ')
+}
+
+const parameters = (specification: ItemSpecification) => {
+  return [ specification.parent, specification.progress ].filter(p => p)
 }

@@ -8,7 +8,7 @@ describe(PGItemRepository.name, () => {
   let repository: PGItemRepository
   let database: PGDatabase
 
-  before(async () => {
+  beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
     if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
 
@@ -20,7 +20,7 @@ describe(PGItemRepository.name, () => {
     await database.query(schemaDDL.toString('utf-8'))
   })
 
-  after(async () => {
+  afterEach(async () => {
     database.close()
   })
 
@@ -37,7 +37,7 @@ describe(PGItemRepository.name, () => {
     expect(storedRows.map(t => t.id)).contain('task')
   })
 
-  it('ignores completed tasks', async () => {
+  it('excludes completed tasks', async () => {
     await repository.add({
       id: 'completed',
       type: ItemType.Task,
@@ -48,6 +48,20 @@ describe(PGItemRepository.name, () => {
     const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).not.contain('completed')
+  })
+
+  it('excludes subtasks', async () => {
+    await repository.add({
+      id: 'subtask',
+      type: ItemType.Task,
+      title: 'Subtask',
+      progress: Progress.notStarted,
+      parentId: 'a_parent',
+    })
+
+    const storedRows = await repository.itemsWithSpecification({ parent: null })
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).not.contain('subtask')
   })
 
   it('includes stories', async () => {

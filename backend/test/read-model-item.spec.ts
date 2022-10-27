@@ -57,5 +57,12 @@ describe('read model', () => {
       expect(response.statusCode).to.equal(200)
       expect(itemRepository.lastRequestedSpecfication).to.deep.include({ progress: Progress.notStarted })
     })
+
+    it('requests unparented items only', async () => {
+      const response = await get(_ + '/item')
+
+      expect(response.statusCode).to.equal(200)
+      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ parent: null })
+    })
   })
 })

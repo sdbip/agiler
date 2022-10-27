@@ -7,4 +7,5 @@ export type ItemDTO = {
   readonly title: string
   readonly progress: Progress
   readonly assignee?: string
+  readonly parentId?: string
 }

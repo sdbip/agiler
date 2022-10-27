@@ -19,9 +19,7 @@
 
 # Tasks
 - Display children in UI
-  - Add parent column to Items
   - Project ParentChanged to set the parent column
-  - Exclude parented item in get/ (all)
   - Request children when expanding a story
 
 # Ice Box
