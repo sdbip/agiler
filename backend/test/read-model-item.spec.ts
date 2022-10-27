@@ -16,11 +16,11 @@ describe('read model', () => {
 
   before(() => {
     backend.listenAtPort(TEST_PORT)
-  })  
+  })
 
   after(() => {
     backend.stopListening()
-  })  
+  })
 
   describe('get /item', () => {
 
@@ -55,7 +55,7 @@ describe('read model', () => {
       const response = await get(_ + '/item')
 
       expect(response.statusCode).to.equal(200)
-      expect(itemRepository.lastRequestedProgress).to.equal(Progress.notStarted)
+      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ progress: Progress.notStarted })
     })
   })
 })

@@ -32,7 +32,7 @@ describe(PGItemRepository.name, () => {
       progress: Progress.notStarted,
     })
 
-    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).contain('task')
   })
@@ -45,7 +45,7 @@ describe(PGItemRepository.name, () => {
       progress: Progress.completed,
     })
 
-    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).not.contain('completed')
   })
@@ -58,7 +58,7 @@ describe(PGItemRepository.name, () => {
       progress: Progress.notStarted,
     })
 
-    const storedRows = await repository.itemsWithProgress(Progress.notStarted)
+    const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).to.contain('story')
   })

@@ -1,8 +1,12 @@
 import { setupServer } from '../../shared/src/server.js'
 import { ItemDTO, Progress } from './dtos/item-dto.js'
 
+export type ItemSpecification = {
+  progress?: Progress
+}
+
 export interface ItemRepository {
-  itemsWithProgress(progress: Progress): Promise<ItemDTO[]>
+  itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]>
 }
 
 let itemRepository: ItemRepository
@@ -10,7 +14,7 @@ export function setRepository(r: ItemRepository) { itemRepository = r }
 
 export const server = setupServer({})
 server.get('/item', async () => {
-  const items = await itemRepository.itemsWithProgress(Progress.notStarted)
+  const items = await itemRepository.itemsWithSpecification({ progress: Progress.notStarted })
   return items.map(t => ({ id: t.id, title: t.title, type: t.type }))
 })
 

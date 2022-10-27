@@ -1,5 +1,4 @@
-import { ItemRepository } from '../src/read-model'
-import { Progress } from '../src/domain/item'
+import { ItemRepository, ItemSpecification } from '../src/read-model'
 import {
   Entity, EntityHistory, CanonicalEntityId,
   UnpublishedEvent, EventPublisher, EventRepository,
@@ -8,11 +7,11 @@ import { Event, EventProjection } from '../src/es/projection'
 import { ItemDTO } from '../src/dtos/item-dto'
 
 export class MockItemRepository implements ItemRepository {
-  lastRequestedProgress?: Progress
+  lastRequestedSpecfication?: ItemSpecification
   itemsToReturn: ItemDTO[] = []
 
-  async itemsWithProgress(progress: Progress): Promise<ItemDTO[]> {
-    this.lastRequestedProgress = progress
+  async itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]> {
+    this.lastRequestedSpecfication = specification
     return this.itemsToReturn
   }
 }

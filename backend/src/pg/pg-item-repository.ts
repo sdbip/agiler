@@ -1,5 +1,5 @@
-import { ItemRepository } from '../read-model'
-import { ItemDTO, Progress } from '../dtos/item-dto.js'
+import { ItemRepository, ItemSpecification } from '../read-model'
+import { ItemDTO } from '../dtos/item-dto.js'
 import { PGDatabase } from './pg-database'
 
 export class PGItemRepository implements ItemRepository {
@@ -9,10 +9,10 @@ export class PGItemRepository implements ItemRepository {
     this.database = database
   }
 
-  async itemsWithProgress(progress: Progress) {
+  async itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]> {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE progress = $1',
-      [ progress ])
+      [ specification.progress ])
     return res.rows
   }
 
