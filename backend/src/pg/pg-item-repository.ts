@@ -10,8 +10,10 @@ export class PGItemRepository implements ItemRepository {
   }
 
   async itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]> {
+    const clause = whereClause(specification)
+    const query = clause ? `SELECT * FROM Items WHERE ${clause}` : 'SELECT * FROM Items'
     const res = await this.database.query(
-      `SELECT * FROM Items WHERE ${whereClause(specification)}`,
+      query,
       parameters(specification))
     return res.rows
   }
@@ -34,6 +36,7 @@ const whereClause = (specification: ItemSpecification) => {
   const result = []
   if (specification.progress) result.push('progress = $1')
   if (specification.parent === null) result.push('parent_id IS NULL')
+  if (specification.parent) result.push('parent_id = $1')
   return result.join(' AND ')
 }
 

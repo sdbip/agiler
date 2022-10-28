@@ -76,4 +76,46 @@ describe(PGItemRepository.name, () => {
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).to.contain('story')
   })
+
+  it('only returns subtasks', async () => {
+    await repository.add({
+      id: 'subtask',
+      type: ItemType.Task,
+      title: 'Subtask',
+      progress: Progress.notStarted,
+      parentId: 'a_parent',
+    })
+
+    await repository.add({
+      id: 'other_task',
+      type: ItemType.Task,
+      title: 'Stand-alone task',
+      progress: Progress.notStarted,
+    })
+
+    const storedRows = await repository.itemsWithSpecification({ parent: 'a_parent' })
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).to.contain('subtask')
+    expect(storedRows.map(t => t.id)).to.not.contain('other_task')
+  })
+
+  it('returns everything if not provided a specification', async () => {
+    await repository.add({
+      id: 'subtask',
+      type: ItemType.Task,
+      title: 'Subtask',
+      progress: Progress.notStarted,
+      parentId: 'a_parent',
+    })
+
+    await repository.add({
+      id: 'other_task',
+      type: ItemType.Task,
+      title: 'Stand-alone task',
+      progress: Progress.notStarted,
+    })
+
+    const storedRows = await repository.itemsWithSpecification({ })
+    expect(storedRows).to.have.lengthOf(2)
+  })
 })
