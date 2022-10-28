@@ -37,7 +37,7 @@ describe(PGItemRepository.name, () => {
     expect(storedRows.map(t => t.id)).contain('task')
   })
 
-  it('excludes completed tasks', async () => {
+  it('can be set to only include completed tasks', async () => {
     await repository.add({
       id: 'completed',
       type: ItemType.Task,
@@ -50,7 +50,7 @@ describe(PGItemRepository.name, () => {
     expect(storedRows.map(t => t.id)).not.contain('completed')
   })
 
-  it('excludes subtasks', async () => {
+  it('excludes subtasks if specified', async () => {
     await repository.add({
       id: 'subtask',
       type: ItemType.Task,
@@ -77,7 +77,7 @@ describe(PGItemRepository.name, () => {
     expect(storedRows.map(t => t.id)).to.contain('story')
   })
 
-  it('only returns subtasks', async () => {
+  it('can be specified to only returns subtasks of a specific parent', async () => {
     await repository.add({
       id: 'subtask',
       type: ItemType.Task,
@@ -94,6 +94,28 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ parent: 'a_parent' })
+    expect(storedRows).to.exist
+    expect(storedRows.map(t => t.id)).to.contain('subtask')
+    expect(storedRows.map(t => t.id)).to.not.contain('other_task')
+  })
+
+  it('allows specifying both parent and progress', async () => {
+    await repository.add({
+      id: 'subtask',
+      type: ItemType.Task,
+      title: 'Subtask',
+      progress: Progress.notStarted,
+      parentId: 'a_parent',
+    })
+
+    await repository.add({
+      id: 'other_task',
+      type: ItemType.Task,
+      title: 'Stand-alone task',
+      progress: Progress.notStarted,
+    })
+
+    const storedRows = await repository.itemsWithSpecification({ parent: 'a_parent', progress: Progress.notStarted })
     expect(storedRows).to.exist
     expect(storedRows.map(t => t.id)).to.contain('subtask')
     expect(storedRows.map(t => t.id)).to.not.contain('other_task')

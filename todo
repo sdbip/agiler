@@ -18,11 +18,10 @@
 - Finish story automatically when last task is done
 
 # Tasks
-* Endpoint to fetch children of a story
+* Show progress indicator to show that something is happening
 - Call the endpoint when expanding a story
-- Show progress indicator to show that something is happening
 - Display the children when ready
-- Handle if the requet takes too long?
+- Handle if the request takes too long?
 
 # Ice Box
 - Create a propery sync function

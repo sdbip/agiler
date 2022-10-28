@@ -19,6 +19,11 @@ server.get('/item', async () => {
   return items.map(t => ({ id: t.id, title: t.title, type: t.type }))
 })
 
+server.get('/item/:id/task', async (request) => {
+  const items = await itemRepository.itemsWithSpecification({ progress: Progress.notStarted, parent: request.params.id })
+  return items.map(t => ({ id: t.id, title: t.title, type: t.type }))
+})
+
 const s = server.finalize()
 export const listenAtPort = s.listenAtPort.bind(s)
 export const stopListening = s.stopListening.bind(s)

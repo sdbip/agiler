@@ -36,10 +36,10 @@ const whereClause = (specification: ItemSpecification) => {
   const result = []
   if (specification.progress) result.push('progress = $1')
   if (specification.parent === null) result.push('parent_id IS NULL')
-  if (specification.parent) result.push('parent_id = $1')
+  if (specification.parent) result.push('parent_id = $' + (specification.progress ? 2 : 1))
   return result.join(' AND ')
 }
 
 const parameters = (specification: ItemSpecification) => {
-  return [ specification.parent, specification.progress ].filter(p => p)
+  return [ specification.progress, specification.parent ].filter(p => p)
 }
