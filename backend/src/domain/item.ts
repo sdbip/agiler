@@ -15,7 +15,7 @@ export class Item extends Entity {
     failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be promoted`)
 
     this.itemType = ItemType.Story
-    this.addEvent({ name: 'TypeChanged', details: { type: ItemType.Story } })
+    this.addEvent(new UnpublishedEvent('TypeChanged', { type: ItemType.Story }))
   }
 
   add(task: Item) {
@@ -39,19 +39,19 @@ export class Item extends Entity {
   complete() {
     failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be completed`)
 
-    this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.completed } })
+    this.addEvent(new UnpublishedEvent('ProgressChanged', { progress: Progress.completed }))
   }
 
   assign(member: string) {
     failFast.unless(this.itemType === ItemType.Task, `Only ${ItemType.Task} items may be assigned`)
 
-    this.addEvent({ name: 'AssigneeChanged', details: { assignee: member } })
-    this.addEvent({ name: 'ProgressChanged', details: { progress: Progress.inProgress } })
+    this.addEvent(new UnpublishedEvent('AssigneeChanged', { assignee: member }))
+    this.addEvent(new UnpublishedEvent('ProgressChanged', { progress: Progress.inProgress }))
   }
 
   static new(title: string): Item {
     const item = new Item(randomUUID(), EntityVersion.new)
-    item.addEvent({ name: 'Created', details: { title, type: ItemType.Task } })
+    item.addEvent(new UnpublishedEvent('Created', { title, type: ItemType.Task }))
     return item
   }
 

@@ -51,6 +51,7 @@ export abstract class Entity {
   }
 
   protected addEvent(event: UnpublishedEvent) {
+    failFast.unlessInstanceOf(UnpublishedEvent)(event, 'event')
     this.unpublishedEvents.push(event)
   }
 }
