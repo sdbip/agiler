@@ -75,10 +75,22 @@ input[type='checkbox'] {
   height: 55px;
   overflow-y: hidden;
   transition: height .2s;
+  position: relative;
 }
 
 .collapsible.collapsed {
   height: 0;
+}
+
+.collapsible > .spinner {
+  position: absolute;
+  height: 20px;
+  right: -5px;
+  top: -5px;
+}
+
+.spinner.inactive {
+  display: none;
 }
 
 input[type="text"] {

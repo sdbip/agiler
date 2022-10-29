@@ -18,9 +18,9 @@
 - Finish story automatically when last task is done
 
 # Tasks
-* Show progress indicator to show that something is happening
-- Call the endpoint when expanding a story
+* Call the endpoint when expanding a story
 - Display the children when ready
+- Disable/hide progress indicator
 - Handle if the request takes too long?
 
 # Ice Box

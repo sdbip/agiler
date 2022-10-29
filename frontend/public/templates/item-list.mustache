@@ -13,6 +13,7 @@
   {{#hasChildren}}
   <div class="chevron" id="disclosure-story-{{id}}" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})">×</div>
   <div class="collapsible collapsed" id="collapsible-story-{{id}}">
+    <img class="spinner" src="public/images/spinner.gif">
     <input type="text" id="item-title-{{id}}" onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="Do another thing">
     <button onclick="addTask({element: this, event, id: '{{id}}'})">Add Subtask</button>
     <div id="item-list-{{id}}" class="item-list"></div>
