@@ -21,17 +21,20 @@ type EventArgs<
     EventType extends Event | void
   > = {element: ElementType, event: EventType, id: string}
 
-  globals.makeDefault = async ({ id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) => {
+  globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>) => {
     const itemElement = getItemElement(id)
     const button = itemElement
       ? getElement('button', itemElement)
       : getElement('#button')
     if (!button) return
 
-    addClass(button, 'default')
+    if (element.value)
+      addClass(button, 'default')
+    else
+      removeClass(button, 'default')
   }
 
-  globals.unmakeDefault = async ({ id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) => {
+  globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
     const itemElement = getItemElement(id)
     const button = itemElement
       ? getElement('button', itemElement)
