@@ -30,9 +30,9 @@ globals.completeTask = async function({ element, id }: EventArgs<HTMLDivElement 
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getElement(`#item-${id}`)?.parentElement?.parentElement?.parentElement
+  const storyElement = getParentItemElement(id)
   if (!storyElement) return
-  const parentId = storyElement.id.replace('item-', '')
+  const parentId = getItemId(storyElement)
 
   const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
@@ -49,14 +49,15 @@ globals.addTaskIfEnter = async function({ event, id }: EventArgs<void, KeyboardE
 }
 
 globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
-  const titleInput = getElement(id ? `#item-title-${id}` : '#item-title') as HTMLInputElement
+  const storyElement = getItemElement(id)
+  const titleInput = getElement('.item-title', storyElement || undefined) as HTMLInputElement
   if (!titleInput.value) return
 
   console.log('add task', await writeModel.addTask(titleInput.value, id))
   titleInput.value = ''
-  if (!id) return await updateItems()
+  if (!storyElement) return await updateItems()
 
-  const collapsible = getElement(`#collapsible-story-${id}`)
+  const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
 
   await updateChildItems(id)
@@ -68,11 +69,16 @@ globals.promote = async function({ id }: EventArgs<HTMLElement, Event>) {
   await updateItems()
 }
 
-globals.toggleDisclosed = async function({ element, id }: EventArgs<HTMLElement, Event>) {
+globals.toggleDisclosed = async function({ id }: EventArgs<HTMLElement, Event>) {
 
-  toggleClass(element, ClassName.disclosed)
+  const storyElement = getItemElement(id)
 
-  const isDisclosed = hasClass(element, ClassName.disclosed)
+  const chevronElement = getElement('.chevron', storyElement)
+  if (!chevronElement) return
+
+  toggleClass(chevronElement, ClassName.disclosed)
+
+  const isDisclosed = hasClass(chevronElement, ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
   await animateCollapsible(id, isDisclosed)
@@ -102,12 +108,14 @@ async function updateItems() {
 }
 
 const updateChildItems = async (parentId: string) => {
-  const storyElement = getElement(`#item-${parentId}`)
-  const spinner = storyElement && getElement('.spinner', storyElement)
+  const storyElement = getItemElement(parentId)
+  if (!storyElement) return
+
+  const spinner = getElement('.spinner', storyElement)
   if (spinner) removeClass(spinner, ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-  const itemListElement = getElement(`#item-list-${parentId}`)
+  const itemListElement = getElement('.item-list', storyElement)
   if (itemListElement) {
     await renderItems(items, itemListElement)
 
@@ -141,7 +149,8 @@ const renderItems = async (items: any, itemListElement: HTMLElement) => {
 }
 
 const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
-  const collapsible = getElement(`#collapsible-story-${parentId}`)
+  const storyElement = getItemElement(parentId)
+  const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
 
   collapsible.style.height = '0'
@@ -151,7 +160,8 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
 }
 
 const measureCollapsible = async (parentId: string) =>{
-  const collapsible = getElement(`#collapsible-story-${parentId}`)
+  const storyElement = getItemElement(parentId)
+  const collapsible = getElement('.collapsible', storyElement)
   return collapsible ? await measureIntrinsicHeight(collapsible) : '0'
 }
 
@@ -177,3 +187,20 @@ const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
   return `${intrinsicHeight}px`
 }
 
+const getItemId = (element: HTMLElement) => element.id.replace('item-', '')
+
+const getItemElement = (id: string) => {
+  const element = getElement(`#item-${id}`)
+  if (!element) throw new Error(`element with id ${id} not found`)
+  return element
+}
+
+const getParentItemElement = (element: HTMLElement | string | null): HTMLElement | null => {
+  if (typeof element === 'string')
+    return getParentItemElement(getItemElement(element))
+
+  const parent = element?.parentElement
+  if (!parent) return null
+  if (parent.id.startsWith('item-')) return parent
+  return getParentItemElement(parent)
+}

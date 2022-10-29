@@ -1,7 +1,7 @@
 {{#items}}
 <div id="item-{{id}}" class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" {{#canPromote}} onclick="completeTask({element: this, event, id: '{{id}}'})" {{/canPromote}}>
   {{#canPromote}}
-  <span class="promote-button" id="promote-{{id}}" onclick="promote({element: this, event, id: '{{id}}'})">✵</span>
+  <span class="promote-button" onclick="promote({element: this, event, id: '{{id}}'})">✵</span>
   {{/canPromote}}
   {{#canComplete}}
   <input type="checkbox" onchange="completeTask({element: this, event, id: '{{id}}'})"
@@ -11,13 +11,13 @@
   {{/canComplete}}
   <span>{{title}}</span>
   {{#hasChildren}}
-  <div class="chevron" id="disclosure-story-{{id}}">+</div>
+  <div class="chevron"  >+</div>
   <div class="disclosure-button" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})"></div>
   <img class="spinner inactive" src="public/images/spinner.gif">
-  <div class="collapsible" style="height: 0" id="collapsible-story-{{id}}">
-    <input type="text" id="item-title-{{id}}" onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="Do another thing">
+  <div class="collapsible" style="height: 0">
+    <input type="text" class="item-title" onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="Do another thing">
     <button onclick="addTask({element: this, event, id: '{{id}}'})">Add Subtask</button>
-    <div id="item-list-{{id}}" class="item-list"></div>
+    <div class="item-list"></div>
   </div>
   {{/hasChildren}}
 </div>
