@@ -14,14 +14,9 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-* Display children in UI
 - Finish story automatically when last task is done
 
 # Tasks
-* Call the endpoint when expanding a story
-- Display the children when ready
-- Disable/hide progress indicator
-- Handle if the request takes too long?
 
 # Ice Box
 - Create a propery sync function

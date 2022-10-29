@@ -11,7 +11,8 @@
   {{/canComplete}}
   <span>{{title}}</span>
   {{#hasChildren}}
-  <div class="chevron" id="disclosure-story-{{id}}" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})">×</div>
+  <div class="chevron" id="disclosure-story-{{id}}">+</div>
+  <div class="disclosure-button" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})"></div>
   <img class="spinner inactive" src="public/images/spinner.gif">
   <div class="collapsible" style="height: 0" id="collapsible-story-{{id}}">
     <input type="text" id="item-title-{{id}}" onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="Do another thing">
