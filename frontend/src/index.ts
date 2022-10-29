@@ -21,9 +21,7 @@ type EventArgs<
     EventType extends Event | void
   > = {element: ElementType, event: EventType, id: string}
 
-globals.completeTask = async function({ element, event, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
-  if (event.target !== element) return
-
+globals.completeTask = async function({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
   const wasCheckboxClicked = element instanceof HTMLInputElement
   const checkbox = wasCheckboxClicked ? element : getElement('input', element) as HTMLInputElement
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
@@ -31,7 +29,16 @@ globals.completeTask = async function({ element, event, id }: EventArgs<HTMLDivE
 
   await writeModel.completeTask(id)
   await delay(200)
-  await updateItems()
+
+  const storyElement = getElement(`#item-${id}`)?.parentElement?.parentElement?.parentElement
+  if (!storyElement) return
+  const parentId = storyElement.id.replace('item-', '')
+
+  const collapsible = getElement('.collapsible', storyElement)
+  if (!collapsible) return
+
+  await updateChildItems(parentId)
+  collapsible.style.height = await measureIntrinsicHeight(collapsible)
 }
 
 globals.addTaskIfEnter = async function({ event, id }: EventArgs<void, KeyboardEvent>) {
@@ -47,7 +54,13 @@ globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
 
   console.log('add task', await writeModel.addTask(titleInput.value, id))
   titleInput.value = ''
-  await updateItems()
+  if (!id) return await updateItems()
+
+  const collapsible = getElement(`#collapsible-story-${id}`)
+  if (!collapsible) return
+
+  await updateChildItems(id)
+  collapsible.style.height = await measureCollapsible(id)
 }
 
 globals.promote = async function({ id }: EventArgs<HTMLElement, Event>) {
@@ -94,7 +107,6 @@ const updateChildItems = async (parentId: string) => {
   if (spinner) removeClass(spinner, ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-
   const itemListElement = getElement(`#item-list-${parentId}`)
   if (itemListElement) {
     await renderItems(items, itemListElement)
@@ -135,7 +147,19 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
   collapsible.style.height = '0'
   if (!isDisclosed) return
 
+  collapsible.style.height = await measureCollapsible(parentId)
+}
+
+const measureCollapsible = async (parentId: string) =>{
+  const collapsible = getElement(`#collapsible-story-${parentId}`)
+  return collapsible ? await measureIntrinsicHeight(collapsible) : '0'
+}
+
+const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
+  const origHeight = collapsible.style.height
+
   await delay(1)
+
   // Hide the element while measuring
   collapsible.style.visibility = 'hidden'
   collapsible.style.position = 'absolute'
@@ -145,10 +169,11 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
   const intrinsicHeight = collapsible.offsetHeight
 
   // Restore the style so that the animation can start from zero
-  collapsible.style.height = '0'
+  collapsible.style.height = origHeight
   collapsible.style.visibility = ''
   collapsible.style.position = ''
 
   await delay(100)
-  collapsible.style.height = `${intrinsicHeight}px`
+  return `${intrinsicHeight}px`
 }
+

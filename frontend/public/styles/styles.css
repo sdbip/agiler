@@ -86,7 +86,7 @@ input[type='checkbox'] {
 
 .collapsible {
   overflow-y: hidden;
-  transition: height .2s;
+  transition: height .6s ease;
   position: relative;
 }
 
