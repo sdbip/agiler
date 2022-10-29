@@ -1,6 +1,6 @@
 # Features
 + Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
-* Stories (business value, show progress to a stakeholder)
++ Stories (business value, show progress to a stakeholder)
 - Features (business goals, marketable/testable/usable/lovable)
   - Upgrade Story to Feature
   - Split Feature
@@ -14,12 +14,15 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-- Finish story automatically when last task is done
 
 # Tasks
+- Bug: Weird horizontal scrolling
+- Bug: Weird animation when adding/completing top-level tasks
+  - And when promoting them to stories
+- Add unit-tests for the UI
 
 # Ice Box
-- Create a propery sync function
+- Create a proper sync function
   - Update database by polling
   - Or maintain a complete state in memory
 - Allow story title to be changed
@@ -28,3 +31,4 @@
 - Add text describing the purpose of a story
 - Add text describing the purpose of a task
 - Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
+- Finish story automatically when last task is done
