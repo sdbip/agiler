@@ -1,5 +1,5 @@
 {{#items}}
-<div class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" {{#canPromote}} onclick="completeTask({element: this, event, id: '{{id}}'})" {{/canPromote}}>
+<div id="item-{{id}}" class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" {{#canPromote}} onclick="completeTask({element: this, event, id: '{{id}}'})" {{/canPromote}}>
   {{#canPromote}}
   <span class="promote-button" id="promote-{{id}}" onclick="promote({element: this, event, id: '{{id}}'})">✵</span>
   {{/canPromote}}
@@ -12,8 +12,8 @@
   <span>{{title}}</span>
   {{#hasChildren}}
   <div class="chevron" id="disclosure-story-{{id}}" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})">×</div>
-  <div class="collapsible collapsed" id="collapsible-story-{{id}}">
-    <img class="spinner" src="public/images/spinner.gif">
+  <img class="spinner inactive" src="public/images/spinner.gif">
+  <div class="collapsible" style="height: 0" id="collapsible-story-{{id}}">
     <input type="text" id="item-title-{{id}}" onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="Do another thing">
     <button onclick="addTask({element: this, event, id: '{{id}}'})">Add Subtask</button>
     <div id="item-list-{{id}}" class="item-list"></div>

@@ -7,4 +7,9 @@ export const fetchItems = async () => {
   return await response.json()
 }
 
-export default { fetchItems }
+export const fetchChildItems = async (parentId: string) => {
+  const response = await fetch(`${baseURL}/item/${parentId}/task`)
+  return await response.json()
+}
+
+export default { fetchItems, fetchChildItems }
