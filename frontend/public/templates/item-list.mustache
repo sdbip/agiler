@@ -1,5 +1,5 @@
 {{#items}}
-<div id="item-{{id}}" class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" {{#canPromote}} onclick="completeTask({element: this, event, id: '{{id}}'})" {{/canPromote}}>
+<div id="item-{{id}}" class="{{type}} no-select {{#isNew}} hidden {{/isNew}}" {{#canPromote}}" {{/canPromote}}>
   {{#canPromote}}
   <span class="promote-button" onclick="promote({element: this, event, id: '{{id}}'})">✵</span>
   {{/canPromote}}
@@ -7,7 +7,9 @@
   <input type="checkbox" onchange="completeTask({element: this, event, id: '{{id}}'})"
       {{#isCompleted}} checked {{/isCompleted}}
     >
-  <label for="{{id}}"></label>
+  <label for="{{id}}"
+    onclick="completeTask({element: this, event, id: '{{id}}'})"
+  ></label>
   {{/canComplete}}
   <span>{{title}}</span>
   {{#hasChildren}}

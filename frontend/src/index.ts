@@ -17,46 +17,49 @@ updateItems()
 // EVENT HANDLERS
 
 type EventArgs<
-    ElementType extends HTMLElement | void,
-    EventType extends Event | void
-  > = {element: ElementType, event: EventType, id: string}
+  ElementType extends HTMLElement | void,
+  EventType extends Event | void
+> = { element: ElementType, event: EventType, id: string }
 
-  globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>) => {
-    const itemElement = getItemElement(id)
-    const button = itemElement
-      ? getElement('button', itemElement)
-      : getElement('#button')
-    if (!button) return
+globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>) => {
+  const itemElement = getItemElement(id)
+  const button = itemElement
+    ? getElement('button', itemElement)
+    : getElement('#button')
+  if (!button) return
 
-    if (element.value)
-      addClass(button, 'default')
-    else
-      removeClass(button, 'default')
-  }
-
-  globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
-    const itemElement = getItemElement(id)
-    const button = itemElement
-      ? getElement('button', itemElement)
-      : getElement('#button')
-    if (!button) return
-
+  if (element.value)
+    addClass(button, 'default')
+  else
     removeClass(button, 'default')
-  }
+}
 
-  globals.completeTask = async function({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
+  const itemElement = getItemElement(id)
+  const button = itemElement
+    ? getElement('button', itemElement)
+    : getElement('#button')
+  if (!button) return
+
+  removeClass(button, 'default')
+}
+
+globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+
+  const taskElement = getItemElementOrThrow(id)
+
   const wasCheckboxClicked = element instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? element : getElement('input', element) as HTMLInputElement
-  if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
+  const checkbox = wasCheckboxClicked ? element : getElement('input', taskElement) as HTMLInputElement
+  checkbox.checked = true
   checkbox.disabled = true
 
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getParentItemElement(id)
-  if (!storyElement) return
-  const parentId = getItemId(storyElement)
+  const storyElement = getParentItemElement(taskElement)
+  if (!storyElement) return updateItems()
 
+  const parentId = getItemId(storyElement)
   const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
 
@@ -64,16 +67,18 @@ type EventArgs<
   collapsible.style.height = await measureIntrinsicHeight(collapsible)
 }
 
-globals.addTaskIfEnter = async function({ event, id }: EventArgs<void, KeyboardEvent>) {
+globals.addTaskIfEnter = async function ({ event, id }: EventArgs<void, KeyboardEvent>) {
   if (event.metaKey || event.ctrlKey || event.altKey) return
   if (event.key !== 'Enter') return
 
   await globals.addTask({ id })
 }
 
-globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
-  const storyElement = getItemElementOrThrow(id)
-  const titleInput = getElement('.item-title', storyElement || undefined) as HTMLInputElement
+globals.addTask = async function ({ id }: EventArgs<HTMLElement, Event>) {
+  const storyElement = getItemElement(id)
+  const titleInput = storyElement
+    ? getElement('.item-title', storyElement) as HTMLInputElement
+    : getElement('#item-title') as HTMLInputElement
   if (!titleInput.value) return
 
   console.log('add task', await writeModel.addTask(titleInput.value, id))
@@ -87,12 +92,12 @@ globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
   collapsible.style.height = await measureCollapsible(id)
 }
 
-globals.promote = async function({ id }: EventArgs<HTMLElement, Event>) {
+globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
   await writeModel.promoteTask(id)
   await updateItems()
 }
 
-globals.toggleDisclosed = async function({ id }: EventArgs<HTMLElement, Event>) {
+globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>) {
 
   const storyElement = getItemElementOrThrow(id)
 
@@ -150,7 +155,7 @@ const findObsoleteElements = (itemListElement: HTMLElement, items: any[]) =>
 
 const findNewItems = (itemListElement: HTMLElement, items: any) => {
   const existingIds = getElements('input', itemListElement)
-      .map(el => el.id)
+    .map(el => el.id)
   return items.filter((t: any) => existingIds.indexOf(t.id) < 0)
 }
 
@@ -180,7 +185,7 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
   collapsible.style.height = await measureCollapsible(parentId)
 }
 
-const measureCollapsible = async (parentId: string) =>{
+const measureCollapsible = async (parentId: string) => {
   const storyElement = getItemElementOrThrow(parentId)
   const collapsible = getElement('.collapsible', storyElement)
   return collapsible ? await measureIntrinsicHeight(collapsible) : '0'
@@ -218,12 +223,10 @@ const getItemElementOrThrow = (id: string) => {
 
 const getItemElement = (id: string) => getElement(`#item-${id}`)
 
-const getParentItemElement = (element: HTMLElement | string | null): HTMLElement | null => {
-  if (typeof element === 'string')
-    return getParentItemElement(getItemElementOrThrow(element))
-
+const getParentItemElement = (element: HTMLElement | null): HTMLElement | null => {
   const parent = element?.parentElement
   if (!parent) return null
-  if (parent.id.startsWith('item-')) return parent
+  if (parent.id.startsWith('item-') &&
+    !parent.id.startsWith('item-list')) return parent
   return getParentItemElement(parent)
 }
