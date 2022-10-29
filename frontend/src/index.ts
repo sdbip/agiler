@@ -21,7 +21,27 @@ type EventArgs<
     EventType extends Event | void
   > = {element: ElementType, event: EventType, id: string}
 
-globals.completeTask = async function({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+  globals.makeDefault = async ({ id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) => {
+    const itemElement = getItemElement(id)
+    const button = itemElement
+      ? getElement('button', itemElement)
+      : getElement('#button')
+    if (!button) return
+
+    addClass(button, 'default')
+  }
+
+  globals.unmakeDefault = async ({ id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) => {
+    const itemElement = getItemElement(id)
+    const button = itemElement
+      ? getElement('button', itemElement)
+      : getElement('#button')
+    if (!button) return
+
+    removeClass(button, 'default')
+  }
+
+  globals.completeTask = async function({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
   const wasCheckboxClicked = element instanceof HTMLInputElement
   const checkbox = wasCheckboxClicked ? element : getElement('input', element) as HTMLInputElement
   if (!wasCheckboxClicked) checkbox.checked = !checkbox.checked
@@ -49,7 +69,7 @@ globals.addTaskIfEnter = async function({ event, id }: EventArgs<void, KeyboardE
 }
 
 globals.addTask = async function({ id }: EventArgs<HTMLElement, Event>) {
-  const storyElement = getItemElement(id)
+  const storyElement = getItemElementOrThrow(id)
   const titleInput = getElement('.item-title', storyElement || undefined) as HTMLInputElement
   if (!titleInput.value) return
 
@@ -71,7 +91,7 @@ globals.promote = async function({ id }: EventArgs<HTMLElement, Event>) {
 
 globals.toggleDisclosed = async function({ id }: EventArgs<HTMLElement, Event>) {
 
-  const storyElement = getItemElement(id)
+  const storyElement = getItemElementOrThrow(id)
 
   const chevronElement = getElement('.chevron', storyElement)
   if (!chevronElement) return
@@ -108,9 +128,7 @@ async function updateItems() {
 }
 
 const updateChildItems = async (parentId: string) => {
-  const storyElement = getItemElement(parentId)
-  if (!storyElement) return
-
+  const storyElement = getItemElementOrThrow(parentId)
   const spinner = getElement('.spinner', storyElement)
   if (spinner) removeClass(spinner, ClassName.inactive)
 
@@ -149,7 +167,7 @@ const renderItems = async (items: any, itemListElement: HTMLElement) => {
 }
 
 const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
-  const storyElement = getItemElement(parentId)
+  const storyElement = getItemElementOrThrow(parentId)
   const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
 
@@ -160,7 +178,7 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
 }
 
 const measureCollapsible = async (parentId: string) =>{
-  const storyElement = getItemElement(parentId)
+  const storyElement = getItemElementOrThrow(parentId)
   const collapsible = getElement('.collapsible', storyElement)
   return collapsible ? await measureIntrinsicHeight(collapsible) : '0'
 }
@@ -189,15 +207,17 @@ const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
 
 const getItemId = (element: HTMLElement) => element.id.replace('item-', '')
 
-const getItemElement = (id: string) => {
-  const element = getElement(`#item-${id}`)
+const getItemElementOrThrow = (id: string) => {
+  const element = getItemElement(id)
   if (!element) throw new Error(`element with id ${id} not found`)
   return element
 }
 
+const getItemElement = (id: string) => getElement(`#item-${id}`)
+
 const getParentItemElement = (element: HTMLElement | string | null): HTMLElement | null => {
   if (typeof element === 'string')
-    return getParentItemElement(getItemElement(element))
+    return getParentItemElement(getItemElementOrThrow(element))
 
   const parent = element?.parentElement
   if (!parent) return null

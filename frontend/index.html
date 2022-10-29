@@ -9,8 +9,11 @@
 </head>
 <body>
   <h1>Agiler</h1>
-  <input type="text" id="item-title" onkeydown="addTaskIfEnter({element: this, event})" placeholder="Do another thing">
-  <button onclick="addTask({element: this, event})">Add Task</button>
+  <input type="text" id="item-title"
+    onfocus="makeDefault({element: this, event})"
+    onblur="unmakeDefault({element: this, event})"
+    onkeydown="addTaskIfEnter({element: this, event})" placeholder="What needs to be done?">
+  <button id="button" onclick="addTask({element: this, event})">+</button>
   <div id="item-list" class="item-list"></div>
 </body>
 </html>

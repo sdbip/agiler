@@ -112,17 +112,34 @@ input[type="text"] {
   outline-color: white;
 }
 
+.collapsible > input[type="text"] {
+  margin-top: 5px;
+  width: 146px;
+}
+
 button {
-  padding: 5px;
+  height: 23px;
+  width: 23px;
+
+  padding: 0;
   border: 1px solid silver;
-  border-radius: 5px;
+  border-radius: 2px;
+
   font-size: 10pt;
   background-color: white;
+}
+
+button.default {
+  background-color: dodgerblue;
 }
 
 button:hover {
   background-color: silver;
   transform: translateY(-1px);
+}
+
+button.default:hover {
+  background-color: dodgerblue;
 }
 
 button:active {
