@@ -3,7 +3,6 @@ import readModel from './readModel'
 import writeModel from './writeModel'
 import { render } from './Templates'
 import { delay } from './delay'
-import { addClass, hasClass, removeClass, toggleClass } from './class'
 import { ItemListTransition } from './item-list-transition'
 import { HTML } from './html'
 
@@ -11,6 +10,7 @@ enum ClassName {
   disclosed = 'disclosed',
   hidden = 'hidden',
   inactive = 'inactive',
+  default = 'default',
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -33,9 +33,9 @@ globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>
   if (!button) return
 
   if (element.value)
-    addClass(button.element, 'default')
+    button.addClass(ClassName.default)
   else
-    removeClass(button.element, 'default')
+    button.removeClass(ClassName.default)
 }
 
 globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
@@ -45,7 +45,7 @@ globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
     : HTML.single('#button')
   if (!button) return
 
-  removeClass(button.element, 'default')
+  button.removeClass(ClassName.default)
 }
 
 globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
@@ -104,9 +104,9 @@ globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
 globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>) {
 
   const storyElement = getItemElementOrThrow(id)
-  toggleClass(storyElement.element, ClassName.disclosed)
+  storyElement.toggleClass(ClassName.disclosed)
 
-  const isDisclosed = hasClass(storyElement.element, ClassName.disclosed)
+  const isDisclosed = storyElement.hasClass(ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
   const collapsible = HTML.single('.collapsible', storyElement)
@@ -128,27 +128,27 @@ async function updateItems() {
     const taggedItems = filter.taggedItems
     const oldElements = filter.obsoleteElements
 
-    for (const element of oldElements) addClass(element, 'hidden')
+    for (const element of oldElements) new HTML(element as HTMLElement).addClass(ClassName.hidden)
 
     await delay(500)
     await renderItems(taggedItems, itemListElement.element)
     await delay(1)
 
     for (const html of HTML.all('.hidden', itemListElement))
-      removeClass(html.element, ClassName.hidden)
+      html.removeClass(ClassName.hidden)
   }
 }
 
 const updateChildItems = async (parentId: string) => {
   const storyElement = getItemElementOrThrow(parentId)
   const spinner = HTML.single('.spinner', storyElement)
-  if (spinner) removeClass(spinner.element, ClassName.inactive)
+  if (spinner) spinner.removeClass(ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
   const itemListElement = HTML.single('.item-list', storyElement)
   if (itemListElement) {
     await renderItems(items, itemListElement.element)
-    if (spinner) addClass(spinner.element, ClassName.inactive)
+    if (spinner) spinner.addClass(ClassName.inactive)
   }
 }
 
@@ -192,7 +192,7 @@ const updateCollapsibleSize = (collapsible: HTMLElement) => {
 
 const measureIntrinsicHeight = (collapsible: HTMLElement) => {
   measure.innerHTML = collapsible.innerHTML
-  for (const html of HTML.all('.hidden', new HTML(measure)))
-    removeClass(html.element, ClassName.hidden)
+  for (const element of HTML.all('.hidden', new HTML(measure)))
+    element.removeClass(ClassName.hidden)
   return measure.offsetHeight
 }

@@ -21,4 +21,42 @@ export class HTML {
       : rootElement.getElementsByTagName(selector)
     return [ ...elements ].map(e => new HTML(e as HTMLElement))
   }
+
+  addClass(className: string) {
+    if (this.hasClass(className)) return
+    this.element.className = `${this.element.className} ${className}`.trim()
+  }
+
+  removeClass(className: string) {
+    while (this.hasClass(className)) {
+      const index = indexOfClassName(this.element.className, className, 0)
+      this.element.className = `${this.element.className.substring(0, index)}${this.element.className.substring(index + className.length)}`.trim()
+    }
+  }
+
+  toggleClass(className: string) {
+    if (this.hasClass(className))
+      this.removeClass(className)
+    else
+      this.addClass(className)
+  }
+
+  hasClass(className: string) {
+    return indexOfClassName(this.element.className, className, 0) >= 0
+  }
+}
+
+const indexOfClassName = (s: string, className: string, index: number) => {
+  const isGoodStart = () => index === 0 || /\s/.test(s[index - 1])
+  const isGoodEnd = () => index + className.length === s.length ||
+    /\s/.test(s[index + className.length])
+
+  do {
+    index = s.indexOf(className, index)
+    if (index < 0) return index
+    if (isGoodStart() && isGoodEnd()) return index
+
+    index++
+  } while (index >= 0)
+  return index
 }
