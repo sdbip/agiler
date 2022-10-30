@@ -16,9 +16,6 @@
 # Stories
 
 # Tasks
-- Bug: Weird animation when adding/completing top-level tasks
-  - And when promoting them to stories
-- Add unit-tests for the UI
 
 # Ice Box
 - Create a proper sync function

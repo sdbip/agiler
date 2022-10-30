@@ -5,6 +5,7 @@ import { render } from './Templates'
 import { delay } from './delay'
 import { addClass, hasClass, removeClass, toggleClass } from './class'
 import { getElement, getElements } from './getElements'
+import { ItemListTransition } from './item-list-transition'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -89,7 +90,7 @@ globals.addTask = async function ({ id }: EventArgs<HTMLElement, Event>) {
   if (!collapsible) return
 
   await updateChildItems(id)
-  collapsible.style.height = await measureCollapsible(id)
+  collapsible.style.height = await measureIntrinsicHeight(collapsible)
 }
 
 globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
@@ -119,15 +120,14 @@ async function updateItems() {
 
   const itemListElement = getElement('#item-list')
   if (itemListElement) {
-    const newItems = findNewItems(itemListElement, items)
-    const oldElements = findObsoleteElements(itemListElement, items)
+    const filter = new ItemListTransition([ ...itemListElement.children ], items)
+    const taggedItems = filter.taggedItems
+    const oldElements = filter.obsoleteElements
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    for (const element of oldElements) addClass(element.parentElement!, 'hidden')
-    for (const item of newItems) item.isNew = true
+    for (const element of oldElements) addClass(element, 'hidden')
 
     await delay(500)
-    await renderItems(items, itemListElement)
+    await renderItems(taggedItems, itemListElement)
     await delay(1)
 
     for (const element of getElements('.hidden', itemListElement))
@@ -147,16 +147,6 @@ const updateChildItems = async (parentId: string) => {
 
     if (spinner) addClass(spinner, ClassName.inactive)
   }
-}
-
-const findObsoleteElements = (itemListElement: HTMLElement, items: any[]) =>
-  getElements('input', itemListElement)
-    .filter(el => items.every((t: any) => t.id !== el.id))
-
-const findNewItems = (itemListElement: HTMLElement, items: any) => {
-  const existingIds = getElements('input', itemListElement)
-    .map(el => el.id)
-  return items.filter((t: any) => existingIds.indexOf(t.id) < 0)
 }
 
 const renderItems = async (items: any, itemListElement: HTMLElement) => {
@@ -182,13 +172,7 @@ const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
   collapsible.style.height = '0'
   if (!isDisclosed) return
 
-  collapsible.style.height = await measureCollapsible(parentId)
-}
-
-const measureCollapsible = async (parentId: string) => {
-  const storyElement = getItemElementOrThrow(parentId)
-  const collapsible = getElement('.collapsible', storyElement)
-  return collapsible ? await measureIntrinsicHeight(collapsible) : '0'
+  collapsible.style.height = await measureIntrinsicHeight(collapsible)
 }
 
 const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
@@ -213,7 +197,7 @@ const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
   return `${intrinsicHeight}px`
 }
 
-const getItemId = (element: HTMLElement) => element.id.replace('item-', '')
+const getItemId = (element: Element) => element.id.replace('item-', '')
 
 const getItemElementOrThrow = (id: string) => {
   const element = getItemElement(id)
