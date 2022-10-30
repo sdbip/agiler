@@ -23,6 +23,9 @@
 * Make the browser code testable
   - measureIntrinsicSize
   - renderItems
+  - ItemListTransition
   - Find more code that can be modularised
+- Make HTML.element private
+- Rename HTML to **Element
 
 # Ice Box

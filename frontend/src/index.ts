@@ -60,11 +60,11 @@ globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getParentItemElement(taskElement.element)
+  const storyElement = getParentItemElement(taskElement)
   if (!storyElement) return updateItems()
 
   const parentId = getItemId(storyElement)
-  const collapsible = HTML.single('.collapsible', new HTML(storyElement))
+  const collapsible = HTML.single('.collapsible', storyElement)
   if (!collapsible) return
 
   await updateChildItems(parentId)
@@ -167,7 +167,7 @@ const renderItems = async (items: any, itemListElement: HTMLElement) => {
   })
 }
 
-const getItemId = (element: Element) => element.id.replace('item-', '')
+const getItemId = (element: HTML) => element.id.replace('item-', '')
 
 const getItemElementOrThrow = (id: string) => {
   const element = getItemElement(id)
@@ -177,8 +177,8 @@ const getItemElementOrThrow = (id: string) => {
 
 const getItemElement = (id: string) => HTML.single(`#item-${id}`)
 
-const getParentItemElement = (element: HTMLElement | null): HTMLElement | null => {
-  const parent = element?.parentElement
+const getParentItemElement = (element: HTML): HTML | null => {
+  const parent = element?.parent
   if (!parent) return null
   if (parent.id.startsWith('item-') &&
     !parent.id.startsWith('item-list')) return parent

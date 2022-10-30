@@ -6,6 +6,11 @@ export class HTML {
     return this.element.id
   }
 
+  get parent(): HTML | null {
+    const parentElement = this.element.parentElement
+    return parentElement ? new HTML(parentElement) : null
+  }
+
   constructor(readonly element: HTMLElement) { }
   static single(selector: string, root?: HTML) {
     if (selector[0] !== '#') return HTML.all(selector, root)[0]
