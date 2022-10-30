@@ -2,7 +2,6 @@
 - move frontend.ts to a different folder.
   The other code runs in the browser
 - Publish to Heroku. Or somewhere else?
-- Matcher/Specification pattern
 - Design a reporter for Web Test Runner?
 - Poll for events instead of pushing to Items table
   - Find new events by `position` > last processed
@@ -11,5 +10,16 @@
 - No test fails if the client uses the wrong endpoints
 - Why do some imports need `.js`?
   - Sure: imports in run.js need them, but what about others. Only sometimes...
-  - There is an ESLint rule for enforcing file-extensions, but the resolver throws a fit 
+  - There is an ESLint rule for enforcing file-extensions, but the resolver throws a fit
     just from adding `plugin:import/recommended` ("eslint-plugin-import": "^2.26.0")
+
+- Create a proper sync function
+  - Update database by polling
+  - Or maintain a complete state in memory
+- Allow story title to be changed
+- Prioritise stories
+- Add story details
+- Add text describing the purpose of a story
+- Add text describing the purpose of a task
+- Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
+- Finish story automatically when last task is done

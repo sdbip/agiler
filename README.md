@@ -43,6 +43,13 @@ cd client
 The optional `scan` argument starts a watch that will lint and test whenever a
 JavaScript file is saved.
 
+## Conventions
+
+Tests are named with two extensions:
+
+- __\*.spec.ts__ for “backend” tests (code that runs on NodeJS)
+- __\*.test.ts__ for “browser” tests (code that runs on client browsers)
+
 ## the Domain
 
 YAGNI teaches that you should never produce anything that isn't motivated by a
@@ -93,7 +100,7 @@ that is not needed to complete the current story.
 Each feature should describe some business value that the product doesn't
 currently provide. Delivering on this value will probably take some time so the
 work will need to be divided up in smaller parts. When all the parts are done,
-all the technical layers are functional and deployed, the feature is delivered. 
+all the technical layers are functional and deployed, the feature is delivered.
 
 If a feature is deemed to be non-minimal, it should be split up into smaller
 parts that each deliver actual business value. These smaller parts are also

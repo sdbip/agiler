@@ -14,17 +14,17 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
+- Remove promote-buttons from child tasks
+- Redesign promote-button
+  - Add new outlined button like the disclosure-button
+  - with separate “chevron”?
 
 # Tasks
+* Make the browser code testable
+  * Abstraction around elements
+  - measureIntrinsicSize
+  - renderItems
+  - Find more code that can be modularised
+  - Note: neither chai nor jquery can be imported to browser code
 
 # Ice Box
-- Create a proper sync function
-  - Update database by polling
-  - Or maintain a complete state in memory
-- Allow story title to be changed
-- Prioritise stories
-- Add story details
-- Add text describing the purpose of a story
-- Add text describing the purpose of a task
-- Describe the purpose of a task (simple TODO item, done by an individual or a pair/mob)
-- Finish story automatically when last task is done
