@@ -17,12 +17,14 @@
   <div class="disclosure-button" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})"></div>
   <img class="spinner inactive" src="public/images/spinner.gif">
   <div class="collapsible" style="height: 0">
-    <input type="text" class="item-title"
-      onfocus="makeDefault({element: this, event, id: '{{id}}'})"
-      oninput="makeDefault({element: this, event, id: '{{id}}'})"
-      onblur="unmakeDefault({element: this, event, id: '{{id}}'})"
-      onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="What needs to be done?">
-    <button onclick="addTask({element: this, event, id: '{{id}}'})">+</button>
+    <div class="flex">
+      <input type="text" class="item-title"
+        onfocus="makeDefault({element: this, event, id: '{{id}}'})"
+        oninput="makeDefault({element: this, event, id: '{{id}}'})"
+        onblur="unmakeDefault({element: this, event, id: '{{id}}'})"
+        onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="What needs to be done?">
+      <button onclick="addTask({element: this, event, id: '{{id}}'})">+</button>
+    </div>
     <div class="item-list"></div>
   </div>
   {{/hasChildren}}

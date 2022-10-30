@@ -3,14 +3,13 @@ body {
   font-size: 10pt;
   color: rgb(240, 240, 255);
   background-color: rgb(30, 50, 60);
+  width: 350px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 input[type='checkbox'] {
   display: none;
-}
-
-#item-list {
-  width: 335px;
 }
 
 .no-select {
@@ -110,19 +109,22 @@ label {
   display: none;
 }
 
+.flex {
+  display: flex;
+}
+
 input[type="text"] {
+  flex: 1;
+  margin-right: 6px;
   padding: 5px;
   border: 1px solid silver;
   border-radius: 5px;
-  font-size: 10pt;
-  width: 160px;
-  background-color: transparent;
-  color: rgb(255 228 196);
-  outline-color: white;
-}
 
-.collapsible > input[type="text"] {
-  width: 146px;
+  font-size: 10pt;
+
+  color: rgb(255 228 196);
+  background-color: rgba(0, 0, 0, 0.3);
+  outline-color: white;
 }
 
 button {

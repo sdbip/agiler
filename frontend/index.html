@@ -9,12 +9,14 @@
 </head>
 <body>
   <h1>Agiler</h1>
-  <input type="text" id="item-title"
-    onfocus="makeDefault({element: this, event})"
-    oninput="makeDefault({element: this, event})"
-    onblur="unmakeDefault({element: this, event})"
-    onkeydown="addTaskIfEnter({element: this, event})" placeholder="What needs to be done?">
-  <button id="button" onclick="addTask({element: this, event})">+</button>
+  <div class="flex">
+    <input type="text" id="item-title"
+      onfocus="makeDefault({element: this, event})"
+      oninput="makeDefault({element: this, event})"
+      onblur="unmakeDefault({element: this, event})"
+      onkeydown="addTaskIfEnter({element: this, event})" placeholder="What needs to be done?">
+    <button id="button" onclick="addTask({element: this, event})">+</button>
+  </div>
   <div id="item-list" class="item-list"></div>
   <div class="measure"><div id="measure"></div></div>
 </body>
