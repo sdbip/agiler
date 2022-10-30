@@ -104,22 +104,17 @@ globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
 globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>) {
 
   const storyElement = getItemElementOrThrow(id)
+  toggleClass(storyElement, ClassName.disclosed)
 
-  const chevronElement = getElement('.chevron', storyElement)
-  if (!chevronElement) return
-
-  toggleClass(chevronElement, ClassName.disclosed)
-
-  const isDisclosed = hasClass(chevronElement, ClassName.disclosed)
+  const isDisclosed = hasClass(storyElement, ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
   const collapsible = getElement('.collapsible', storyElement)
   if (!collapsible) return
 
   collapsible.style.height = '0'
-  if (!isDisclosed) return
 
-  updateCollapsibleSize(collapsible)
+  if (isDisclosed) updateCollapsibleSize(collapsible)
 }
 
 // END EVENT HANDLERS
@@ -191,10 +186,13 @@ const getParentItemElement = (element: HTMLElement | null): HTMLElement | null =
 }
 
 const updateCollapsibleSize = (collapsible: HTMLElement) => {
+  const intrinsicHeight = measureIntrinsicHeight(collapsible)
+  collapsible.style.height = `${intrinsicHeight}px`
+}
 
+const measureIntrinsicHeight = (collapsible: HTMLElement) => {
   measure.innerHTML = collapsible.innerHTML
   for (const itemElement of getElements('.hidden', measure))
     removeClass(itemElement, 'hidden')
-
-  collapsible.style.height = `${measure.offsetHeight}px`
+  return measure.offsetHeight
 }
