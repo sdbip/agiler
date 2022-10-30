@@ -9,8 +9,8 @@ input[type='checkbox'] {
   display: none;
 }
 
-.item-list {
-  width: 225px;
+#item-list {
+  width: 335px;
 }
 
 .no-select {
@@ -23,7 +23,6 @@ input[type='checkbox'] {
   margin: 1px;
   padding: 10px;
   padding-left: 40px;
-
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 15%);
   border-radius: 20px;
   transition: border-radius 1s ease-out;
@@ -94,6 +93,7 @@ label {
 }
 
 .collapsible {
+  margin-top: 5px;
   overflow-y: hidden;
   transition: height .6s ease;
   position: relative;
@@ -122,7 +122,6 @@ input[type="text"] {
 }
 
 .collapsible > input[type="text"] {
-  margin-top: 5px;
   width: 146px;
 }
 
