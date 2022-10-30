@@ -16,7 +16,6 @@
 # Stories
 
 # Tasks
-- Bug: Weird horizontal scrolling
 - Bug: Weird animation when adding/completing top-level tasks
   - And when promoting them to stories
 - Add unit-tests for the UI
