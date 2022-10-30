@@ -4,8 +4,8 @@ import writeModel from './writeModel'
 import { render } from './Templates'
 import { delay } from './delay'
 import { addClass, hasClass, removeClass, toggleClass } from './class'
-import { getElement, getElements } from './getElements'
 import { ItemListTransition } from './item-list-transition'
+import { HTML } from './html'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -14,7 +14,7 @@ enum ClassName {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const measure = getElement('#measure')!
+const measure = HTML.single('#measure')!.element
 
 updateItems()
 
@@ -28,24 +28,24 @@ type EventArgs<
 globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>) => {
   const itemElement = getItemElement(id)
   const button = itemElement
-    ? getElement('button', itemElement)
-    : getElement('#button')
+    ? HTML.single('button', itemElement)
+    : HTML.single('#button')
   if (!button) return
 
   if (element.value)
-    addClass(button, 'default')
+    addClass(button.element, 'default')
   else
-    removeClass(button, 'default')
+    removeClass(button.element, 'default')
 }
 
 globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
   const itemElement = getItemElement(id)
   const button = itemElement
-    ? getElement('button', itemElement)
-    : getElement('#button')
+    ? HTML.single('button', itemElement)
+    : HTML.single('#button')
   if (!button) return
 
-  removeClass(button, 'default')
+  removeClass(button.element, 'default')
 }
 
 globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
@@ -53,22 +53,22 @@ globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement
   const taskElement = getItemElementOrThrow(id)
 
   const wasCheckboxClicked = element instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? element : getElement('input', taskElement) as HTMLInputElement
+  const checkbox = wasCheckboxClicked ? element : HTML.single('input', taskElement)?.element as HTMLInputElement
   checkbox.checked = true
   checkbox.disabled = true
 
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getParentItemElement(taskElement)
+  const storyElement = getParentItemElement(taskElement.element)
   if (!storyElement) return updateItems()
 
   const parentId = getItemId(storyElement)
-  const collapsible = getElement('.collapsible', storyElement)
+  const collapsible = HTML.single('.collapsible', new HTML(storyElement))
   if (!collapsible) return
 
   await updateChildItems(parentId)
-  updateCollapsibleSize(collapsible)
+  updateCollapsibleSize(collapsible.element)
 }
 
 globals.addTaskIfEnter = async function ({ event, id }: EventArgs<void, KeyboardEvent>) {
@@ -81,19 +81,19 @@ globals.addTaskIfEnter = async function ({ event, id }: EventArgs<void, Keyboard
 globals.addTask = async function ({ id }: EventArgs<HTMLElement, Event>) {
   const storyElement = getItemElement(id)
   const titleInput = storyElement
-    ? getElement('.item-title', storyElement) as HTMLInputElement
-    : getElement('#item-title') as HTMLInputElement
+    ? HTML.single('.item-title', storyElement)?.element as HTMLInputElement
+    : HTML.single('#item-title')?.element as HTMLInputElement
   if (!titleInput.value) return
 
   console.log('add task', await writeModel.addTask(titleInput.value, id))
   titleInput.value = ''
   if (!storyElement) return await updateItems()
 
-  const collapsible = getElement('.collapsible', storyElement)
+  const collapsible = HTML.single('.collapsible', storyElement)
   if (!collapsible) return
 
   await updateChildItems(id)
-  updateCollapsibleSize(collapsible)
+  updateCollapsibleSize(collapsible.element)
 }
 
 globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
@@ -104,17 +104,17 @@ globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
 globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>) {
 
   const storyElement = getItemElementOrThrow(id)
-  toggleClass(storyElement, ClassName.disclosed)
+  toggleClass(storyElement.element, ClassName.disclosed)
 
-  const isDisclosed = hasClass(storyElement, ClassName.disclosed)
+  const isDisclosed = hasClass(storyElement.element, ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
-  const collapsible = getElement('.collapsible', storyElement)
+  const collapsible = HTML.single('.collapsible', storyElement)
   if (!collapsible) return
 
-  collapsible.style.height = '0'
+  collapsible.element.style.height = '0'
 
-  if (isDisclosed) updateCollapsibleSize(collapsible)
+  if (isDisclosed) updateCollapsibleSize(collapsible.element)
 }
 
 // END EVENT HANDLERS
@@ -122,33 +122,33 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>)
 async function updateItems() {
   const items = await readModel.fetchItems()
 
-  const itemListElement = getElement('#item-list')
+  const itemListElement = HTML.single('#item-list')
   if (itemListElement) {
-    const filter = new ItemListTransition([ ...itemListElement.children ], items)
+    const filter = new ItemListTransition([ ...itemListElement.element.children ], items)
     const taggedItems = filter.taggedItems
     const oldElements = filter.obsoleteElements
 
     for (const element of oldElements) addClass(element, 'hidden')
 
     await delay(500)
-    await renderItems(taggedItems, itemListElement)
+    await renderItems(taggedItems, itemListElement.element)
     await delay(1)
 
-    for (const element of getElements('.hidden', itemListElement))
-      removeClass(element, ClassName.hidden)
+    for (const html of HTML.all('.hidden', itemListElement))
+      removeClass(html.element, ClassName.hidden)
   }
 }
 
 const updateChildItems = async (parentId: string) => {
   const storyElement = getItemElementOrThrow(parentId)
-  const spinner = getElement('.spinner', storyElement)
-  if (spinner) removeClass(spinner, ClassName.inactive)
+  const spinner = HTML.single('.spinner', storyElement)
+  if (spinner) removeClass(spinner.element, ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-  const itemListElement = getElement('.item-list', storyElement)
+  const itemListElement = HTML.single('.item-list', storyElement)
   if (itemListElement) {
-    await renderItems(items, itemListElement)
-    if (spinner) addClass(spinner, ClassName.inactive)
+    await renderItems(items, itemListElement.element)
+    if (spinner) addClass(spinner.element, ClassName.inactive)
   }
 }
 
@@ -175,7 +175,7 @@ const getItemElementOrThrow = (id: string) => {
   return element
 }
 
-const getItemElement = (id: string) => getElement(`#item-${id}`)
+const getItemElement = (id: string) => HTML.single(`#item-${id}`)
 
 const getParentItemElement = (element: HTMLElement | null): HTMLElement | null => {
   const parent = element?.parentElement
@@ -192,7 +192,7 @@ const updateCollapsibleSize = (collapsible: HTMLElement) => {
 
 const measureIntrinsicHeight = (collapsible: HTMLElement) => {
   measure.innerHTML = collapsible.innerHTML
-  for (const itemElement of getElements('.hidden', measure))
-    removeClass(itemElement, 'hidden')
+  for (const html of HTML.all('.hidden', new HTML(measure)))
+    removeClass(html.element, ClassName.hidden)
   return measure.offsetHeight
 }

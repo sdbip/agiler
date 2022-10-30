@@ -21,10 +21,8 @@
 
 # Tasks
 * Make the browser code testable
-  * Abstraction around elements
   - measureIntrinsicSize
   - renderItems
   - Find more code that can be modularised
-  - Note: neither chai nor jquery can be imported to browser code
 
 # Ice Box
