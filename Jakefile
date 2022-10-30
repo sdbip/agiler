@@ -12,7 +12,12 @@ jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
 const lazyTasksDirectory = 'lazy_tasks'
 directory(lazyTasksDirectory)
 
-const deglob = glob => new jake.FileList(glob).toArray()
+const deglob = (glob, excludes) => {
+  const filelist = new jake.FileList(glob)
+  filelist.exclude('node_modules')
+  if (excludes) filelist.exclude(excludes)
+  return filelist.toArray()
+}
 
 const lazyTask = (name, dependencies, action) => {
   const outputPath = `${lazyTasksDirectory}/${name}.inc`
@@ -82,7 +87,7 @@ desc('Run all tests')
 task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
-lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
+lazyTask('browser_tests', deglob('frontend/**/*', '**/*.spec.ts'), async () => {
   log.startTask('Testing browser code')
 
   await new Promise((resolve, reject) => {
@@ -119,7 +124,7 @@ lazyTask('browser_tests', deglob('frontend/**/*'), async () => {
 })
 
 desc('Run backend tests')
-lazyTask('backend_tests', deglob('backend/**/*'), async () => {
+lazyTask('backend_tests', deglob([ 'backend/**/*', 'frontend/**/*.spec.ts' ]), async () => {
   log.startTask('Testing servers')
 
   await new Promise((resolve, reject) => {
