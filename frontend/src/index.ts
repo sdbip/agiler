@@ -13,6 +13,9 @@ enum ClassName {
   inactive = 'inactive',
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const measure = getElement('#measure')!
+
 updateItems()
 
 // EVENT HANDLERS
@@ -65,7 +68,7 @@ globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement
   if (!collapsible) return
 
   await updateChildItems(parentId)
-  collapsible.style.height = await measureIntrinsicHeight(collapsible)
+  updateCollapsibleSize(collapsible)
 }
 
 globals.addTaskIfEnter = async function ({ event, id }: EventArgs<void, KeyboardEvent>) {
@@ -90,7 +93,7 @@ globals.addTask = async function ({ id }: EventArgs<HTMLElement, Event>) {
   if (!collapsible) return
 
   await updateChildItems(id)
-  collapsible.style.height = await measureIntrinsicHeight(collapsible)
+  updateCollapsibleSize(collapsible)
 }
 
 globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
@@ -110,7 +113,13 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>)
   const isDisclosed = hasClass(chevronElement, ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
-  await animateCollapsible(id, isDisclosed)
+  const collapsible = getElement('.collapsible', storyElement)
+  if (!collapsible) return
+
+  collapsible.style.height = '0'
+  if (!isDisclosed) return
+
+  updateCollapsibleSize(collapsible)
 }
 
 // END EVENT HANDLERS
@@ -144,7 +153,6 @@ const updateChildItems = async (parentId: string) => {
   const itemListElement = getElement('.item-list', storyElement)
   if (itemListElement) {
     await renderItems(items, itemListElement)
-
     if (spinner) addClass(spinner, ClassName.inactive)
   }
 }
@@ -164,39 +172,6 @@ const renderItems = async (items: any, itemListElement: HTMLElement) => {
   })
 }
 
-const animateCollapsible = async (parentId: string, isDisclosed: boolean) => {
-  const storyElement = getItemElementOrThrow(parentId)
-  const collapsible = getElement('.collapsible', storyElement)
-  if (!collapsible) return
-
-  collapsible.style.height = '0'
-  if (!isDisclosed) return
-
-  collapsible.style.height = await measureIntrinsicHeight(collapsible)
-}
-
-const measureIntrinsicHeight = async (collapsible: HTMLElement) => {
-  const origHeight = collapsible.style.height
-
-  await delay(1)
-
-  // Hide the element while measuring
-  collapsible.style.visibility = 'hidden'
-  collapsible.style.position = 'absolute'
-
-  // Measure the intrinsic height
-  collapsible.style.height = ''
-  const intrinsicHeight = collapsible.offsetHeight
-
-  // Restore the style so that the animation can start from zero
-  collapsible.style.height = origHeight
-  collapsible.style.visibility = ''
-  collapsible.style.position = ''
-
-  await delay(100)
-  return `${intrinsicHeight}px`
-}
-
 const getItemId = (element: Element) => element.id.replace('item-', '')
 
 const getItemElementOrThrow = (id: string) => {
@@ -213,4 +188,13 @@ const getParentItemElement = (element: HTMLElement | null): HTMLElement | null =
   if (parent.id.startsWith('item-') &&
     !parent.id.startsWith('item-list')) return parent
   return getParentItemElement(parent)
+}
+
+const updateCollapsibleSize = (collapsible: HTMLElement) => {
+
+  measure.innerHTML = collapsible.innerHTML
+  for (const itemElement of getElements('.hidden', measure))
+    removeClass(itemElement, 'hidden')
+
+  collapsible.style.height = `${measure.offsetHeight}px`
 }

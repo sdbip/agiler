@@ -149,3 +149,17 @@ button:active {
   background-color: silver;
   transform: translateY(1px);
 }
+
+.measure {
+  position: relative;
+
+  overflow: hidden;
+  height: 0;
+  width: 0;
+}
+
+#measure {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
