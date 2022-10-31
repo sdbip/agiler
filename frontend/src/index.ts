@@ -26,16 +26,11 @@ type EventArgs<
 
 globals.makeDefault = async ({ id }: EventArgs<Event>) => {
   const itemElement = getItemElement(id)
-  const button = itemElement
-    ? DOMElement.single('button', itemElement)
-    : DOMElement.single('#button')
+  const button = getAddButtonElement(itemElement)
   if (!button) return
 
-  const inputElement = itemElement
-    ? DOMElement.single('.item-title', itemElement)
-    : DOMElement.single('#item-title"')
-  const title = inputElement?.inputElementValue
-  if (title)
+  const inputElement = getTitleInputElement(itemElement)
+  if (inputElement?.inputElementValue)
     button.addClass(ClassName.default)
   else
     button.removeClass(ClassName.default)
@@ -43,12 +38,8 @@ globals.makeDefault = async ({ id }: EventArgs<Event>) => {
 
 globals.unmakeDefault = async ({ id }: EventArgs<Event>) => {
   const itemElement = getItemElement(id)
-  const button = itemElement
-    ? DOMElement.single('button', itemElement)
-    : DOMElement.single('#button')
-  if (!button) return
-
-  button.removeClass(ClassName.default)
+  const button = getAddButtonElement(itemElement)
+  if (button) button.removeClass(ClassName.default)
 }
 
 globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
@@ -62,7 +53,7 @@ globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
   if (!storyElement) return updateItems()
 
   const parentId = getItemId(storyElement)
-  const collapsible = DOMElement.single('.collapsible', storyElement)
+  const collapsible = getCollabsibleElement(storyElement)
   if (!collapsible) return
 
   await updateChildItems(parentId)
@@ -78,9 +69,7 @@ globals.addTaskIfEnter = async function ({ event, id }: EventArgs<KeyboardEvent>
 
 globals.addTask = async function ({ id }: EventArgs<Event>) {
   const storyElement = getItemElement(id)
-  const titleElement = storyElement
-    ? DOMElement.single('.item-title', storyElement)
-    : DOMElement.single('#item-title')
+  const titleElement = getTitleInputElement(storyElement)
   const title = titleElement?.inputElementValue
   if (!title) return
 
@@ -88,7 +77,7 @@ globals.addTask = async function ({ id }: EventArgs<Event>) {
   titleElement.setInputElementValue('')
   if (!storyElement) return await updateItems()
 
-  const collapsible = DOMElement.single('.collapsible', storyElement)
+  const collapsible = getCollabsibleElement(storyElement)
   if (!collapsible) return
 
   await updateChildItems(id)
@@ -108,7 +97,7 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
   const isDisclosed = storyElement.hasClass(ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
-  const collapsible = DOMElement.single('.collapsible', storyElement)
+  const collapsible = getCollabsibleElement(storyElement)
   if (!collapsible) return
 
   collapsible.setHeight(0)
@@ -121,7 +110,7 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
 async function updateItems() {
   const items = await readModel.fetchItems()
 
-  const itemListElement = DOMElement.single('#item-list')
+  const itemListElement = getItemListElement()
   if (itemListElement) {
     const filter = new ItemListTransition(itemListElement.children, items)
     const taggedItems = filter.taggedItems
@@ -140,11 +129,11 @@ async function updateItems() {
 
 const updateChildItems = async (parentId: string) => {
   const storyElement = getItemElementOrThrow(parentId)
-  const spinner = DOMElement.single('.spinner', storyElement)
+  const spinner = getSpinnerElement(storyElement)
   if (spinner) spinner.removeClass(ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-  const itemListElement = DOMElement.single('.item-list', storyElement)
+  const itemListElement = getItemListElement(storyElement)
   if (itemListElement) {
     await renderItems(items, itemListElement)
     if (spinner) spinner.addClass(ClassName.inactive)
@@ -183,6 +172,28 @@ const getParentItemElement = (element: DOMElement): DOMElement | null => {
     !parent.id.startsWith('item-list')) return parent
   return getParentItemElement(parent)
 }
+
+
+const getTitleInputElement = (itemElement?: DOMElement | null) =>
+  itemElement
+    ? DOMElement.single('.item-title', itemElement)
+    : DOMElement.single('#item-title"')
+
+const getAddButtonElement = (itemElement?: DOMElement | null) =>
+  itemElement
+    ? DOMElement.single('.add-button', itemElement)
+    : DOMElement.single('#add-button')
+
+const getCollabsibleElement = (storyElement?: DOMElement) =>
+  DOMElement.single('.collapsible', storyElement)
+
+const getItemListElement = (storyElement?: DOMElement) =>
+  storyElement
+    ? DOMElement.single('.item-list', storyElement)
+    : DOMElement.single('#item-list')
+
+const getSpinnerElement = (storyElement: DOMElement) =>
+  DOMElement.single('.spinner', storyElement)
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {
   const intrinsicHeight = measureIntrinsicHeight(collapsible)
