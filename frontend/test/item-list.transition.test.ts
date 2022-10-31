@@ -1,4 +1,5 @@
 import { expect } from '@esm-bundle/chai'
+import { DOMElement } from '../src/dom-element'
 import { ItemListTransition } from '../src/item-list-transition'
 
 describe(ItemListTransition.name, () => {
@@ -45,8 +46,8 @@ describe(ItemListTransition.name, () => {
   })
 })
 
-const createElement = (html: string): HTMLElement => {
+const createElement = (html: string): DOMElement => {
   const outerElement = document.createElement('div')
   outerElement.innerHTML = html
-  return outerElement.children[0] as HTMLElement
+  return new DOMElement(outerElement.children[0] as HTMLElement)
 }

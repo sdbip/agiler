@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai'
-import { HTML } from '../src/html'
+import { DOMElement } from '../src/dom-element'
 
-describe(HTML.name, () => {
+describe(DOMElement.name, () => {
 
   describe('single', () => {
 
@@ -10,7 +10,7 @@ describe(HTML.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = HTML.single('#this_element')
+      const html = DOMElement.single('#this_element')
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -22,7 +22,7 @@ describe(HTML.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = HTML.single('div')
+      const html = DOMElement.single('div')
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -35,7 +35,7 @@ describe(HTML.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = HTML.single('.this-element')
+      const html = DOMElement.single('.this-element')
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -46,7 +46,7 @@ describe(HTML.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const html = HTML.single('.this-element', new HTML(element))
+      const html = DOMElement.single('.this-element', new DOMElement(element))
       expect(html).to.exist
     })
 
@@ -54,7 +54,7 @@ describe(HTML.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const html = HTML.single('div', new HTML(element))
+      const html = DOMElement.single('div', new DOMElement(element))
       expect(html).to.exist
     })
   })
@@ -66,9 +66,9 @@ describe(HTML.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const htmls = HTML.all('div')
+      const htmls = DOMElement.all('div')
       expect(htmls).to.have.lengthOf(1)
-      expect(htmls[0].element).to.equal(element)
+      expect(new DOMElement(element).equals(htmls[0])).to.be.true
 
       document.body.removeChild(element)
     })
@@ -79,9 +79,9 @@ describe(HTML.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const htmls = HTML.all('.this-element')
+      const htmls = DOMElement.all('.this-element')
       expect(htmls).to.have.lengthOf(1)
-      expect(htmls[0].element).to.equal(element)
+      expect(new DOMElement(element).equals(htmls[0])).to.be.true
 
       document.body.removeChild(element)
     })
@@ -90,7 +90,7 @@ describe(HTML.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = HTML.all('.this-element', new HTML(element))
+      const htmls = DOMElement.all('.this-element', new DOMElement(element))
       expect(htmls).to.have.lengthOf(1)
     })
 
@@ -98,7 +98,7 @@ describe(HTML.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = HTML.all('.this-element', new HTML(element))
+      const htmls = DOMElement.all('.this-element', new DOMElement(element))
       expect(htmls).to.have.lengthOf(1)
     })
   })

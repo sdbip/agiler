@@ -1,4 +1,6 @@
-export class ItemListTransition<T extends Element> {
+import { DOMElement } from './dom-element'
+
+export class ItemListTransition {
   get obsoleteElements() {
     return this.itemElements.filter(el => this.isObsolete(el))
   }
@@ -8,17 +10,17 @@ export class ItemListTransition<T extends Element> {
     return this.items.map(i => this.isNew(i, existingIds))
   }
 
-  constructor(readonly itemElements: T[], readonly items: { id: string; }[]) { }
+  constructor(readonly itemElements: DOMElement[], readonly items: { id: string; }[]) { }
 
   private isNew(i: { id: string; }, existingIds: string[]): { isNew: boolean; id: string; } {
     return { ...i, isNew: existingIds.indexOf(i.id) < 0 }
   }
 
-  private isObsolete(el: T) {
+  private isObsolete(el: DOMElement) {
     return this.items.every(i => i.id !== this.getItemId(el))
   }
 
-  private getItemId(el: T) {
+  private getItemId(el: DOMElement) {
     return el.id.replace('item-', '')
   }
 }

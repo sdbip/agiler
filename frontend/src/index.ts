@@ -4,7 +4,7 @@ import writeModel from './writeModel'
 import { render } from './Templates'
 import { delay } from './delay'
 import { ItemListTransition } from './item-list-transition'
-import { HTML } from './html'
+import { DOMElement } from './dom-element'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -14,48 +14,46 @@ enum ClassName {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const measure = HTML.single('#measure')!.element
+const measure = DOMElement.single('#measure')!
 
 updateItems()
 
 // EVENT HANDLERS
 
 type EventArgs<
-  ElementType extends HTMLElement | void,
   EventType extends Event | void
-> = { element: ElementType, event: EventType, id: string }
+> = { event: EventType, id: string }
 
-globals.makeDefault = async ({ element, id }: EventArgs<HTMLInputElement, Event>) => {
+globals.makeDefault = async ({ id }: EventArgs<Event>) => {
   const itemElement = getItemElement(id)
   const button = itemElement
-    ? HTML.single('button', itemElement)
-    : HTML.single('#button')
+    ? DOMElement.single('button', itemElement)
+    : DOMElement.single('#button')
   if (!button) return
 
-  if (element.value)
+  const inputElement = itemElement
+    ? DOMElement.single('.item-title', itemElement)
+    : DOMElement.single('#item-title"')
+  const title = inputElement?.inputElementValue
+  if (title)
     button.addClass(ClassName.default)
   else
     button.removeClass(ClassName.default)
 }
 
-globals.unmakeDefault = async ({ id }: EventArgs<HTMLElement, Event>) => {
+globals.unmakeDefault = async ({ id }: EventArgs<Event>) => {
   const itemElement = getItemElement(id)
   const button = itemElement
-    ? HTML.single('button', itemElement)
-    : HTML.single('#button')
+    ? DOMElement.single('button', itemElement)
+    : DOMElement.single('#button')
   if (!button) return
 
   button.removeClass(ClassName.default)
 }
 
-globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement | HTMLInputElement, MouseEvent>) {
+globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
 
   const taskElement = getItemElementOrThrow(id)
-
-  const wasCheckboxClicked = element instanceof HTMLInputElement
-  const checkbox = wasCheckboxClicked ? element : HTML.single('input', taskElement)?.element as HTMLInputElement
-  checkbox.checked = true
-  checkbox.disabled = true
 
   await writeModel.completeTask(id)
   await delay(200)
@@ -64,44 +62,45 @@ globals.completeTask = async function ({ element, id }: EventArgs<HTMLDivElement
   if (!storyElement) return updateItems()
 
   const parentId = getItemId(storyElement)
-  const collapsible = HTML.single('.collapsible', storyElement)
+  const collapsible = DOMElement.single('.collapsible', storyElement)
   if (!collapsible) return
 
   await updateChildItems(parentId)
-  updateCollapsibleSize(collapsible.element)
+  updateCollapsibleSize(collapsible)
 }
 
-globals.addTaskIfEnter = async function ({ event, id }: EventArgs<void, KeyboardEvent>) {
+globals.addTaskIfEnter = async function ({ event, id }: EventArgs<KeyboardEvent>) {
   if (event.metaKey || event.ctrlKey || event.altKey) return
   if (event.key !== 'Enter') return
 
   await globals.addTask({ id })
 }
 
-globals.addTask = async function ({ id }: EventArgs<HTMLElement, Event>) {
+globals.addTask = async function ({ id }: EventArgs<Event>) {
   const storyElement = getItemElement(id)
-  const titleInput = storyElement
-    ? HTML.single('.item-title', storyElement)?.element as HTMLInputElement
-    : HTML.single('#item-title')?.element as HTMLInputElement
-  if (!titleInput.value) return
+  const titleElement = storyElement
+    ? DOMElement.single('.item-title', storyElement)
+    : DOMElement.single('#item-title')
+  const title = titleElement?.inputElementValue
+  if (!title) return
 
-  console.log('add task', await writeModel.addTask(titleInput.value, id))
-  titleInput.value = ''
+  console.log('add task', await writeModel.addTask(title, id))
+  titleElement.setInputElementValue('')
   if (!storyElement) return await updateItems()
 
-  const collapsible = HTML.single('.collapsible', storyElement)
+  const collapsible = DOMElement.single('.collapsible', storyElement)
   if (!collapsible) return
 
   await updateChildItems(id)
-  updateCollapsibleSize(collapsible.element)
+  updateCollapsibleSize(collapsible)
 }
 
-globals.promote = async function ({ id }: EventArgs<HTMLElement, Event>) {
+globals.promote = async function ({ id }: EventArgs<Event>) {
   await writeModel.promoteTask(id)
   await updateItems()
 }
 
-globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>) {
+globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
 
   const storyElement = getItemElementOrThrow(id)
   storyElement.toggleClass(ClassName.disclosed)
@@ -109,12 +108,12 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>)
   const isDisclosed = storyElement.hasClass(ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
-  const collapsible = HTML.single('.collapsible', storyElement)
+  const collapsible = DOMElement.single('.collapsible', storyElement)
   if (!collapsible) return
 
-  collapsible.element.style.height = '0'
+  collapsible.setHeight(0)
 
-  if (isDisclosed) updateCollapsibleSize(collapsible.element)
+  if (isDisclosed) updateCollapsibleSize(collapsible)
 }
 
 // END EVENT HANDLERS
@@ -122,38 +121,38 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<HTMLElement, Event>)
 async function updateItems() {
   const items = await readModel.fetchItems()
 
-  const itemListElement = HTML.single('#item-list')
+  const itemListElement = DOMElement.single('#item-list')
   if (itemListElement) {
-    const filter = new ItemListTransition([ ...itemListElement.element.children ], items)
+    const filter = new ItemListTransition(itemListElement.children, items)
     const taggedItems = filter.taggedItems
     const oldElements = filter.obsoleteElements
 
-    for (const element of oldElements) new HTML(element as HTMLElement).addClass(ClassName.hidden)
+    for (const element of oldElements) element.addClass(ClassName.hidden)
 
     await delay(500)
-    await renderItems(taggedItems, itemListElement.element)
+    await renderItems(taggedItems, itemListElement)
     await delay(1)
 
-    for (const html of HTML.all('.hidden', itemListElement))
+    for (const html of DOMElement.all('.hidden', itemListElement))
       html.removeClass(ClassName.hidden)
   }
 }
 
 const updateChildItems = async (parentId: string) => {
   const storyElement = getItemElementOrThrow(parentId)
-  const spinner = HTML.single('.spinner', storyElement)
+  const spinner = DOMElement.single('.spinner', storyElement)
   if (spinner) spinner.removeClass(ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-  const itemListElement = HTML.single('.item-list', storyElement)
+  const itemListElement = DOMElement.single('.item-list', storyElement)
   if (itemListElement) {
-    await renderItems(items, itemListElement.element)
+    await renderItems(items, itemListElement)
     if (spinner) spinner.addClass(ClassName.inactive)
   }
 }
 
-const renderItems = async (items: any, itemListElement: HTMLElement) => {
-  itemListElement.innerHTML = await render('item-list', {
+const renderItems = async (items: any, itemListElement: DOMElement) => {
+  itemListElement.setInnerHTML(await render('item-list', {
     items,
     canComplete: () => function (this: any, text: string, render: any) {
       return this.type === 'Task' ? render(text) : ''
@@ -164,10 +163,10 @@ const renderItems = async (items: any, itemListElement: HTMLElement) => {
     hasChildren: () => function (this: any, text: string, render: any) {
       return this.type !== 'Task' ? render(text) : ''
     },
-  })
+  }))
 }
 
-const getItemId = (element: HTML) => element.id.replace('item-', '')
+const getItemId = (element: DOMElement) => element.id.replace('item-', '')
 
 const getItemElementOrThrow = (id: string) => {
   const element = getItemElement(id)
@@ -175,24 +174,24 @@ const getItemElementOrThrow = (id: string) => {
   return element
 }
 
-const getItemElement = (id: string) => HTML.single(`#item-${id}`)
+const getItemElement = (id: string) => DOMElement.single(`#item-${id}`)
 
-const getParentItemElement = (element: HTML): HTML | null => {
-  const parent = element?.parent
+const getParentItemElement = (element: DOMElement): DOMElement | null => {
+  const parent = element?.parentElement
   if (!parent) return null
   if (parent.id.startsWith('item-') &&
     !parent.id.startsWith('item-list')) return parent
   return getParentItemElement(parent)
 }
 
-const updateCollapsibleSize = (collapsible: HTMLElement) => {
+const updateCollapsibleSize = (collapsible: DOMElement) => {
   const intrinsicHeight = measureIntrinsicHeight(collapsible)
-  collapsible.style.height = `${intrinsicHeight}px`
+  collapsible.setHeight(intrinsicHeight)
 }
 
-const measureIntrinsicHeight = (collapsible: HTMLElement) => {
-  measure.innerHTML = collapsible.innerHTML
-  for (const element of HTML.all('.hidden', new HTML(measure)))
+const measureIntrinsicHeight = (collapsible: DOMElement) => {
+  measure.setInnerHTML(collapsible.innerHTML)
+  for (const element of DOMElement.all('.hidden', measure))
     element.removeClass(ClassName.hidden)
   return measure.offsetHeight
 }
