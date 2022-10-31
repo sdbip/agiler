@@ -5,6 +5,7 @@ import { render } from './Templates'
 import { delay } from './delay'
 import { ItemListTransition } from './item-list-transition'
 import { DOMElement } from './dom-element'
+import { ItemComponent } from './item-component'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -29,7 +30,7 @@ globals.makeDefault = async ({ id }: EventArgs<Event>) => {
   const button = getAddButtonElement(itemElement)
   if (!button) return
 
-  const inputElement = getTitleInputElement(itemElement)
+  const inputElement = new ItemComponent(itemElement).titleInputElement
   if (inputElement?.inputElementValue)
     button.addClass(ClassName.default)
   else
@@ -68,17 +69,15 @@ globals.addTaskIfEnter = async function ({ event, id }: EventArgs<KeyboardEvent>
 }
 
 globals.addTask = async function ({ id }: EventArgs<Event>) {
-  const storyElement = getItemElement(id)
-  const titleElement = getTitleInputElement(storyElement)
-  const title = titleElement?.inputElementValue
-  if (!title) return
+  const storyComponent = ItemComponent.forId(id) ?? ItemComponent.page
+  const titleElement = storyComponent.titleInputElement
+  if (!storyComponent.title) return
 
-  console.log('add task', await writeModel.addTask(title, id))
-  titleElement.setInputElementValue('')
-  if (!storyElement) return await updateItems()
+  console.log('add task', await writeModel.addTask(storyComponent.title, id))
+  titleElement?.setInputElementValue('')
 
-  const collapsible = getCollabsibleElement(storyElement)
-  if (!collapsible) return
+  const collapsible = getCollabsibleElement(storyComponent.element)
+  if (!collapsible) return await updateItems()
 
   await updateChildItems(id)
   updateCollapsibleSize(collapsible)
@@ -163,7 +162,7 @@ const getItemElementOrThrow = (id: string) => {
   return element
 }
 
-const getItemElement = (id: string) => DOMElement.single(`#item-${id}`)
+const getItemElement = (id: string) => DOMElement.single(`#item-${id}`) ?? undefined
 
 const getParentItemElement = (element: DOMElement): DOMElement | null => {
   const parent = element?.parentElement
@@ -173,11 +172,6 @@ const getParentItemElement = (element: DOMElement): DOMElement | null => {
   return getParentItemElement(parent)
 }
 
-
-const getTitleInputElement = (itemElement?: DOMElement | null) =>
-  itemElement
-    ? DOMElement.single('.item-title', itemElement)
-    : DOMElement.single('#item-title"')
 
 const getAddButtonElement = (itemElement?: DOMElement | null) =>
   itemElement

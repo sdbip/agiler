@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../public/styles/normalize-8.0.1.css">
+    <link rel="stylesheet" href="../public/styles/styles.css">
+  </head>
+  <body>
+    <!-- Duplicate layout from index.html -->
+    <div class="flex">
+      <input type="text" id="item-title" value="New task">
+      <button id="add-button">+</button>
+    </div>
+    <div id="item-list" class="item-list">
+      <div id="item-story" class="item item-Story no-select">
+        <span>Finish story</span>
+        <div class="chevron"  >+</div>
+        <div class="disclosure-button"></div>
+        <img class="spinner inactive" src="public/images/spinner.gif">
+        <div class="collapsible" style="height: 0">
+          <div class="flex">
+            <input type="text" class="item-title" value="New subtask">
+            <button class="add-button">+</button>
+          </div>
+          <div class="item-list">
+            <div id="item-subtask" class="item item-Task no-select">
+              <span class="promote-button">✵</span>
+              <label></label>
+              <span>Perform subtask</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="item-task" class="item item-Task no-select">
+        <span class="promote-button">✵</span>
+        <label></label>
+        <span>Perform task</span>
+      </div>
+    </div>
+    <!-- End layout from index.html -->
+
+    <script type="module">
+      import { runTests } from '@web/test-runner-mocha'
+      import { expect } from '@esm-bundle/chai'
+      import { ItemComponent } from '../src/item-component'
+      import { DOMElement } from '../src/dom-element'
+
+      runTests(() => {
+        it('finds itself', () => {
+          expect(ItemComponent.forId('task').element).to.exist
+          expect(ItemComponent.forId('story').element).to.exist
+          expect(ItemComponent.forId('subtask').element).to.exist
+          expect(ItemComponent.forId('no-task')).to.not.exist
+        })
+        it('finds title element', () => {
+          expect(ItemComponent.page.titleInputElement).to.exist
+          expect(ItemComponent.page.title).to.equal('New task')
+
+          const storyElement = ItemComponent.forId('story')
+          expect(storyElement.titleInputElement).to.exist
+          expect(storyElement.title).to.equal('New subtask')
+        })
+      })
+    </script>
+  </body>
+</html>

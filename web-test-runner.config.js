@@ -3,6 +3,7 @@ import { dotReporter } from '@web/test-runner'
 
 export default {
   files: [
+    'frontend/test/**/*.html',
     '**/*.test.ts',
     '!node_modules/',
   ],
