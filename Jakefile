@@ -93,7 +93,7 @@ lazyTask('browser_tests', deglob('frontend/**/*', '**/*.spec.ts'), async () => {
   await new Promise((resolve, reject) => {
     const child = shelljs.exec('wtr --node-resolve --esbuild-target auto', { async: true, silent: true })
 
-    child.stdout.on('data', function(data) {
+    child.stdout.on('data', data => {
       if (data.trim().length === 0) return
 
       const regexes = {
@@ -131,7 +131,7 @@ lazyTask('backend_tests', deglob([ 'backend/**/*', 'frontend/**/*.spec.ts' ]), a
     const promise = { resolve, reject }
     const child = shelljs.exec('source .env && mocha -R dot', { async: true, silent: true })
     let result = []
-    child.stdout.on('data', function(data) {
+    child.stdout.on('data', data => {
       switch (data) {
         case '.':
         case '\n  .':
