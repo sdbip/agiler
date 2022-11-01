@@ -27,7 +27,7 @@ type EventArgs<
 
 globals.makeDefault = async ({ id }: EventArgs<Event>) => {
   const itemComponent = ItemComponent.forId(id)
-  const button = getAddButtonElement(itemComponent?.element)
+  const button = itemComponent?.addButtonElement
   if (!button) return
 
   const component = itemComponent ?? PageComponent.instance
@@ -40,8 +40,7 @@ globals.makeDefault = async ({ id }: EventArgs<Event>) => {
 
 globals.unmakeDefault = async ({ id }: EventArgs<Event>) => {
   const itemComponent = ItemComponent.forId(id)
-  const itemElement = itemComponent?.element
-  const button = getAddButtonElement(itemElement)
+  const button = itemComponent?.addButtonElement
   if (button) button.removeClass(ClassName.default)
 }
 
@@ -176,11 +175,6 @@ const getParentItemElement = (element: DOMElement): DOMElement | null => {
   return getParentItemElement(parent)
 }
 
-
-const getAddButtonElement = (itemElement?: DOMElement | null) =>
-  itemElement
-    ? DOMElement.single('.add-button', itemElement)
-    : DOMElement.single('#add-button')
 
 const getCollabsibleElement = (storyElement?: DOMElement) =>
   DOMElement.single('.collapsible', storyElement)

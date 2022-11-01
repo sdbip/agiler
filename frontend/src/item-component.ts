@@ -4,6 +4,9 @@ export class PageComponent {
   static instance = new PageComponent()
 
   get title() { return this.titleInputElement?.inputElementValue }
+  get addButtonElement() {
+    return DOMElement.single('#add-button')
+  }
 
   get titleInputElement() {
     return DOMElement.single('#item-title')
@@ -17,6 +20,9 @@ export class ItemComponent {
 
   get titleInputElement() {
     return DOMElement.single('.item-title', this.element)
+  }
+  get addButtonElement() {
+    return DOMElement.single('.add-button', this.element)
   }
 
   static forId(id: string) {
