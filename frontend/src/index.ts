@@ -5,7 +5,7 @@ import { render } from './Templates'
 import { delay } from './delay'
 import { ItemListTransition } from './item-list-transition'
 import { DOMElement } from './dom-element'
-import { ItemComponent } from './item-component'
+import { ItemComponent, PageComponent } from './item-component'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -26,11 +26,12 @@ type EventArgs<
 > = { event: EventType, id: string }
 
 globals.makeDefault = async ({ id }: EventArgs<Event>) => {
-  const itemElement = getItemElement(id)
-  const button = getAddButtonElement(itemElement)
+  const itemComponent = ItemComponent.forId(id)
+  const button = getAddButtonElement(itemComponent?.element)
   if (!button) return
 
-  const inputElement = new ItemComponent(itemElement).titleInputElement
+  const component = itemComponent ?? PageComponent.instance
+  const inputElement = component.titleInputElement
   if (inputElement?.inputElementValue)
     button.addClass(ClassName.default)
   else
@@ -38,19 +39,21 @@ globals.makeDefault = async ({ id }: EventArgs<Event>) => {
 }
 
 globals.unmakeDefault = async ({ id }: EventArgs<Event>) => {
-  const itemElement = getItemElement(id)
+  const itemComponent = ItemComponent.forId(id)
+  const itemElement = itemComponent?.element
   const button = getAddButtonElement(itemElement)
   if (button) button.removeClass(ClassName.default)
 }
 
 globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
 
-  const taskElement = getItemElementOrThrow(id)
+  const taskComponent = ItemComponent.forId(id)
+  if (!taskComponent) throw new Error(`Component for task with id ${id} not found`)
 
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getParentItemElement(taskElement)
+  const storyElement = getParentItemElement(taskComponent.element)
   if (!storyElement) return updateItems()
 
   const parentId = getItemId(storyElement)
@@ -69,14 +72,15 @@ globals.addTaskIfEnter = async function ({ event, id }: EventArgs<KeyboardEvent>
 }
 
 globals.addTask = async function ({ id }: EventArgs<Event>) {
-  const storyComponent = ItemComponent.forId(id) ?? ItemComponent.page
-  const titleElement = storyComponent.titleInputElement
-  if (!storyComponent.title) return
+  const storyComponent = ItemComponent.forId(id)
+  const component = storyComponent ?? PageComponent.instance
+  const titleElement = component.titleInputElement
+  if (!component.title) return
 
-  console.log('add task', await writeModel.addTask(storyComponent.title, id))
+  console.log('add task', await writeModel.addTask(component.title, id))
   titleElement?.setInputElementValue('')
 
-  const collapsible = getCollabsibleElement(storyComponent.element)
+  const collapsible = getCollabsibleElement(storyComponent?.element)
   if (!collapsible) return await updateItems()
 
   await updateChildItems(id)
