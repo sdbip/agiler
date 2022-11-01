@@ -18,6 +18,7 @@
 - Redesign promote-button
   - Add new outlined button like the disclosure-button
   - with separate “chevron”?
+- Replace mustache with ItemComponent
 
 # Tasks
 * Make the browser code testable
@@ -25,7 +26,5 @@
   - renderItems
   - ItemListTransition
   - Find more code that can be modularised
-- Make HTML.element private
-- Rename HTML to **Element
 
 # Ice Box
