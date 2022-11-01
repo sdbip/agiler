@@ -1,6 +1,7 @@
 import { runTests } from '@web/test-runner-mocha'
 import { expect } from '@esm-bundle/chai'
-import { ItemComponent, PageComponent } from '../src/item-component'
+import { ItemComponent } from '../src/item-component'
+import { PageComponent } from '../src/page-component'
 
 runTests(() => {
   it('finds itself', () => {

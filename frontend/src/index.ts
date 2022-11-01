@@ -5,7 +5,8 @@ import { render } from './Templates'
 import { delay } from './delay'
 import { ItemListTransition } from './item-list-transition'
 import { DOMElement } from './dom-element'
-import { ItemComponent, PageComponent } from './item-component'
+import { ItemComponent } from './item-component'
+import { PageComponent } from './page-component'
 
 enum ClassName {
   disclosed = 'disclosed',
