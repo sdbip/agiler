@@ -7,6 +7,7 @@ import { ItemListTransition } from './item-list-transition'
 import { DOMElement } from './dom-element'
 import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
+import { MeasureComponent } from './measure-component'
 
 enum ClassName {
   disclosed = 'disclosed',
@@ -14,9 +15,6 @@ enum ClassName {
   inactive = 'inactive',
   default = 'default',
 }
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const measure = DOMElement.single('#measure')!
 
 updateItems()
 
@@ -159,13 +157,6 @@ const renderItems = async (items: any, itemListElement: DOMElement) => {
 }
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {
-  const intrinsicHeight = measureIntrinsicHeight(collapsible)
-  collapsible.setHeight(intrinsicHeight)
-}
-
-const measureIntrinsicHeight = (collapsible: DOMElement) => {
-  measure.setInnerHTML(collapsible.innerHTML)
-  for (const element of DOMElement.all('.hidden', measure))
-    element.removeClass(ClassName.hidden)
-  return measure.offsetHeight
+  const intrinsicSize = MeasureComponent.instance.measure(collapsible.innerHTML)
+  collapsible.setHeight(intrinsicSize.height)
 }

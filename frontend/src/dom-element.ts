@@ -25,6 +25,10 @@ export class DOMElement {
     return this.element.offsetHeight
   }
 
+  get offsetWidth(): number {
+    return this.element.offsetWidth
+  }
+
   private get inputElement() {
     failFast.unlessInstanceOf(HTMLInputElement)(this.element, 'element')
     return this.element as HTMLInputElement
