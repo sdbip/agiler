@@ -52,14 +52,13 @@ globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
   await writeModel.completeTask(id)
   await delay(200)
 
-  const storyElement = getParentItemElement(taskComponent.element)
-  if (!storyElement) return updateItems()
+  const storyComponent = taskComponent.parentComponent
+  if (!storyComponent) return updateItems()
 
-  const parentId = getItemId(storyElement)
-  const collapsible = getCollabsibleElement(storyElement)
+  const collapsible = storyComponent.collapsible
   if (!collapsible) return
 
-  await updateChildItems(parentId)
+  await updateChildItems(getItemId(storyComponent.element))
   updateCollapsibleSize(collapsible)
 }
 
@@ -79,7 +78,7 @@ globals.addTask = async function ({ id }: EventArgs<Event>) {
   console.log('add task', await writeModel.addTask(component.title, id))
   titleElement?.setInputElementValue('')
 
-  const collapsible = getCollabsibleElement(storyComponent?.element)
+  const collapsible = storyComponent?.collapsible
   if (!collapsible) return await updateItems()
 
   await updateChildItems(id)
@@ -93,13 +92,14 @@ globals.promote = async function ({ id }: EventArgs<Event>) {
 
 globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
 
-  const storyElement = getItemElementOrThrow(id)
-  storyElement.toggleClass(ClassName.disclosed)
+  const storyComponent = ItemComponent.forId(id)
+  if (!storyComponent) throw new Error(`Component for story with id ${id} not found`)
+  storyComponent.element.toggleClass(ClassName.disclosed)
 
-  const isDisclosed = storyElement.hasClass(ClassName.disclosed)
+  const isDisclosed = storyComponent.element.hasClass(ClassName.disclosed)
   if (isDisclosed) await updateChildItems(id)
 
-  const collapsible = getCollabsibleElement(storyElement)
+  const collapsible = storyComponent.collapsible
   if (!collapsible) return
 
   collapsible.setHeight(0)
@@ -112,7 +112,7 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
 async function updateItems() {
   const items = await readModel.fetchItems()
 
-  const itemListElement = getItemListElement()
+  const itemListElement = PageComponent.instance.itemListElement
   if (itemListElement) {
     const filter = new ItemListTransition(itemListElement.children, items)
     const taggedItems = filter.taggedItems
@@ -130,14 +130,17 @@ async function updateItems() {
 }
 
 const updateChildItems = async (parentId: string) => {
-  const storyElement = getItemElementOrThrow(parentId)
-  const spinner = getSpinnerElement(storyElement)
+  const storyComponent = ItemComponent.forId(parentId)
+  if (!storyComponent) throw new Error(`Component for story with id ${parentId} not found`)
+
+  const spinner = storyComponent.spinnerElement
   if (spinner) spinner.removeClass(ClassName.inactive)
 
   const items = await readModel.fetchChildItems(parentId)
-  const itemListElement = getItemListElement(storyElement)
+  const itemListElement = storyComponent.itemListElement
   if (itemListElement) {
     await renderItems(items, itemListElement)
+    await delay(500)
     if (spinner) spinner.addClass(ClassName.inactive)
   }
 }
@@ -158,34 +161,6 @@ const renderItems = async (items: any, itemListElement: DOMElement) => {
 }
 
 const getItemId = (element: DOMElement) => element.id.replace('item-', '')
-
-const getItemElementOrThrow = (id: string) => {
-  const element = getItemElement(id)
-  if (!element) throw new Error(`element with id ${id} not found`)
-  return element
-}
-
-const getItemElement = (id: string) => DOMElement.single(`#item-${id}`) ?? undefined
-
-const getParentItemElement = (element: DOMElement): DOMElement | null => {
-  const parent = element?.parentElement
-  if (!parent) return null
-  if (parent.id.startsWith('item-') &&
-    !parent.id.startsWith('item-list')) return parent
-  return getParentItemElement(parent)
-}
-
-
-const getCollabsibleElement = (storyElement?: DOMElement) =>
-  DOMElement.single('.collapsible', storyElement)
-
-const getItemListElement = (storyElement?: DOMElement) =>
-  storyElement
-    ? DOMElement.single('.item-list', storyElement)
-    : DOMElement.single('#item-list')
-
-const getSpinnerElement = (storyElement: DOMElement) =>
-  DOMElement.single('.spinner', storyElement)
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {
   const intrinsicHeight = measureIntrinsicHeight(collapsible)

@@ -9,6 +9,10 @@ runTests(() => {
     expect(ItemComponent.forId('subtask')?.element).to.exist
     expect(ItemComponent.forId('no-task')).to.not.exist
   })
+  it('finds parent component', () => {
+    expect(ItemComponent.forId('subtask')?.parentComponent).to.exist
+    expect(ItemComponent.forId('task')?.parentComponent).to.not.exist
+  })
   it('finds title element', () => {
     expect(PageComponent.instance.titleInputElement).to.exist
     expect(PageComponent.instance.title).to.equal('New task')
@@ -21,12 +25,14 @@ runTests(() => {
     expect(PageComponent.instance.addButtonElement).to.exist
     expect(ItemComponent.forId('story')?.addButtonElement).to.exist
   })
-  it('finds add-button 2 element', () => {
-    expect(PageComponent.instance.addButtonElement).to.exist
-    expect(ItemComponent.forId('story')?.addButtonElement).to.exist
+  it('finds collapsible element', () => {
+    expect(ItemComponent.forId('story')?.collapsible).to.exist
   })
-  it('finds add-button 3 element', () => {
-    expect(PageComponent.instance.addButtonElement).to.exist
-    expect(ItemComponent.forId('story')?.addButtonElement).to.exist
+  it('finds item-list element', () => {
+    expect(PageComponent.instance.itemListElement).to.exist
+    expect(ItemComponent.forId('story')?.itemListElement).to.exist
+  })
+  it('finds spinner element', () => {
+    expect(ItemComponent.forId('story')?.spinnerElement).to.exist
   })
 })
