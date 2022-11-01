@@ -18,13 +18,15 @@
 - Redesign promote-button
   - Add new outlined button like the disclosure-button
   - with separate “chevron”?
-- Replace mustache with ItemComponent
 
 # Tasks
 * Make the browser code testable
   - measureIntrinsicSize
   - renderItems
+    - Replace mustache file with ItemComponent
+    - updateItems/updateChildItems
+  - updateCollapsibleSize
   - ItemListTransition
-  - Find more code that can be modularised
+  - Event handlers
 
 # Ice Box

@@ -7,6 +7,10 @@ export class ItemComponent {
     return parentElement && new ItemComponent(parentElement)
   }
 
+  get itemId() {
+    return this.element.id.replace('item-', '')
+  }
+
   get title() { return this.titleInputElement?.inputElementValue }
 
   get titleInputElement() {

@@ -59,7 +59,7 @@ globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
   const collapsible = storyComponent.collapsible
   if (!collapsible) return
 
-  await updateChildItems(getItemId(storyComponent.element))
+  await updateChildItems(storyComponent)
   updateCollapsibleSize(collapsible)
 }
 
@@ -82,7 +82,7 @@ globals.addTask = async function ({ id }: EventArgs<Event>) {
   const collapsible = storyComponent?.collapsible
   if (!collapsible) return await updateItems()
 
-  await updateChildItems(id)
+  await updateChildItems(storyComponent)
   updateCollapsibleSize(collapsible)
 }
 
@@ -98,7 +98,7 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
   storyComponent.element.toggleClass(ClassName.disclosed)
 
   const isDisclosed = storyComponent.element.hasClass(ClassName.disclosed)
-  if (isDisclosed) await updateChildItems(id)
+  if (isDisclosed) await updateChildItems(storyComponent)
 
   const collapsible = storyComponent.collapsible
   if (!collapsible) return
@@ -130,14 +130,11 @@ async function updateItems() {
   }
 }
 
-const updateChildItems = async (parentId: string) => {
-  const storyComponent = ItemComponent.forId(parentId)
-  if (!storyComponent) throw new Error(`Component for story with id ${parentId} not found`)
-
+const updateChildItems = async (storyComponent: ItemComponent) => {
   const spinner = storyComponent.spinnerElement
   if (spinner) spinner.removeClass(ClassName.inactive)
 
-  const items = await readModel.fetchChildItems(parentId)
+  const items = await readModel.fetchChildItems(storyComponent.itemId)
   const itemListElement = storyComponent.itemListElement
   if (itemListElement) {
     await renderItems(items, itemListElement)
@@ -160,8 +157,6 @@ const renderItems = async (items: any, itemListElement: DOMElement) => {
     },
   }))
 }
-
-const getItemId = (element: DOMElement) => element.id.replace('item-', '')
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {
   const intrinsicHeight = measureIntrinsicHeight(collapsible)

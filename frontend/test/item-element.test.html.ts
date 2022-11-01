@@ -10,6 +10,12 @@ runTests(() => {
     expect(ItemComponent.forId('subtask')?.element).to.exist
     expect(ItemComponent.forId('no-task')).to.not.exist
   })
+  it('knows item id', () => {
+    expect(ItemComponent.forId('story')?.itemId).to.equal('story')
+    expect(ItemComponent.forId('subtask')?.itemId).to.equal('subtask')
+    expect(ItemComponent.forId('task')?.itemId).to.equal('task')
+  })
+
   it('finds parent component', () => {
     expect(ItemComponent.forId('subtask')?.parentComponent).to.exist
     expect(ItemComponent.forId('task')?.parentComponent).to.not.exist
