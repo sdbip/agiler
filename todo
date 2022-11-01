@@ -21,7 +21,6 @@
 
 # Tasks
 * Make the browser code testable
-  - measureIntrinsicSize
   - renderItems
     - Replace mustache file with ItemComponent
     - updateItems/updateChildItems

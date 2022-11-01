@@ -1,9 +1,13 @@
 import { DOMElement } from './dom-element'
 
 export class MeasureComponent {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  static readonly instance = new MeasureComponent(DOMElement.single('#measure')!)
-  private constructor(readonly element: DOMElement) { }
+  static readonly instance = new MeasureComponent()
+  readonly element: DOMElement
+
+  private constructor() {
+    DOMElement.BODY.add(DOMElement.fromHTML('<div class="measure"><div id="measure"></div></div>'))
+    this.element = DOMElement.single('#measure') as DOMElement
+  }
 
   measure(html: string) {
     this.element.setInnerHTML(html)

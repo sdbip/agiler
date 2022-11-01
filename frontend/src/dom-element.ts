@@ -39,6 +39,15 @@ export class DOMElement {
   }
 
   constructor(private readonly element: HTMLElement) { }
+
+  static fromHTML(html: string) {
+    const tempElement = document.createElement('div')
+    tempElement.innerHTML = html
+
+    failFast.unless(tempElement.children.length === 1, 'HTML must result in exactly one element')
+    return new DOMElement(tempElement.firstChild as HTMLElement)
+  }
+
   static single(selector: string, rootElement?: DOMElement) {
     if (selector[0] !== '#') return DOMElement.all(selector, rootElement)[0]
 
@@ -87,6 +96,10 @@ export class DOMElement {
 
   hasClass(className: string) {
     return indexOfClassName(this.element.className, className, 0) >= 0
+  }
+
+  add(element: DOMElement) {
+    this.element.appendChild(element.element)
   }
 
   equals(other: DOMElement) {
