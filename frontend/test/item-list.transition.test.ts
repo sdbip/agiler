@@ -9,7 +9,7 @@ describe(ItemListTransition.name, () => {
     it('tags new items', () => {
 
       const transition = new ItemListTransition(
-        [],
+        createElement('<div></div>'),
         [ { id: '1' } ])
 
       expect(transition.taggedItems[0].isNew).is.true
@@ -18,7 +18,7 @@ describe(ItemListTransition.name, () => {
     it('doesn\'t tag already added item', () => {
 
       const transition = new ItemListTransition(
-        [ createElement('<div id="item-1">Item1</div>') ],
+        createElement('<div><div id="item-1">Item1</div></div>'),
         [ { id: '1' } ])
 
         expect(transition.taggedItems[0].isNew).is.false
@@ -30,7 +30,7 @@ describe(ItemListTransition.name, () => {
     it('returns elements that are not represented', () => {
 
       const transition = new ItemListTransition(
-        [ createElement('<div id="item-1">Item1</div>') ],
+        createElement('<div><div id="item-1">Item1</div></div>'),
         [])
 
       expect(transition.obsoleteElements).to.have.lengthOf(1)
@@ -38,7 +38,7 @@ describe(ItemListTransition.name, () => {
 
     it('skips elements with representation', () => {
       const transition = new ItemListTransition(
-        [ createElement('<div id="item-1">Item1</div>') ],
+        createElement('<div><div id="item-1">Item1</div></div>'),
         [ { id: '1' } ])
 
       expect(transition.obsoleteElements).to.have.lengthOf(0)

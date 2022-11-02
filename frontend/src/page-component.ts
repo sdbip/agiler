@@ -1,5 +1,7 @@
+import { ItemDTO } from '../../backend/src/dtos/item-dto'
 import { Selector } from './class-name'
 import { DOMElement } from './dom-element'
+import { ItemListTransition } from './item-list-transition'
 
 
 export class PageComponent {
@@ -22,5 +24,13 @@ export class PageComponent {
 
   private getElement(selector: Selector) {
     return DOMElement.single(selector)
+  }
+
+  async replaceChildItems(items: ItemDTO[]) {
+    const itemListElement = this.itemListElement
+    if (!itemListElement) return
+
+    const transition = new ItemListTransition(itemListElement, items)
+    await transition.replaceChildItems()
   }
 }

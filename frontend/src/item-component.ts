@@ -1,8 +1,7 @@
 import { ItemDTO } from '../../backend/src/dtos/item-dto'
 import { ClassName, Selector, toSelector } from './class-name'
-import { delay } from './delay'
 import { DOMElement } from './dom-element'
-import { render } from './Templates'
+import { ItemListTransition } from './item-list-transition'
 
 export class ItemComponent {
 
@@ -48,12 +47,8 @@ export class ItemComponent {
   }
 
   async replaceChildItems(items: ItemDTO[]) {
-    const html = await render('subtasks', { items })
-    this.itemListElement.setInnerHTML(html)
-    await delay(500)
-
-    for (const element of this.itemListElement.decendants({ className: ClassName.hidden }))
-      element.removeClass(ClassName.hidden)
+    const transition = new ItemListTransition(this.itemListElement, items)
+    await transition.replaceChildItems()
   }
 
   async activateSpinnerDuring(runIt: () => Promise<void>) {

@@ -1,9 +1,7 @@
 import globals from './globals'
 import readModel from './readModel'
 import writeModel from './writeModel'
-import { render } from './Templates'
 import { delay } from './delay'
-import { ItemListTransition } from './item-list-transition'
 import { DOMElement } from './dom-element'
 import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
@@ -104,22 +102,7 @@ globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
 
 async function updateItems() {
   const items = await readModel.fetchItems()
-
-  const itemListElement = PageComponent.instance.itemListElement
-  if (itemListElement) {
-    const filter = new ItemListTransition(itemListElement.children, items)
-    const taggedItems = filter.taggedItems
-    const oldElements = filter.obsoleteElements
-
-    for (const element of oldElements) element.addClass(ClassName.hidden)
-
-    await delay(500)
-    await renderItems(taggedItems, itemListElement)
-    await delay(1)
-
-    for (const html of itemListElement.decendants({ className: ClassName.hidden }))
-      html.removeClass(ClassName.hidden)
-  }
+  await PageComponent.instance.replaceChildItems(items)
 }
 
 const updateChildItems = async (storyComponent: ItemComponent) => {
@@ -127,21 +110,6 @@ const updateChildItems = async (storyComponent: ItemComponent) => {
     const items = await readModel.fetchChildItems(storyComponent.itemId)
     await storyComponent.replaceChildItems(items)
   })
-}
-
-const renderItems = async (items: any, itemListElement: DOMElement) => {
-  itemListElement.setInnerHTML(await render('item-list', {
-    items,
-    canComplete: () => function (this: any, text: string, render: any) {
-      return this.type === 'Task' ? render(text) : ''
-    },
-    canPromote: () => function (this: any, text: string, render: any) {
-      return this.type === 'Task' ? render(text) : ''
-    },
-    hasChildren: () => function (this: any, text: string, render: any) {
-      return this.type !== 'Task' ? render(text) : ''
-    },
-  }))
 }
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {
