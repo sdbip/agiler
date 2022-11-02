@@ -2,6 +2,8 @@ import { runTests } from '@web/test-runner-mocha'
 import { expect } from '@esm-bundle/chai'
 import { ItemComponent } from '../src/item-component'
 import { PageComponent } from '../src/page-component'
+import { DOMElement } from '../src/dom-element'
+import { ClassName, toSelector } from '../src/class-name'
 
 runTests(() => {
   it('finds itself', () => {
@@ -39,7 +41,15 @@ runTests(() => {
     expect(PageComponent.instance.itemListElement).to.exist
     expect(ItemComponent.forId('story')?.itemListElement).to.exist
   })
-  it('finds spinner element', () => {
-    expect(ItemComponent.forId('story')?.spinnerElement).to.exist
+  it('finds spinner element', async () => {
+    const component = ItemComponent.forId('story')
+    let didDoIt = false
+    await component?.activateSpinnerDuring(async () => {
+      const spinnerElement = DOMElement.single(toSelector('.spinner'))
+      expect(spinnerElement?.hasClass(ClassName.inactive)).is.false
+      didDoIt = true
+    })
+
+    expect(didDoIt).is.true
   })
 })

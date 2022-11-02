@@ -123,16 +123,11 @@ async function updateItems() {
 }
 
 const updateChildItems = async (storyComponent: ItemComponent) => {
-  const spinner = storyComponent.spinnerElement
-  if (spinner) spinner.removeClass(ClassName.inactive)
-
-  const items = await readModel.fetchChildItems(storyComponent.itemId)
-  const itemListElement = storyComponent.itemListElement
-  if (itemListElement) {
-    await renderItems(items, itemListElement)
-    await delay(500)
-    if (spinner) spinner.addClass(ClassName.inactive)
-  }
+  const fetch = async (itemId: string) => await readModel.fetchChildItems(itemId)
+  await storyComponent.activateSpinnerDuring(async () => {
+    const items = await fetch(storyComponent.itemId)
+    await storyComponent.replaceChildItems(items)
+  })
 }
 
 const renderItems = async (items: any, itemListElement: DOMElement) => {

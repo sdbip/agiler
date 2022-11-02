@@ -1,4 +1,4 @@
-import { Selector, toSelector } from './class-name'
+import { Selector } from './class-name'
 import { DOMElement } from './dom-element'
 
 
@@ -7,15 +7,15 @@ export class PageComponent {
 
   get title() { return this.titleInputElement?.inputElementValue }
   get addButtonElement() {
-    return this.getElement(toSelector('#add-button'))
+    return this.getElement({ id: 'add-button' })
   }
 
   get titleInputElement() {
-    return this.getElement(toSelector('#item-title'))
+    return this.getElement({ id: 'item-title' })
   }
 
   get itemListElement() {
-    return this.getElement(toSelector('#item-list'))
+    return this.getElement({ id: 'item-list' })
   }
 
   private constructor() { /**/ }
