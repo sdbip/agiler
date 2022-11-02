@@ -2,6 +2,7 @@ import { ItemDTO } from '../../backend/src/dtos/item-dto'
 import { ClassName, Selector, toSelector } from './class-name'
 import { DOMElement } from './dom-element'
 import { ItemListTransition } from './item-list-transition'
+import { UIEventArgs } from './ui-event-args'
 
 export class ItemComponent {
 
@@ -59,6 +60,27 @@ export class ItemComponent {
       await runIt()
     } finally {
       spinnerElement.addClass(ClassName.inactive)
+    }
+  }
+
+  handleUIEvent(name: string, args: UIEventArgs) {
+    switch (name) {
+      case 'focus':
+      case 'input': {
+        const button = this.addButtonElement
+        if (!button) return
+
+        const inputElement = this.titleInputElement
+        if (inputElement?.inputElementValue)
+          button.addClass(ClassName.default)
+        else
+          button.removeClass(ClassName.default)
+        break
+      }
+      case 'blur': {
+        const button = this.addButtonElement
+        if (button) button.removeClass(ClassName.default)
+      }
     }
   }
 }

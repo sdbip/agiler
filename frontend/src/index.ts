@@ -7,33 +7,20 @@ import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
 import { MeasureComponent } from './measure-component'
 import { ClassName } from './class-name'
+import { UIEventArgs } from './ui-event-args'
 
 updateItems()
 
 // EVENT HANDLERS
 
+globals.emitUIEvent = (name: string, args: UIEventArgs) => {
+  const component = ItemComponent.forId(args.itemId) ?? PageComponent.instance
+  component.handleUIEvent(name, args)
+}
+
 type EventArgs<
   EventType extends Event | void
 > = { event: EventType, id: string }
-
-globals.makeDefault = async ({ id }: EventArgs<Event>) => {
-  const itemComponent = ItemComponent.forId(id)
-  const button = itemComponent?.addButtonElement
-  if (!button) return
-
-  const component = itemComponent ?? PageComponent.instance
-  const inputElement = component.titleInputElement
-  if (inputElement?.inputElementValue)
-    button.addClass(ClassName.default)
-  else
-    button.removeClass(ClassName.default)
-}
-
-globals.unmakeDefault = async ({ id }: EventArgs<Event>) => {
-  const itemComponent = ItemComponent.forId(id)
-  const button = itemComponent?.addButtonElement
-  if (button) button.removeClass(ClassName.default)
-}
 
 globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
 

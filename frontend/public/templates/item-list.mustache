@@ -19,9 +19,9 @@
   <div class="collapsible" style="height: 0">
     <div class="flex">
       <input type="text" class="item-title"
-        onfocus="makeDefault({element: this, event, id: '{{id}}'})"
-        oninput="makeDefault({element: this, event, id: '{{id}}'})"
-        onblur="unmakeDefault({element: this, event, id: '{{id}}'})"
+        onfocus="emitUIEvent('focus', {element: this, event, itemId: '{{id}}'})"
+        oninput="emitUIEvent('input', {element: this, event, itemId: '{{id}}'})"
+        onblur="emitUIEvent('blur', {element: this, event, itemId: '{{id}}'})"
         onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="What needs to be done?">
       <button class="add-button" onclick="addTask({element: this, event, id: '{{id}}'})">+</button>
     </div>

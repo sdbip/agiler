@@ -11,9 +11,9 @@
   <h1>Agiler</h1>
   <div class="flex">
     <input type="text" id="item-title"
-      onfocus="makeDefault({element: this, event})"
-      oninput="makeDefault({element: this, event})"
-      onblur="unmakeDefault({element: this, event})"
+      onfocus="emitUIEvent('focus', {element: this, event})"
+      oninput="emitUIEvent('input', {element: this, event})"
+      onblur="emitUIEvent('blur', {element: this, event})"
       onkeydown="addTaskIfEnter({element: this, event})" placeholder="What needs to be done?">
     <button id="add-button" onclick="addTask({element: this, event})">+</button>
   </div>

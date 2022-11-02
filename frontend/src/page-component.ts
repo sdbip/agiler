@@ -1,7 +1,8 @@
 import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import { Selector } from './class-name'
+import { ClassName, Selector } from './class-name'
 import { DOMElement } from './dom-element'
 import { ItemListTransition } from './item-list-transition'
+import { UIEventArgs } from './ui-event-args'
 
 
 export class PageComponent {
@@ -32,5 +33,26 @@ export class PageComponent {
 
     const transition = new ItemListTransition(itemListElement, items)
     await transition.replaceChildItems()
+  }
+
+  handleUIEvent(name: string, _: UIEventArgs) {
+    switch (name) {
+      case 'focus':
+      case 'input': {
+        const button = this.addButtonElement
+        if (!button) return
+
+        const inputElement = this.titleInputElement
+        if (inputElement?.inputElementValue)
+          button.addClass(ClassName.default)
+        else
+          button.removeClass(ClassName.default)
+        break
+      }
+      case 'blur': {
+        const button = this.addButtonElement
+        if (button) button.removeClass(ClassName.default)
+      }
+    }
   }
 }
