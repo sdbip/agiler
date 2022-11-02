@@ -91,7 +91,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector, new DOMElement(element))
+      const htmls = new DOMElement(element).decendants(toSelector('.this-element') as ClassSelector)
       expect(htmls).to.have.lengthOf(1)
     })
 
@@ -99,7 +99,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector, new DOMElement(element))
+      const htmls = new DOMElement(element).decendants(toSelector('.this-element') as ClassSelector)
       expect(htmls).to.have.lengthOf(1)
     })
   })

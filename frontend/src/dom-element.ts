@@ -50,17 +50,21 @@ export class DOMElement {
   }
 
   static single(selector: Selector, rootElement?: DOMElement) {
-    if (!('id' in selector)) return DOMElement.all(selector, rootElement)[0]
+    if (!('id' in selector)) return DOMElement.findAll(selector, rootElement)[0]
 
     const element = document.getElementById(selector.id)
     return element && new DOMElement(element)
   }
 
   decendants(selector: ClassSelector | TagSelector) {
-    return DOMElement.all(selector, this)
+    return DOMElement.findAll(selector, this)
   }
 
-  static all(selector: ClassSelector | TagSelector, rootElement?: DOMElement) {
+  static all(selector: ClassSelector | TagSelector) {
+    return this.findAll(selector)
+  }
+
+  private static findAll(selector: ClassSelector | TagSelector, rootElement?: DOMElement) {
     const root = (rootElement ?? DOMElement.DOCUMENT).element
     const elements = 'className' in selector
       ? root.getElementsByClassName(selector.className.name)
