@@ -123,9 +123,8 @@ async function updateItems() {
 }
 
 const updateChildItems = async (storyComponent: ItemComponent) => {
-  const fetch = async (itemId: string) => await readModel.fetchChildItems(itemId)
   await storyComponent.activateSpinnerDuring(async () => {
-    const items = await fetch(storyComponent.itemId)
+    const items = await readModel.fetchChildItems(storyComponent.itemId)
     await storyComponent.replaceChildItems(items)
   })
 }
