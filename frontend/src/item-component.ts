@@ -7,8 +7,14 @@ import { render } from './Templates'
 export class ItemComponent {
 
   get parentComponent() {
-    const parentElement = getParentItemElement(this.element)
-    return parentElement && new ItemComponent(parentElement)
+    const getComponent = (element: DOMElement | null): ItemComponent | null => {
+      if (!element) return null
+      if (element.id.startsWith('item-') &&
+        !element.id.startsWith('item-list')) return new ItemComponent(element)
+      return getComponent(element.parentElement)
+    }
+
+    return getComponent(this.element.parentElement)
   }
 
   get itemId() {
@@ -63,12 +69,4 @@ export class ItemComponent {
       this.spinnerElement.addClass(ClassName.inactive)
     }
   }
-}
-
-const getParentItemElement = (element: DOMElement): DOMElement | null => {
-  const parent = element?.parentElement
-  if (!parent) return null
-  if (parent.id.startsWith('item-') &&
-    !parent.id.startsWith('item-list')) return parent
-  return getParentItemElement(parent)
 }
