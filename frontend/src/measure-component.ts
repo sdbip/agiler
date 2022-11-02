@@ -1,3 +1,4 @@
+import { ClassName } from './class-name'
 import { DOMElement } from './dom-element'
 
 export class MeasureComponent {
@@ -12,7 +13,7 @@ export class MeasureComponent {
   measure(html: string) {
     this.element.setInnerHTML(html)
     for (const element of DOMElement.all('.hidden', this.element))
-      element.removeClass('hidden')
+      element.removeClass(ClassName.hidden)
     return {
       height: this.element.offsetHeight,
       width: this.element.offsetWidth,

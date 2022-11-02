@@ -8,13 +8,7 @@ import { DOMElement } from './dom-element'
 import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
 import { MeasureComponent } from './measure-component'
-
-enum ClassName {
-  disclosed = 'disclosed',
-  hidden = 'hidden',
-  inactive = 'inactive',
-  default = 'default',
-}
+import { ClassName } from './class-name'
 
 updateItems()
 

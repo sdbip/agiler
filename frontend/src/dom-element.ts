@@ -1,4 +1,5 @@
 import { failFast } from '../../shared/src/failFast'
+import { ClassName } from './class-name'
 
 export class DOMElement {
   static BODY = new DOMElement(document.body)
@@ -75,27 +76,27 @@ export class DOMElement {
     this.element.innerHTML = html
   }
 
-  addClass(className: string) {
+  addClass(className: ClassName) {
     if (this.hasClass(className)) return
-    this.element.className = `${this.element.className} ${className}`.trim()
+    this.element.className = `${this.element.className} ${className.name}`.trim()
   }
 
-  removeClass(className: string) {
+  removeClass(className: ClassName) {
     while (this.hasClass(className)) {
-      const index = indexOfClassName(this.element.className, className, 0)
-      this.element.className = `${this.element.className.substring(0, index)}${this.element.className.substring(index + className.length)}`.trim()
+      const index = indexOfClassName(this.element.className, className.name, 0)
+      this.element.className = `${this.element.className.substring(0, index)}${this.element.className.substring(index + (typeof className === 'string' ? className : className.name).length)}`.trim()
     }
   }
 
-  toggleClass(className: string) {
+  toggleClass(className: ClassName) {
     if (this.hasClass(className))
       this.removeClass(className)
     else
       this.addClass(className)
   }
 
-  hasClass(className: string) {
-    return indexOfClassName(this.element.className, className, 0) >= 0
+  hasClass(className: ClassName) {
+    return indexOfClassName(this.element.className, className.name, 0) >= 0
   }
 
   add(element: DOMElement) {
