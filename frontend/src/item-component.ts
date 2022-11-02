@@ -1,5 +1,5 @@
 import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import { ClassName, Selector } from './class-name'
+import { ClassName, Selector, toSelector } from './class-name'
 import { delay } from './delay'
 import { DOMElement } from './dom-element'
 import { render } from './Templates'
@@ -37,10 +37,6 @@ export class ItemComponent {
     return this.getElement({ className:{ name: 'item-list' } })
   }
 
-  private get spinnerElement() {
-    return this.getElement({ className:{ name: 'spinner' } })
-  }
-
   static forId(id: string) {
     const element = DOMElement.single({ id: `item-${id}` })
     return element && new ItemComponent(element)
@@ -61,12 +57,13 @@ export class ItemComponent {
   }
 
   async activateSpinnerDuring(runIt: () => Promise<void>) {
-    this.spinnerElement.removeClass(ClassName.inactive)
+    const spinnerElement = this.getElement(toSelector('.spinner'))
+    spinnerElement.removeClass(ClassName.inactive)
 
     try {
       await runIt()
     } finally {
-      this.spinnerElement.addClass(ClassName.inactive)
+      spinnerElement.addClass(ClassName.inactive)
     }
   }
 }
