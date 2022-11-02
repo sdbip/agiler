@@ -1,4 +1,5 @@
 import { expect } from '@esm-bundle/chai'
+import { ClassSelector, TagSelector, toSelector } from '../src/class-name'
 import { DOMElement } from '../src/dom-element'
 
 describe(DOMElement.name, () => {
@@ -10,7 +11,7 @@ describe(DOMElement.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = DOMElement.single('#this_element')
+      const html = DOMElement.single(toSelector('#this_element'))
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -22,7 +23,7 @@ describe(DOMElement.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = DOMElement.single('div')
+      const html = DOMElement.single(toSelector('div'))
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -35,7 +36,7 @@ describe(DOMElement.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const html = DOMElement.single('.this-element')
+      const html = DOMElement.single(toSelector('.this-element'))
       expect(html).to.exist
       expect(html?.id).to.equal('this_element')
 
@@ -46,7 +47,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const html = DOMElement.single('.this-element', new DOMElement(element))
+      const html = DOMElement.single(toSelector('.this-element'), new DOMElement(element))
       expect(html).to.exist
     })
 
@@ -54,7 +55,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const html = DOMElement.single('div', new DOMElement(element))
+      const html = DOMElement.single(toSelector('div'), new DOMElement(element))
       expect(html).to.exist
     })
   })
@@ -66,7 +67,7 @@ describe(DOMElement.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const htmls = DOMElement.all('div')
+      const htmls = DOMElement.all(toSelector('div') as TagSelector)
       expect(htmls).to.have.lengthOf(1)
       expect(new DOMElement(element).equals(htmls[0])).to.be.true
 
@@ -79,7 +80,7 @@ describe(DOMElement.name, () => {
       element.id = 'this_element'
       document.body.appendChild(element)
 
-      const htmls = DOMElement.all('.this-element')
+      const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector)
       expect(htmls).to.have.lengthOf(1)
       expect(new DOMElement(element).equals(htmls[0])).to.be.true
 
@@ -90,7 +91,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = DOMElement.all('.this-element', new DOMElement(element))
+      const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector, new DOMElement(element))
       expect(htmls).to.have.lengthOf(1)
     })
 
@@ -98,7 +99,7 @@ describe(DOMElement.name, () => {
       const element = document.createElement('div')
       element.innerHTML = '<div class="this-element"></div>'
 
-      const htmls = DOMElement.all('.this-element', new DOMElement(element))
+      const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector, new DOMElement(element))
       expect(htmls).to.have.lengthOf(1)
     })
   })

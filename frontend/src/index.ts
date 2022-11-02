@@ -117,7 +117,7 @@ async function updateItems() {
     await renderItems(taggedItems, itemListElement)
     await delay(1)
 
-    for (const html of DOMElement.all('.hidden', itemListElement))
+    for (const html of itemListElement.decendants({ className: ClassName.hidden }))
       html.removeClass(ClassName.hidden)
   }
 }

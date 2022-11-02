@@ -1,5 +1,5 @@
 import { failFast } from '../../shared/src/failFast'
-import { ClassName } from './class-name'
+import { ClassName, ClassSelector, Selector, TagSelector } from './class-name'
 
 export class DOMElement {
   static BODY = new DOMElement(document.body)
@@ -49,18 +49,22 @@ export class DOMElement {
     return new DOMElement(tempElement.firstChild as HTMLElement)
   }
 
-  static single(selector: string, rootElement?: DOMElement) {
-    if (selector[0] !== '#') return DOMElement.all(selector, rootElement)[0]
+  static single(selector: Selector, rootElement?: DOMElement) {
+    if (!('id' in selector)) return DOMElement.all(selector, rootElement)[0]
 
-    const element = document.getElementById(selector.substring(1))
+    const element = document.getElementById(selector.id)
     return element && new DOMElement(element)
   }
 
-  static all(selector: string, rootElement?: DOMElement) {
+  decendants(selector: ClassSelector | TagSelector) {
+    return DOMElement.all(selector, this)
+  }
+
+  static all(selector: ClassSelector | TagSelector, rootElement?: DOMElement) {
     const root = (rootElement ?? DOMElement.DOCUMENT).element
-    const elements = selector[0] === '.'
-      ? root.getElementsByClassName(selector.substring(1))
-      : root.getElementsByTagName(selector)
+    const elements = 'className' in selector
+      ? root.getElementsByClassName(selector.className.name)
+      : root.getElementsByTagName(selector.tagName)
     return [ ...elements ].map(e => new DOMElement(e as HTMLElement))
   }
 

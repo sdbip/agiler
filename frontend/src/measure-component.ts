@@ -7,12 +7,12 @@ export class MeasureComponent {
 
   private constructor() {
     DOMElement.BODY.add(DOMElement.fromHTML('<div class="measure"><div id="measure"></div></div>'))
-    this.element = DOMElement.single('#measure') as DOMElement
+    this.element = DOMElement.single({ id: 'measure' }) as DOMElement
   }
 
   measure(html: string) {
     this.element.setInnerHTML(html)
-    for (const element of DOMElement.all('.hidden', this.element))
+    for (const element of this.element.decendants({ className: ClassName.hidden }))
       element.removeClass(ClassName.hidden)
     return {
       height: this.element.offsetHeight,
