@@ -1,20 +1,15 @@
 {{#items}}
 <div id="item-{{id}}" class="item item-{{type}} no-select {{#isNew}} hidden {{/isNew}}">
   {{#canPromote}}
-  <span class="promote-button" onclick="promote({element: this, event, id: '{{id}}'})">✵</span>
+  <span class="promote-button" onclick="emitUIEvent('promote-clicked', {element: this, event, itemId: '{{id}}'})">✵</span>
   {{/canPromote}}
   {{#canComplete}}
-  <input type="checkbox" onchange="completeTask({element: this, event, id: '{{id}}'})"
-      {{#isCompleted}} checked {{/isCompleted}}
-    >
-  <label for="{{id}}"
-    onclick="completeTask({element: this, event, id: '{{id}}'})"
-  ></label>
+  <label onclick="emitUIEvent('complete-clicked', {element: this, event, itemId: '{{id}}'})"></label>
   {{/canComplete}}
   <span>{{title}}</span>
   {{#hasChildren}}
-  <div class="chevron"  >+</div>
-  <div class="disclosure-button" onclick="toggleDisclosed({element: this, event, id: '{{id}}'})"></div>
+  <div class="chevron">+</div>
+  <div class="disclosure-button" onclick="emitUIEvent('disclosure-button-clicked', {element: this, event, itemId: '{{id}}'})"></div>
   <img class="spinner inactive" src="public/images/spinner.gif">
   <div class="collapsible" style="height: 0">
     <div class="flex">
@@ -22,8 +17,8 @@
         onfocus="emitUIEvent('focus', {element: this, event, itemId: '{{id}}'})"
         oninput="emitUIEvent('input', {element: this, event, itemId: '{{id}}'})"
         onblur="emitUIEvent('blur', {element: this, event, itemId: '{{id}}'})"
-        onkeydown="addTaskIfEnter({element: this, event, id: '{{id}}'})" placeholder="What needs to be done?">
-      <button class="add-button" onclick="addTask({element: this, event, id: '{{id}}'})">+</button>
+        onkeydown="emitUIEvent('title-keydown', {element: this, event, itemId: '{{id}}'})" placeholder="What needs to be done?">
+      <button class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</button>
     </div>
     <div class="item-list"></div>
   </div>

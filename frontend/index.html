@@ -14,8 +14,8 @@
       onfocus="emitUIEvent('focus', {element: this, event})"
       oninput="emitUIEvent('input', {element: this, event})"
       onblur="emitUIEvent('blur', {element: this, event})"
-      onkeydown="addTaskIfEnter({element: this, event})" placeholder="What needs to be done?">
-    <button id="add-button" onclick="addTask({element: this, event})">+</button>
+      onkeydown="emitUIEvent('title-keydown', {element: this, event})" placeholder="What needs to be done?">
+    <button id="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event})">+</button>
   </div>
   <div id="item-list" class="item-list"></div>
 </body>

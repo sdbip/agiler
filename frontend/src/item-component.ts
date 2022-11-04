@@ -43,26 +43,18 @@ export class ItemComponent {
   private constructor(readonly element: DOMElement) { }
 
   private getElement(selector: Selector) {
-    return DOMElement.single(selector, this.element) as DOMElement
+    return DOMElement.single(selector, this.element)
   }
 
-  async replaceChildItems(items: ItemDTO[]) {
-    const transition = new ItemListTransition(this.itemListElement, items)
-    await transition.replaceChildItems()
-  }
-
-  async activateSpinnerDuring(runIt: () => Promise<void>) {
-    const spinnerElement = this.getElement(toSelector('.spinner'))
-    spinnerElement.removeClass(ClassName.inactive)
-
+  async stopSpinnerAfter(runIt: () => Promise<void>) {
     try {
       await runIt()
     } finally {
-      spinnerElement.addClass(ClassName.inactive)
+      this.stopSpinner()
     }
   }
 
-  handleUIEvent(name: string) {
+  handleUIEvent(name: string, args?: any) {
     switch (name) {
       case 'focus':
       case 'input':
@@ -73,15 +65,42 @@ export class ItemComponent {
         break
       case 'blur':
         this.unhighlightAddButton()
+        break
+      case 'loading':
+        this.startSpinner()
+        break
+      case 'loading-done':
+        this.stopSpinner()
+        break
+      case 'items-fetched':
+        this.replaceChildItems(args.items)
+        break
     }
   }
 
+  async replaceChildItems(items: ItemDTO[]) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const transition = new ItemListTransition(this.itemListElement!, items)
+    await transition.replaceChildItems()
+  }
+
+  private startSpinner() {
+    const spinnerElement = this.getElement(toSelector('.spinner'))
+    spinnerElement?.removeClass(ClassName.inactive)
+  }
+
+  stopSpinner() {
+    const spinnerElement = this.getElement(toSelector('.spinner'))
+    spinnerElement?.addClass(ClassName.inactive)
+  }
+
   private highlightAddButton() {
-    const button = this.addButtonElement
-    button.addClass(ClassName.default)
+    const buttonElement = this.addButtonElement
+    buttonElement?.addClass(ClassName.default)
   }
 
   private unhighlightAddButton() {
-    this.addButtonElement.removeClass(ClassName.default)
+    const buttonElement = this.addButtonElement
+    buttonElement?.removeClass(ClassName.default)
   }
 }

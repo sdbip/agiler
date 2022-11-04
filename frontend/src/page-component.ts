@@ -44,6 +44,7 @@ export class PageComponent {
         break
       case 'blur':
         this.unhighlightAddButton()
+        break
     }
   }
 

@@ -13,33 +13,51 @@ updateItems()
 
 // EVENT HANDLERS
 
-globals.emitUIEvent = (name: string, args: UIEventArgs) => {
+globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
+  console.log('emitUIEvent', name, args)
   switch (name) {
     case 'focus':
     case 'input':
     case 'blur':
-      notifyUI(name, args, args.itemId)
+      notifyUI(name, args.itemId, args)
       break
+    case 'complete-clicked':
+      await completeTask({ id: args.itemId })
+      break
+    case 'promote-clicked':
+      await promote({ id: args.itemId })
+      break
+    case 'title-keydown':
+      if (isEnterPressed(args.event as KeyboardEvent))
+        await addTask({ id: args.itemId })
+      break
+    case 'add-button-clicked':
+      await addTask({ id: args.itemId })
+      break
+    case 'disclosure-button-clicked':
+      await toggleDisclosed({ id: args.itemId })
+      break
+  }
+
+  function isEnterPressed(event: KeyboardEvent) {
+    if (event.metaKey || event.ctrlKey || event.altKey) return false
+    return event.key === 'Enter'
   }
 }
 
-const notifyUI = (event: string, args: any, itemId: string) => {
+const notifyUI = (event: string, itemId: string, args?: any) => {
   const component = ItemComponent.forId(itemId) ?? PageComponent.instance
-  component.handleUIEvent(event)
+  component.handleUIEvent(event, args)
 }
 
-type EventArgs<
-  EventType extends Event | void
-> = { event: EventType, id: string }
-
-globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
-
-  const taskComponent = ItemComponent.forId(id)
-  if (!taskComponent) throw new Error(`Component for task with id ${id} not found`)
+const completeTask = async ({ id }: {id:string}) => {
 
   await writeModel.completeTask(id)
   await delay(200)
+  notifyUI('task-completed', id)
 
+  const taskComponent = ItemComponent.forId(id)
+  if (!taskComponent) throw new Error(`Component for task with id ${id} not found`)
   const storyComponent = taskComponent.parentComponent
   if (!storyComponent) return updateItems()
 
@@ -50,14 +68,7 @@ globals.completeTask = async function ({ id }: EventArgs<MouseEvent>) {
   updateCollapsibleSize(collapsible)
 }
 
-globals.addTaskIfEnter = async function ({ event, id }: EventArgs<KeyboardEvent>) {
-  if (event.metaKey || event.ctrlKey || event.altKey) return
-  if (event.key !== 'Enter') return
-
-  await globals.addTask({ id })
-}
-
-globals.addTask = async function ({ id }: EventArgs<Event>) {
+const addTask = async ({ id }: {id:string}) => {
   const storyComponent = ItemComponent.forId(id)
   const component = storyComponent ?? PageComponent.instance
   const titleElement = component.titleInputElement
@@ -73,12 +84,12 @@ globals.addTask = async function ({ id }: EventArgs<Event>) {
   updateCollapsibleSize(collapsible)
 }
 
-globals.promote = async function ({ id }: EventArgs<Event>) {
+const promote = async ({ id }: {id:string}) => {
   await writeModel.promoteTask(id)
   await updateItems()
 }
 
-globals.toggleDisclosed = async function ({ id }: EventArgs<Event>) {
+const toggleDisclosed = async ({ id }: {id:string}) => {
 
   const storyComponent = ItemComponent.forId(id)
   if (!storyComponent) throw new Error(`Component for story with id ${id} not found`)
@@ -103,10 +114,15 @@ async function updateItems() {
 }
 
 const updateChildItems = async (storyComponent: ItemComponent) => {
-  await storyComponent.activateSpinnerDuring(async () => {
+  notifyUI('loading', storyComponent.itemId)
+  try {
     const items = await readModel.fetchChildItems(storyComponent.itemId)
+    notifyUI('items-fetched', storyComponent.itemId, { items })
+    // TODO: Remove this call when measuring works without it
     await storyComponent.replaceChildItems(items)
-  })
+  } finally {
+    notifyUI('loading-done', storyComponent.itemId)
+  }
 }
 
 const updateCollapsibleSize = (collapsible: DOMElement) => {

@@ -43,13 +43,9 @@ runTests(() => {
   })
   it('finds spinner element', async () => {
     const component = ItemComponent.forId('story')
-    let didDoIt = false
-    await component?.activateSpinnerDuring(async () => {
-      const spinnerElement = DOMElement.single(toSelector('.spinner'))
-      expect(spinnerElement?.hasClass(ClassName.inactive)).is.false
-      didDoIt = true
-    })
+    component?.handleUIEvent('loading')
 
-    expect(didDoIt).is.true
+    const spinnerElement = DOMElement.single(toSelector('.spinner'))
+    expect(spinnerElement?.hasClass(ClassName.inactive)).is.false
   })
 })
