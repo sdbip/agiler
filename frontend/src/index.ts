@@ -14,7 +14,6 @@ updateItems()
 // EVENT HANDLERS
 
 globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
-  console.log('emitUIEvent', name, args)
   switch (name) {
     case 'focus':
     case 'input':
@@ -45,12 +44,12 @@ globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
   }
 }
 
-const notifyUI = (event: string, itemId: string, args?: any) => {
-  const component = ItemComponent.forId(itemId) ?? PageComponent.instance
+function notifyUI(event: string, itemId?: string, args?: any) {
+  const component = (itemId ? ItemComponent.forId(itemId) : undefined) ?? PageComponent.instance
   component.handleUIEvent(event, args)
 }
 
-const completeTask = async ({ id }: {id:string}) => {
+const completeTask = async ({ id }: { id: string }) => {
 
   await writeModel.completeTask(id)
   await delay(200)
@@ -64,11 +63,11 @@ const completeTask = async ({ id }: {id:string}) => {
   const collapsible = storyComponent.collapsible
   if (!collapsible) return
 
-  await updateChildItems(storyComponent)
+  await updateChildItems(id)
   updateCollapsibleSize(collapsible)
 }
 
-const addTask = async ({ id }: {id:string}) => {
+const addTask = async ({ id }: { id: string }) => {
   const storyComponent = ItemComponent.forId(id)
   const component = storyComponent ?? PageComponent.instance
   const titleElement = component.titleInputElement
@@ -80,48 +79,43 @@ const addTask = async ({ id }: {id:string}) => {
   const collapsible = storyComponent?.collapsible
   if (!collapsible) return await updateItems()
 
-  await updateChildItems(storyComponent)
+  await updateChildItems(id)
   updateCollapsibleSize(collapsible)
 }
 
-const promote = async ({ id }: {id:string}) => {
+const promote = async ({ id }: { id: string }) => {
   await writeModel.promoteTask(id)
   await updateItems()
 }
 
-const toggleDisclosed = async ({ id }: {id:string}) => {
-
+const toggleDisclosed = async ({ id }: { id: string }) => {
   const storyComponent = ItemComponent.forId(id)
   if (!storyComponent) throw new Error(`Component for story with id ${id} not found`)
-  storyComponent.element.toggleClass(ClassName.disclosed)
 
-  const isDisclosed = storyComponent.element.hasClass(ClassName.disclosed)
-  if (isDisclosed) await updateChildItems(storyComponent)
-
-  const collapsible = storyComponent.collapsible
-  if (!collapsible) return
-
-  collapsible.setHeight(0)
-
-  if (isDisclosed) updateCollapsibleSize(collapsible)
+  const wasDisclosed = storyComponent.element.hasClass(ClassName.disclosed)
+  if (!wasDisclosed) await updateChildItems(id)
+  notifyUI(wasDisclosed ? 'collapse' : 'disclose', id)
 }
 
 // END EVENT HANDLERS
 
 async function updateItems() {
-  const items = await readModel.fetchItems()
-  await PageComponent.instance.replaceChildItems(items)
+  notifyUI('loading')
+  try {
+    const items = await readModel.fetchItems()
+    notifyUI('items-fetched', undefined, { items })
+  } finally {
+    notifyUI('loading-done')
+  }
 }
 
-const updateChildItems = async (storyComponent: ItemComponent) => {
-  notifyUI('loading', storyComponent.itemId)
+const updateChildItems = async (itemId: string) => {
+  notifyUI('loading', itemId)
   try {
-    const items = await readModel.fetchChildItems(storyComponent.itemId)
-    notifyUI('items-fetched', storyComponent.itemId, { items })
-    // TODO: Remove this call when measuring works without it
-    await storyComponent.replaceChildItems(items)
+    const items = await readModel.fetchChildItems(itemId)
+    notifyUI('items-fetched', itemId, { items })
   } finally {
-    notifyUI('loading-done', storyComponent.itemId)
+    notifyUI('loading-done', itemId)
   }
 }
 

@@ -2,6 +2,7 @@ import { ItemDTO } from '../../backend/src/dtos/item-dto'
 import { ClassName, Selector, toSelector } from './class-name'
 import { DOMElement } from './dom-element'
 import { ItemListTransition } from './item-list-transition'
+import { MeasureComponent } from './measure-component'
 
 export class ItemComponent {
 
@@ -21,6 +22,10 @@ export class ItemComponent {
   }
 
   get title() { return this.titleInputElement?.inputElementValue }
+
+  get isDisclosed() {
+    return this.element.hasClass(ClassName.disclosed)
+  }
 
   get titleInputElement() {
     return this.getElement({ className:{ name: 'item-title' } })
@@ -75,6 +80,12 @@ export class ItemComponent {
       case 'items-fetched':
         this.replaceChildItems(args.items)
         break
+      case 'collapse':
+        this.collapse()
+        break
+      case 'disclose':
+        this.disclose()
+        break
     }
   }
 
@@ -82,6 +93,23 @@ export class ItemComponent {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const transition = new ItemListTransition(this.itemListElement!, items)
     await transition.replaceChildItems()
+    const collapsible = this.collapsible
+    if (!collapsible) throw new Error('where is my collapsible element?')
+    const intrinsicSize = MeasureComponent.instance.measure(collapsible.innerHTML)
+    collapsible.setHeight(intrinsicSize.height)
+  }
+
+  private collapse() {
+    this.element.removeClass(ClassName.disclosed)
+    this.collapsible?.setHeight(0)
+  }
+
+  private disclose() {
+    this.element.addClass(ClassName.disclosed)
+    const collapsible = this.collapsible
+    if (!collapsible) throw new Error('where is my collapsible element?')
+    const intrinsicSize = MeasureComponent.instance.measure(collapsible.innerHTML)
+    collapsible.setHeight(intrinsicSize.height)
   }
 
   private startSpinner() {

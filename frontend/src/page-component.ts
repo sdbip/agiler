@@ -33,7 +33,7 @@ export class PageComponent {
     await transition.replaceChildItems()
   }
 
-  handleUIEvent(name: string) {
+  handleUIEvent(name: string, args: any) {
     switch (name) {
       case 'focus':
       case 'input':
@@ -44,6 +44,9 @@ export class PageComponent {
         break
       case 'blur':
         this.unhighlightAddButton()
+        break
+      case 'items-fetched':
+        this.replaceChildItems(args.items)
         break
     }
   }
