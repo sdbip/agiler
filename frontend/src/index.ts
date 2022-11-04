@@ -14,8 +14,18 @@ updateItems()
 // EVENT HANDLERS
 
 globals.emitUIEvent = (name: string, args: UIEventArgs) => {
-  const component = ItemComponent.forId(args.itemId) ?? PageComponent.instance
-  component.handleUIEvent(name, args)
+  switch (name) {
+    case 'focus':
+    case 'input':
+    case 'blur':
+      notifyUI(name, args, args.itemId)
+      break
+  }
+}
+
+const notifyUI = (event: string, args: any, itemId: string) => {
+  const component = ItemComponent.forId(itemId) ?? PageComponent.instance
+  component.handleUIEvent(event)
 }
 
 type EventArgs<
