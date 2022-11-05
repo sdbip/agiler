@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { get } from '../../shared/src/http'
 import { ItemType, Progress } from '../src/dtos/item-dto'
 import { MockItemRepository } from './mocks'
@@ -41,28 +41,32 @@ describe('read model', () => {
       ]
       const response = await get(_ + '/item')
 
-      expect(response.statusCode).to.equal(200)
+      assert.equal(response.statusCode, 200)
 
       const dtos = JSON.parse(response.content)
-      expect(dtos?.length).to.equal(2)
+      assert.lengthOf(dtos, 2)
 
       const dto = dtos[0]
-      expect(dto.title).to.equal('Task')
-      expect(dto.id).to.exist
+      assert.equal(dto.title, 'Task')
+      assert.exists(dto.id)
     })
 
     it('requests open items only', async () => {
       const response = await get(_ + '/item')
 
-      expect(response.statusCode).to.equal(200)
-      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ progress: Progress.notStarted })
+      assert.equal(response.statusCode, 200)
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { progress: Progress.notStarted })
     })
 
     it('requests unparented items only', async () => {
       const response = await get(_ + '/item')
 
-      expect(response.statusCode).to.equal(200)
-      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ parent: null })
+      assert.equal(response.statusCode, 200)
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { parent: null })
     })
   })
 
@@ -85,28 +89,32 @@ describe('read model', () => {
       ]
       const response = await get(_ + '/item/id/task')
 
-      expect(response.statusCode).to.equal(200)
+      assert.equal(response.statusCode, 200)
 
       const dtos = JSON.parse(response.content)
-      expect(dtos?.length).to.equal(2)
+      assert.lengthOf(dtos, 2)
 
       const dto = dtos[0]
-      expect(dto.title).to.equal('Task')
-      expect(dto.id).to.exist
+      assert.equal(dto.title, 'Task')
+      assert.exists(dto.id)
     })
 
     it('requests open items only', async () => {
       const response = await get(_ + '/item/id/task')
 
-      expect(response.statusCode).to.equal(200)
-      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ progress: Progress.notStarted })
+      assert.equal(response.statusCode, 200)
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { progress: Progress.notStarted })
     })
 
     it('requests the expected children only', async () => {
       const response = await get(_ + '/item/id/task')
 
-      expect(response.statusCode).to.equal(200)
-      expect(itemRepository.lastRequestedSpecfication).to.deep.include({ parent: 'id' })
+      assert.equal(response.statusCode, 200)
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { parent: 'id' })
     })
   })
 })

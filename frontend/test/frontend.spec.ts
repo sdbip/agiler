@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { get } from '../../shared/src/http'
 import client from '../src/frontend'
 
@@ -14,9 +14,9 @@ describe('server', () => {
 
   it('responds to get /', async () => {
     const response = await get('http://localhost:9090')
-    expect(response.statusCode).to.equal(200)
-    expect(response.content).to.exist
-    expect(response.content[0]).to.equal('<')
+    assert.equal(response.statusCode, 200)
+    assert.exists(response.content)
+    assert.equal(response.content[0], '<')
   })
 
   it('yields an error if stopping twice', async () => {
@@ -29,7 +29,7 @@ describe('server', () => {
     }
     catch (error) {
     }
-    if (isFailure) expect.fail('No error thrown')
+    if (isFailure) assert.fail('No error thrown')
   })
 
   it('can start and stop multiple times', async () => {
@@ -37,7 +37,7 @@ describe('server', () => {
       await client.stopListening()
       client.listenAtPort(9090)
       const response = await get('http://localhost:9090')
-      expect(response.statusCode).to.equal(200)
+      assert.equal(response.statusCode, 200)
     }
   })
 

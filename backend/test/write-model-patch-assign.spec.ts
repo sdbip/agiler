@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { patch } from '../../shared/src/http'
 import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
@@ -36,33 +36,35 @@ describe('write model', () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       const response = await patch(`${TEST_DOMAIN}/item/id/assign`, { member: 'Johan' })
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventRepository.lastRequestedEntityId).to.equal('id')
-      expect(publisher.publishedEvents).to.have.length.greaterThanOrEqual(1)
-      expect(publisher.publishedEvents[0]).to.deep.include({
-        actor: 'system_actor',
-        event: {
-          name: 'AssigneeChanged',
-          details: { assignee: 'Johan' },
-        },
-      })
-      expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
+      assert.equal(response.statusCode, 200)
+      assert.equal(eventRepository.lastRequestedEntityId, 'id')
+      assert.isAtLeast(publisher.publishedEvents.length, 1)
+      assert.deepInclude(
+        publisher.publishedEvents[0],
+        {
+          actor: 'system_actor',
+          event: {
+            name: 'AssigneeChanged',
+            details: { assignee: 'Johan' },
+          },
+        })
+      assert.equal(publisher.publishedEvents[0].entity.type, 'Item')
     })
 
     it('projects events', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       const response = await patch(`${TEST_DOMAIN}/item/id/assign`, { member: 'Johan' })
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventProjection.projectedEvents).to.have.lengthOf(2)
-      expect(eventProjection.projectedEvents.map(e => ({ name: e.name, details: e.details }))).to
-        .deep.include.members([ { name: 'AssigneeChanged', details: { assignee: 'Johan' } } ])
+      assert.equal(response.statusCode, 200)
+      assert.lengthOf(eventProjection.projectedEvents, 2)
+      assert.includeDeepMembers(eventProjection.projectedEvents.map(e => ({ name: e.name, details: e.details })),
+        [ { name: 'AssigneeChanged', details: { assignee: 'Johan' } } ])
     })
 
     it('returns 404 if the id is not found', async () => {
       const response = await patch(`${TEST_DOMAIN}/item/id/assign`, { member: 'Johan' })
 
-      expect(response.statusCode).to.equal(404)
+      assert.equal(response.statusCode, 404)
     })
   })
 })

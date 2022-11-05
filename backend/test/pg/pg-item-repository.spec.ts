@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { promises as fs } from 'fs'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
@@ -10,7 +10,7 @@ describe(PGItemRepository.name, () => {
 
   beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
-    if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
+    if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
 
     database = await PGDatabase.connect(databaseName)
     repository = new PGItemRepository(database)
@@ -33,8 +33,8 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).contain('task')
+    assert.exists(storedRows)
+    assert.include(storedRows.map(t => t.id), 'task')
   })
 
   it('can be set to only include completed tasks', async () => {
@@ -46,8 +46,8 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).not.contain('completed')
+    assert.exists(storedRows)
+    assert.notInclude(storedRows.map(t => t.id), 'completed')
   })
 
   it('excludes subtasks if specified', async () => {
@@ -60,8 +60,8 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ parent: null })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).not.contain('subtask')
+    assert.exists(storedRows)
+    assert.notInclude(storedRows.map(t => t.id), 'subtask')
   })
 
   it('includes stories', async () => {
@@ -73,8 +73,8 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).to.contain('story')
+    assert.exists(storedRows)
+    assert.include(storedRows.map(t => t.id), 'story')
   })
 
   it('can be specified to only returns subtasks of a specific parent', async () => {
@@ -94,9 +94,9 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ parent: 'a_parent' })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).to.contain('subtask')
-    expect(storedRows.map(t => t.id)).to.not.contain('other_task')
+    assert.exists(storedRows)
+    assert.include(storedRows.map(t => t.id), 'subtask')
+    assert.notInclude(storedRows.map(t => t.id), 'other_task')
   })
 
   it('allows specifying both parent and progress', async () => {
@@ -116,9 +116,9 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ parent: 'a_parent', progress: Progress.notStarted })
-    expect(storedRows).to.exist
-    expect(storedRows.map(t => t.id)).to.contain('subtask')
-    expect(storedRows.map(t => t.id)).to.not.contain('other_task')
+    assert.exists(storedRows)
+    assert.include(storedRows.map(t => t.id), 'subtask')
+    assert.notInclude(storedRows.map(t => t.id), 'other_task')
   })
 
   it('returns everything if not provided a specification', async () => {
@@ -138,6 +138,6 @@ describe(PGItemRepository.name, () => {
     })
 
     const storedRows = await repository.itemsWithSpecification({ })
-    expect(storedRows).to.have.lengthOf(2)
+    assert.lengthOf(storedRows, 2)
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { patch } from '../../shared/src/http'
 import { ItemType } from '../src/domain/item'
 import { EntityHistory, EntityVersion } from '../src/es/source'
@@ -37,33 +37,35 @@ describe('write model', () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       const response = await patch(`${TEST_DOMAIN}/item/id/promote`)
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventRepository.lastRequestedEntityId).to.equal('id')
-      expect(publisher.publishedEvents).to.have.lengthOf(1)
-      expect(publisher.publishedEvents[0]).to.deep.include({
-        actor: 'system_actor',
-        event: {
-          name: 'TypeChanged',
-          details: { type: ItemType.Story },
-        },
-      })
-      expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
+      assert.equal(response.statusCode, 200)
+      assert.equal(eventRepository.lastRequestedEntityId, 'id')
+      assert.lengthOf(publisher.publishedEvents, 1)
+      assert.deepInclude(publisher.publishedEvents[0],
+        {
+          actor: 'system_actor',
+          event: {
+            name: 'TypeChanged',
+            details: { type: ItemType.Story },
+          },
+        })
+      assert.equal(publisher.publishedEvents[0].entity.type, 'Item')
     })
 
     it('projects "TypeChanged" event]', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [])
       const response = await patch(`${TEST_DOMAIN}/item/id/promote`)
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventProjection.projectedEvents).to.have.lengthOf(1)
-      expect(eventProjection.projectedEvents[0])
-        .to.deep.include({ name: 'TypeChanged', details: { type: ItemType.Story } })
+      assert.equal(response.statusCode, 200)
+      assert.lengthOf(eventProjection.projectedEvents, 1)
+      assert.deepInclude(
+        eventProjection.projectedEvents[0],
+        { name: 'TypeChanged', details: { type: ItemType.Story } })
     })
 
     it('returns 404 if not found [patch /item/promote]', async () => {
       const response = await patch(`${TEST_DOMAIN}/item/id/promote`)
 
-      expect(response.statusCode).to.equal(404)
+      assert.equal(response.statusCode, 404)
     })
   })
 })

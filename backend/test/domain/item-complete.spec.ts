@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { Progress } from '../../src/domain/item'
 import { reconstituteStory, reconstituteTask } from './reconstitute'
 
@@ -8,12 +8,12 @@ describe('Item.complete', () => {
     const task = reconstituteTask('id')
     task.complete()
     const event = task.unpublishedEvents.find(e => e.name === 'ProgressChanged')
-    expect(event?.details.progress).to.equal(Progress.completed)
+    assert.equal(event?.details.progress, Progress.completed)
   })
 
   it('throws if not a task', () => {
     const story = reconstituteStory('id')
-    expect(() => story.complete()).to.throw()
-    expect(story.unpublishedEvents).to.have.lengthOf(0)
+    assert.throws(() => story.complete())
+    assert.lengthOf(story.unpublishedEvents, 0)
   })
 })

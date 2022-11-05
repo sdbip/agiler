@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { get, post } from '../src/http'
 import { setupServer, ServerSetup, Server } from '../src/server'
 
@@ -21,8 +21,8 @@ describe('get', () => {
     serverSetup.get('/path', async () => 'foo')
     const response = await get('http://localhost:9090/path')
 
-    expect(response.statusCode).to.equal(200)
-    expect(response.content).to.equal('foo')
+    assert.equal(response.statusCode, 200)
+    assert.equal(response.content, 'foo')
   })
 
   it('returns 500 if handler throws', async () => {
@@ -31,8 +31,8 @@ describe('get', () => {
     })
     const response = await get('http://localhost:9090/path')
 
-    expect(response.statusCode).to.equal(500)
-    expect(response.content).to.equal('{"error":{"message":"foo"}}')
+    assert.equal(response.statusCode, 500)
+    assert.equal(response.content, '{"error":{"message":"foo"}}')
   })
 })
 
@@ -52,8 +52,8 @@ describe('post', () => {
     serverSetup.post('/path', async () => 'foo')
     const response = await post('http://localhost:9090/path', {})
 
-    expect(response.statusCode).to.equal(200)
-    expect(response.content).to.equal('foo')
+    assert.equal(response.statusCode, 200)
+    assert.equal(response.content, 'foo')
   })
 
   it('returns 500 if handler throws', async () => {
@@ -62,6 +62,6 @@ describe('post', () => {
     })
     const response = await post('http://localhost:9090/path', {})
 
-    expect(response.statusCode).to.equal(500)
+    assert.equal(response.statusCode, 500)
   })
 })

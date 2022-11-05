@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { promises as fs } from 'fs'
 import { Item } from '../../src/domain/item'
 import { Progress, ItemType } from '../../src/dtos/item-dto'
@@ -13,7 +13,7 @@ describe(PGItemProjection.name, () => {
 
   before(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
-    if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
+    if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
 
     database = await PGDatabase.connect(databaseName)
     projection = new PGItemProjection(database)
@@ -35,7 +35,7 @@ describe(PGItemProjection.name, () => {
     await immediate.sync(item)
 
     const row = await getItemRow(item.id, database)
-    expect(row?.progress).to.equal(Progress.completed)
+    assert.equal(row?.progress, Progress.completed)
   })
 
   it('can promote tasks', async () => {
@@ -45,7 +45,7 @@ describe(PGItemProjection.name, () => {
     await immediate.sync(item)
 
     const row = await getItemRow(item.id, database)
-    expect(row?.type).to.equal(ItemType.Story)
+    assert.equal(row?.type, ItemType.Story)
   })
 
   it('can assign tasks', async () => {
@@ -55,7 +55,7 @@ describe(PGItemProjection.name, () => {
     await immediate.sync(item)
 
     const row = await getItemRow(item.id, database)
-    expect(row?.assignee).to.equal('Agent 47')
+    assert.equal(row?.assignee, 'Agent 47')
   })
 
   it('can update task parent', async () => {
@@ -67,7 +67,7 @@ describe(PGItemProjection.name, () => {
     await immediate.sync(task)
 
     const row = await getItemRow(task.id, database)
-    expect(row?.parent_id).to.equal(story.id)
+    assert.equal(row?.parent_id, story.id)
   })
 })
 

@@ -1,9 +1,9 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { promises as fs } from 'fs'
 import { PGEventRepository } from '../../src/pg/pg-event-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { PGRepository } from '../../src/pg/pg-repository'
-import { CanonicalEntityId, EntityVersion, UnpublishedEvent } from '../../src/es/source'
+import { CanonicalEntityId, EntityVersion, PublishedEvent, UnpublishedEvent } from '../../src/es/source'
 
 describe(PGEventRepository.name, () => {
   let eventRepository: PGEventRepository
@@ -12,7 +12,7 @@ describe(PGEventRepository.name, () => {
 
   beforeEach(async () => {
     const databaseName = process.env['TEST_DATABASE_NAME']
-    if (!databaseName) expect.fail('The environment variable TEST_DATABASE_NAME must be set')
+    if (!databaseName) assert.fail('The environment variable TEST_DATABASE_NAME must be set')
 
     database = await PGDatabase.connect(databaseName)
     repository = new PGRepository(database)
@@ -39,13 +39,10 @@ describe(PGEventRepository.name, () => {
       })
 
     const history = await eventRepository.getHistoryFor('id')
-    expect(history?.events[0]).to.deep.equal({
-      name: 'event',
-      detailsJSON: '{"test":"value"}',
-    })
+    assert.deepEqual(history?.events[0], new PublishedEvent('event', '{"test":"value"}'))
   })
 
   it('returns undefined if the entity does not exist', async () => {
-    expect(await eventRepository.getHistoryFor('id')).to.not.exist
+    assert.notExists(await eventRepository.getHistoryFor('id'))
   })
 })

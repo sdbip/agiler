@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.remove', () => {
@@ -11,7 +11,7 @@ describe('Item.remove', () => {
     const task = reconstituteTaskWithParent(storyId, taskId)
     story.remove(task)
     const event = story.unpublishedEvents.find(e => e.name === 'ChildrenRemoved')
-    expect(event?.details.children).to.deep.equal([ taskId ])
+    assert.deepEqual(event?.details.children, [ taskId ])
   })
 
   it('unsets the Task\'s parent', () => {
@@ -22,14 +22,14 @@ describe('Item.remove', () => {
     const task = reconstituteTaskWithParent(storyId, taskId)
     story.remove(task)
     const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
-    expect(event?.details.parent).to.equal(null)
+    assert.isNull(event?.details.parent)
   })
 
   it('ignores tasks that are not children', () => {
     const story = reconstituteStory('story_id')
     const task = reconstituteTask('task_id')
     story.remove(task)
-    expect(story.unpublishedEvents).to.have.lengthOf(0)
-    expect(task.unpublishedEvents).to.have.lengthOf(0)
+    assert.lengthOf(story.unpublishedEvents, 0)
+    assert.lengthOf(task.unpublishedEvents, 0)
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai'
+import { assert } from '@esm-bundle/chai'
 import { ClassSelector, TagSelector, toSelector } from '../src/class-name'
 import { DOMElement } from '../src/dom-element'
 
@@ -12,8 +12,8 @@ describe(DOMElement.name, () => {
       document.body.appendChild(element)
 
       const html = DOMElement.single(toSelector('#this_element'))
-      expect(html).to.exist
-      expect(html?.id).to.equal('this_element')
+      assert.exists(html)
+      assert.equal(html?.id, 'this_element')
 
       document.body.removeChild(element)
     })
@@ -24,8 +24,8 @@ describe(DOMElement.name, () => {
       document.body.appendChild(element)
 
       const html = DOMElement.single(toSelector('div'))
-      expect(html).to.exist
-      expect(html?.id).to.equal('this_element')
+      assert.exists(html)
+      assert.equal(html?.id, 'this_element')
 
       document.body.removeChild(element)
     })
@@ -37,8 +37,8 @@ describe(DOMElement.name, () => {
       document.body.appendChild(element)
 
       const html = DOMElement.single(toSelector('.this-element'))
-      expect(html).to.exist
-      expect(html?.id).to.equal('this_element')
+      assert.exists(html)
+      assert.equal(html?.id, 'this_element')
 
       document.body.removeChild(element)
     })
@@ -48,7 +48,7 @@ describe(DOMElement.name, () => {
       element.innerHTML = '<div class="this-element"></div>'
 
       const html = DOMElement.single(toSelector('.this-element'), new DOMElement(element))
-      expect(html).to.exist
+      assert.exists(html)
     })
 
     it('finds child element by tag name', () => {
@@ -56,7 +56,7 @@ describe(DOMElement.name, () => {
       element.innerHTML = '<div class="this-element"></div>'
 
       const html = DOMElement.single(toSelector('div'), new DOMElement(element))
-      expect(html).to.exist
+      assert.exists(html)
     })
   })
 
@@ -68,8 +68,8 @@ describe(DOMElement.name, () => {
       document.body.appendChild(element)
 
       const htmls = DOMElement.all(toSelector('div') as TagSelector)
-      expect(htmls).to.have.lengthOf(1)
-      expect(new DOMElement(element).equals(htmls[0])).to.be.true
+      assert.lengthOf(htmls, 1)
+      assert.isTrue(new DOMElement(element).equals(htmls[0]))
 
       document.body.removeChild(element)
     })
@@ -81,8 +81,8 @@ describe(DOMElement.name, () => {
       document.body.appendChild(element)
 
       const htmls = DOMElement.all(toSelector('.this-element') as ClassSelector)
-      expect(htmls).to.have.lengthOf(1)
-      expect(new DOMElement(element).equals(htmls[0])).to.be.true
+      assert.lengthOf(htmls, 1)
+      assert.isTrue(new DOMElement(element).equals(htmls[0]))
 
       document.body.removeChild(element)
     })
@@ -92,7 +92,7 @@ describe(DOMElement.name, () => {
       element.innerHTML = '<div class="this-element"></div>'
 
       const htmls = new DOMElement(element).decendants(toSelector('.this-element') as ClassSelector)
-      expect(htmls).to.have.lengthOf(1)
+      assert.lengthOf(htmls, 1)
     })
 
     it('finds child elements by tag name', () => {
@@ -100,7 +100,7 @@ describe(DOMElement.name, () => {
       element.innerHTML = '<div class="this-element"></div>'
 
       const htmls = new DOMElement(element).decendants(toSelector('.this-element') as ClassSelector)
-      expect(htmls).to.have.lengthOf(1)
+      assert.lengthOf(htmls, 1)
     })
   })
 })

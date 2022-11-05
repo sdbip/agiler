@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { Item } from '../../src/domain/item'
 import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
@@ -9,7 +9,7 @@ describe('Item.add', () => {
     const task = reconstituteTask('task_id')
     story.add(task)
     const event = story.unpublishedEvents.find(e => e.name === 'ChildrenAdded')
-    expect(event?.details.children).to.deep.equal([ task.id ])
+    assert.deepEqual(event?.details.children, [ task.id ])
   })
 
   it('sets the parent of a Task', () => {
@@ -17,7 +17,7 @@ describe('Item.add', () => {
     const task = reconstituteTask('task_id')
     story.add(task)
     const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
-    expect(event?.details.parent).to.equal(story.id)
+    assert.equal(event?.details.parent, story.id)
   })
 
   it('only updates parent once', () => {
@@ -33,7 +33,7 @@ describe('Item.add', () => {
     newParent.add(task)
 
     const events = task.unpublishedEvents.filter(e => e.name === 'ParentChanged')
-    expect(events).to.have.lengthOf(1)
+    assert.lengthOf(events, 1)
   })
 
   it('doesn\'t remove "Created" event', () => {
@@ -44,7 +44,7 @@ describe('Item.add', () => {
     story.add(task)
 
     const events = task.unpublishedEvents.filter(e => e.name === 'Created')
-    expect(events).to.have.lengthOf(1)
+    assert.lengthOf(events, 1)
   })
 
   it('sets the last parent', () => {
@@ -60,30 +60,30 @@ describe('Item.add', () => {
     newParent.add(task)
 
     const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
-    expect(event?.details.parent).to.equal(newParentId)
+    assert.equal(event?.details.parent, newParentId)
   })
 
   it('throws if the Task already has a parent', () => {
     const story = reconstituteStory('story_id')
     const task = reconstituteTaskWithParent('other_story', 'task_id')
-    expect(() => story.add(task)).to.throw()
-    expect(story.unpublishedEvents).to.have.lengthOf(0)
-    expect(task.unpublishedEvents).to.have.lengthOf(0)
+    assert.throws(() => story.add(task))
+    assert.lengthOf(story.unpublishedEvents, 0)
+    assert.lengthOf(task.unpublishedEvents, 0)
   })
 
   it('throws if parent is not a Story', () => {
     const task1 = reconstituteTask('task1_id')
     const task2 = reconstituteTask('task2_id')
-    expect(() => task1.add(task2)).to.throw()
-    expect(task1.unpublishedEvents).to.have.lengthOf(0)
-    expect(task2.unpublishedEvents).to.have.lengthOf(0)
+    assert.throws(() => task1.add(task2))
+    assert.lengthOf(task1.unpublishedEvents, 0)
+    assert.lengthOf(task2.unpublishedEvents, 0)
   })
 
   it('throws if added item is not a Task', () => {
     const task = reconstituteTask('task_id')
     const story = reconstituteStory('story_id')
-    expect(() => task.add(story)).to.throw()
-    expect(task.unpublishedEvents).to.have.lengthOf(0)
-    expect(story.unpublishedEvents).to.have.lengthOf(0)
+    assert.throws(() => task.add(story))
+    assert.lengthOf(task.unpublishedEvents, 0)
+    assert.lengthOf(story.unpublishedEvents, 0)
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { get } from '../../shared/src/http'
 import { MockItemRepository } from './mocks'
 import backend from '../src/read-model'
@@ -17,7 +17,7 @@ describe('backend', () => {
 
     it('throws an error if already stopped', async () => {
       backend.listenAtPort(9000)
-      await backend.stopListening()      
+      await backend.stopListening()
       await expectToReject(() => backend.stopListening())
     })
 
@@ -25,7 +25,7 @@ describe('backend', () => {
       for (let i = 0; i < 5; i++) {
         backend.listenAtPort(9000)
         const response = await get('http://localhost:9000/item')
-        expect(response.statusCode).to.equal(200)
+        assert.equal(response.statusCode, 200)
         await backend.stopListening()
       }
     })
@@ -35,7 +35,7 @@ describe('backend', () => {
         const port = 9000 + i
         backend.listenAtPort(port)
         const response = await get(`http://localhost:${port}/item`)
-        expect(response.statusCode).to.equal(200)
+        assert.equal(response.statusCode, 200)
         await backend.stopListening()
       }
     })
@@ -50,5 +50,5 @@ const expectToReject = async (action: () => Promise<void>) => {
     isFailure = true
   } catch (error) { }
   if (isFailure)
-    expect.fail('No error thrown')
+    assert.fail('No error thrown')
 }

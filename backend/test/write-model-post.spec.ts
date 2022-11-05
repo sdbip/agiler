@@ -1,7 +1,7 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import { post } from '../../shared/src/http'
 import { ItemType } from '../src/domain/item'
-import { EntityHistory, EntityVersion, PublishedEvent } from '../src/es/source'
+import { CanonicalEntityId, EntityHistory, EntityVersion, PublishedEvent } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
 import { TEST_DOMAIN, TEST_PORT } from './test-defaults'
@@ -37,16 +37,16 @@ describe('write model', () => {
         title: 'Get Shit Done',
       })
 
-      expect(response.statusCode).to.equal(200)
-      expect(publisher.publishedEvents).to.have.lengthOf(1)
-      expect(publisher.publishedEvents[0]).to.deep.include({
+      assert.equal(response.statusCode, 200)
+      assert.lengthOf(publisher.publishedEvents, 1)
+      assert.deepInclude(publisher.publishedEvents[0], {
         actor: 'system_actor',
         event: {
           name: 'Created',
           details: { title: 'Get Shit Done', type: ItemType.Task },
         },
       })
-      expect(publisher.publishedEvents[0].entity.type).to.equal('Item')
+      assert.equal(publisher.publishedEvents[0].entity.type, 'Item')
     })
 
     it('projects "Created" event', async () => {
@@ -54,10 +54,11 @@ describe('write model', () => {
         title: 'Get Shit Done',
       })
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventProjection.projectedEvents).to.have.lengthOf(1)
-      expect(eventProjection.projectedEvents[0])
-        .to.deep.include({ name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
+      assert.equal(response.statusCode, 200)
+      assert.lengthOf(eventProjection.projectedEvents, 1)
+      assert.deepInclude(
+        eventProjection.projectedEvents[0],
+        { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
     })
 
     it('returns task id', async () => {
@@ -65,7 +66,7 @@ describe('write model', () => {
         title: 'Get Shit Done',
       })
 
-      expect(JSON.parse(response.content).id).to.exist
+      assert.exists(JSON.parse(response.content).id)
     })
   })
 
@@ -78,27 +79,27 @@ describe('write model', () => {
 
       const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
 
-      expect(response.statusCode).to.equal(200)
-      expect(eventRepository.lastRequestedEntityId).to.equal('story_id')
+      assert.equal(response.statusCode, 200)
+      assert.equal(eventRepository.lastRequestedEntityId, 'story_id')
 
       const createdEvent = publisher.publishedEvents.find(e => e.event.name === 'Created')
       const childrenAddedEvent = publisher.publishedEvents.find(e => e.event.name === 'ChildrenAdded')
       const parentChangedEvent = publisher.publishedEvents.find(e => e.event.name === 'ParentChanged')
-      expect(childrenAddedEvent).to.deep.include({
+      assert.deepInclude(childrenAddedEvent, {
         actor: 'system_actor',
         event: {
           name: 'ChildrenAdded',
           details: { children: [ JSON.parse(response.content).id ] },
         },
       })
-      expect(parentChangedEvent).to.deep.include({
+      assert.deepInclude(parentChangedEvent, {
         actor: 'system_actor',
         event: {
           name: 'ParentChanged',
           details: { parent: 'story_id' },
         },
       })
-      expect(createdEvent).to.deep.include({
+      assert.deepInclude(createdEvent, {
         actor: 'system_actor',
         event: {
           name: 'Created',
@@ -113,27 +114,24 @@ describe('write model', () => {
       ])
       const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
 
-      expect(response.statusCode).to.equal(200)
+      assert.equal(response.statusCode, 200)
 
       const createdEvent = eventProjection.projectedEvents.find(e => e.name === 'Created')
       const childrenAddedEvent = eventProjection.projectedEvents.find(e => e.name === 'ChildrenAdded')
       const parentChangedEvent = eventProjection.projectedEvents.find(e => e.name === 'ParentChanged')
-      expect(childrenAddedEvent)
-        .to.deep.include({ details: { children: [ JSON.parse(response.content).id ] } })
-      expect(parentChangedEvent)
-        .to.deep.include({ details: { parent: 'story_id' } })
-      expect(createdEvent)
-        .to.deep.include({ details: { title: 'Get Shit Done', type: ItemType.Task } })
+      assert.deepInclude(childrenAddedEvent, { details: { children: [ JSON.parse(response.content).id ] } })
+      assert.deepInclude(parentChangedEvent, { details: { parent: 'story_id' } })
+      assert.deepInclude(createdEvent, { details: { title: 'Get Shit Done', type: ItemType.Task } })
 
-      expect(childrenAddedEvent?.entity).to.deep.equal({ id: 'story_id', type: 'Item' })
-      expect(createdEvent?.entity.type).to.equal('Item')
-      expect(parentChangedEvent?.entity.type).to.equal('Item')
+      assert.deepEqual(childrenAddedEvent?.entity, new CanonicalEntityId('story_id', 'Item'))
+      assert.equal(createdEvent?.entity.type, 'Item')
+      assert.equal(parentChangedEvent?.entity.type, 'Item')
     })
 
     it('returns 404 if story not found', async () => {
       const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
 
-      expect(response.statusCode).to.equal(404)
+      assert.equal(response.statusCode, 404)
     })
   })
 })

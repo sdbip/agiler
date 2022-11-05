@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai'
+import { assert } from '@esm-bundle/chai'
 import { DOMElement } from '../src/dom-element'
 import { ItemListTransition } from '../src/item-list-transition'
 
@@ -12,7 +12,7 @@ describe(ItemListTransition.name, () => {
         createElement('<div></div>'),
         [ { id: '1' } ])
 
-      expect(transition.taggedItems[0].isNew).is.true
+      assert.isTrue(transition.taggedItems[0].isNew)
     })
 
     it('doesn\'t tag already added item', () => {
@@ -21,7 +21,7 @@ describe(ItemListTransition.name, () => {
         createElement('<div><div id="item-1">Item1</div></div>'),
         [ { id: '1' } ])
 
-        expect(transition.taggedItems[0].isNew).is.false
+        assert.isFalse(transition.taggedItems[0].isNew)
     })
   })
 
@@ -33,7 +33,7 @@ describe(ItemListTransition.name, () => {
         createElement('<div><div id="item-1">Item1</div></div>'),
         [])
 
-      expect(transition.obsoleteElements).to.have.lengthOf(1)
+      assert.lengthOf(transition.obsoleteElements, 1)
     })
 
     it('skips elements with representation', () => {
@@ -41,7 +41,7 @@ describe(ItemListTransition.name, () => {
         createElement('<div><div id="item-1">Item1</div></div>'),
         [ { id: '1' } ])
 
-      expect(transition.obsoleteElements).to.have.lengthOf(0)
+      assert.lengthOf(transition.obsoleteElements, 0)
     })
   })
 })
