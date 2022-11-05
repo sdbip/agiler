@@ -26,6 +26,6 @@
   - Controller receives UI events and updates model
   - Model emits events when their data is updated
   - View only reads model data (and events) to display the stuff
-- Some tests are turned off. Reenable them according to the new paradigm
 
 # Ice Box
+- Build my own assertion library using domain language

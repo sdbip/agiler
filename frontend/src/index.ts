@@ -8,8 +8,14 @@ import { PageComponent } from './page-component'
 import { MeasureComponent } from './measure-component'
 import { ClassName } from './class-name'
 import { UIEventArgs } from './ui-event-args'
+import { render } from './Templates'
 
-updateItems()
+(async () => {
+  const pageContainer = document.getElementById('page-container')
+  if (!pageContainer) throw Error('page container not found')
+  pageContainer.innerHTML = await render('page-component', {})
+  updateItems()
+})()
 
 // EVENT HANDLERS
 

@@ -25,15 +25,7 @@ export class PageComponent {
     return DOMElement.single(selector)
   }
 
-  async replaceChildItems(items: ItemDTO[]) {
-    const itemListElement = this.itemListElement
-    if (!itemListElement) return
-
-    const transition = new ItemListTransition(itemListElement, items)
-    await transition.replaceChildItems()
-  }
-
-  handleUIEvent(name: string, args: any) {
+  async handleUIEvent(name: string, args: any) {
     switch (name) {
       case 'focus':
       case 'input':
@@ -46,9 +38,17 @@ export class PageComponent {
         this.unhighlightAddButton()
         break
       case 'items-fetched':
-        this.replaceChildItems(args.items)
+        await this.replaceChildItems(args.items)
         break
     }
+  }
+
+  async replaceChildItems(items: ItemDTO[]) {
+    const itemListElement = this.itemListElement
+    if (!itemListElement) return
+
+    const transition = new ItemListTransition(itemListElement, items)
+    await transition.replaceChildItems()
   }
 
   private highlightAddButton() {

@@ -10,14 +10,6 @@
 </head>
 <body>
   <h1>Agiler</h1>
-  <div class="flex">
-    <input type="text" id="item-title"
-      onfocus="emitUIEvent('focus', {element: this, event})"
-      oninput="emitUIEvent('input', {element: this, event})"
-      onblur="emitUIEvent('blur', {element: this, event})"
-      onkeydown="emitUIEvent('title-keydown', {element: this, event})" placeholder="What needs to be done?">
-    <button id="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event})">+</button>
-  </div>
-  <div id="item-list" class="item-list"></div>
+  <div id="page-container"></div>
 </body>
 </html>
