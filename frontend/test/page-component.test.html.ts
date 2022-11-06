@@ -4,19 +4,25 @@ import { PageComponent } from '../src/page-component'
 import { render, setBaseURL } from '../src/Templates'
 import { ClassName } from '../src/class-name'
 import { ItemComponent } from '../src/item-component'
+import { DOMElement } from '../src/dom-element'
 
 runTests(() => {
   let titleInputElement: HTMLInputElement
-  let addButtonElement: HTMLButtonElement
   let itemListElement: HTMLDivElement
+  let addButtonElement: DOMElement
 
   before(async () => {
     setBaseURL('..')
     await renderPageComponent()
 
     titleInputElement = getElementById('item-title')
-    addButtonElement = getElementById('add-button')
+    assert.exists(titleInputElement, 'titleInputElement')
+
     itemListElement = getElementById('item-list')
+    assert.exists(itemListElement, 'itemListElement')
+
+    addButtonElement = DOMElement.single({ id: 'add-button' }) as DOMElement
+    assert.exists(addButtonElement, 'addButtonElement')
   })
 
   it('gets its title from the title element', () => {
@@ -26,51 +32,54 @@ runTests(() => {
 
   describe('add-button styling', () => {
 
-    beforeEach(() => {
-      addButtonElement.className = ''
+    describe('when not highlighted', () => {
+
+      beforeEach(() => {
+        addButtonElement.removeClass(ClassName.default)
+      })
+
+      it('highlights add-button when receiving focus event', () => {
+        titleInputElement.value = 'not empty'
+        PageComponent.instance.handleUIEvent('focus', undefined)
+        assert.isTrue(addButtonElement.hasClass(ClassName.default))
+      })
+
+      it('highlights add-button when receiving input event', () => {
+        titleInputElement.value = 'not empty'
+        PageComponent.instance.handleUIEvent('input', undefined)
+        assert.isTrue(addButtonElement.hasClass(ClassName.default))
+      })
+
+      it('does not highlight button if title is empty', () => {
+        titleInputElement.value = ''
+
+        PageComponent.instance.handleUIEvent('focus', undefined)
+        assert.isFalse(addButtonElement.hasClass(ClassName.default))
+
+        PageComponent.instance.handleUIEvent('input', undefined)
+        assert.isFalse(addButtonElement.hasClass(ClassName.default))
+      })
     })
 
-    it('highlights add-button when receiving focus event', () => {
-      titleInputElement.value = 'not empty'
-      PageComponent.instance.handleUIEvent('focus', undefined)
-      assert.equal(addButtonElement.className, ClassName.default.name)
-    })
+    describe('when highlighted', () => {
 
-    it('highlights add-button when receiving input event', () => {
-      titleInputElement.value = 'not empty'
-      PageComponent.instance.handleUIEvent('input', undefined)
-      assert.equal(addButtonElement.className, ClassName.default.name)
-    })
+      beforeEach(() => {
+        addButtonElement.addClass(ClassName.default)
+      })
 
-    it('does not highlight button if title is empty', () => {
-      titleInputElement.value = ''
+      it('unhighlights button if title is empty', () => {
+        titleInputElement.value = ''
 
-      PageComponent.instance.handleUIEvent('focus', undefined)
-      assert.equal(addButtonElement.className, '')
+        PageComponent.instance.handleUIEvent('input', undefined)
+        assert.isFalse(addButtonElement.hasClass(ClassName.default))
+      })
 
-      PageComponent.instance.handleUIEvent('input', undefined)
-      assert.equal(addButtonElement.className, '')
-    })
-  })
+      it('unhighlights button when receiving blur event', () => {
+        titleInputElement.value = 'not empty'
 
-  describe('add-button styling', () => {
-
-    beforeEach(() => {
-      addButtonElement.className = ClassName.default.name
-    })
-
-    it('unhighlights button if title is empty', () => {
-      titleInputElement.value = ''
-
-      PageComponent.instance.handleUIEvent('input', undefined)
-      assert.equal(addButtonElement.className, '')
-    })
-
-    it('unhighlights button when receiving blur event', () => {
-      titleInputElement.value = 'not empty'
-
-      PageComponent.instance.handleUIEvent('blur', undefined)
-      assert.equal(addButtonElement.className, '')
+        PageComponent.instance.handleUIEvent('blur', undefined)
+        assert.isFalse(addButtonElement.hasClass(ClassName.default))
+      })
     })
   })
 

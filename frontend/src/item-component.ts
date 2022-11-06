@@ -59,7 +59,7 @@ export class ItemComponent {
     }
   }
 
-  handleUIEvent(name: string, args?: any) {
+  async handleUIEvent(name: string, args?: any) {
     switch (name) {
       case 'focus':
       case 'input':
@@ -78,7 +78,7 @@ export class ItemComponent {
         this.stopSpinner()
         break
       case 'items-fetched':
-        this.replaceChildItems(args.items)
+        await this.replaceChildItems(args.items)
         break
       case 'collapse':
         this.collapse()

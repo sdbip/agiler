@@ -4,38 +4,4 @@
     <link rel="stylesheet" href="../public/styles/styles.css">
     <script type="module" src="item-component.test.html.ts"></script>
   </head>
-  <body>
-    <!-- Duplicate layout from index.html -->
-    <div class="flex">
-      <input type="text" id="item-title" value="New task">
-      <button id="add-button">+</button>
-    </div>
-    <div id="item-list" class="item-list">
-      <div id="item-story" class="item item-Story no-select">
-        <span>Finish story</span>
-        <div class="chevron"  >+</div>
-        <div class="disclosure-button"></div>
-        <img class="spinner inactive" src="public/images/spinner.gif">
-        <div class="collapsible" style="height: 0">
-          <div class="flex">
-            <input type="text" class="item-title" value="New subtask">
-            <button class="add-button">+</button>
-          </div>
-          <div class="item-list">
-            <div id="item-subtask" class="item item-Task no-select">
-              <span class="promote-button">✵</span>
-              <label></label>
-              <span>Perform subtask</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="item-task" class="item item-Task no-select">
-        <span class="promote-button">✵</span>
-        <label></label>
-        <span>Perform task</span>
-      </div>
-    </div>
-    <!-- End layout from index.html -->
-  </body>
 </html>
