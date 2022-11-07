@@ -10,14 +10,32 @@
 <body>
 
   <div id="content"></div>
+  <div id="value" style="position: absolute; display: none"></div>
   <script>
     (async () => {
       const response = await fetch('features.md')
       const html = marked.parse(await response.text())
       document.getElementById('content').innerHTML = html
+    })();
 
-    })()
+    (async () => {
+      const response = await fetch('value.md')
+      const html = marked.parse(await response.text())
+      document.getElementById('value').innerHTML = html
+    })();
 
+    function showValue(element) {
+      const style = document.getElementById('value').style
+      const box = element.getBoundingClientRect()
+      style.top = `${box.top + box.height + 10}px`
+      style.left = `${box.left + 10}px`
+      style.display = ''
+    }
+
+    function hideValue(element) {
+      const style = document.getElementById('value').style
+      style.display = 'none'
+    }
   </script>
 </body>
 </html>

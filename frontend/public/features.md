@@ -1,6 +1,6 @@
 # Features
 
-Prefer Minimal Marketable Features (MMFs). An MMF is a value brought to the business. It should be *minimal* so that it can be finished quickly. It should be *marketable* so that it can be motivated to have value, and prioritised correctly.
+Prefer Minimal Marketable Features (MMFs). An MMF is a value brought to the business. It should be *minimal* so that it can be finished quickly. It should be *marketable* so that it can be motivated to have <a onmouseover="showValue(this)" onmouseout="hideValue()">value</a>, and prioritised correctly.
 
 Of course you don't have to make features minimal as you collect them. You will be given the possibility of splitting them later.
 
@@ -57,16 +57,3 @@ When you work, you should focus on one feature until it is completed before star
     <label></label>
     <span>Reticulate spleens</span>
   </div>
-
-<hr>
-
-## What is value?
-
-Value can be direct: “Generate more sales.” It can be indirect: “Enable our users to perform these tasks that will increse sales.” Or it can be a learning experience: “Will this improve our sales?”
-
-Value doesn't have to be related to income and sales. It depends on what your team's purpose is. Here are some examples:
-
-- Save children from poverty
-- Treat patients
-- Avoid war
-- Acquire the Babe Ruth baseball card
