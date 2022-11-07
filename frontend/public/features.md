@@ -2,6 +2,8 @@
 
 Prefer Minimal Marketable Features (MMFs). An MMF is a value brought to the business. It should be *minimal* so that it can be finished quickly. It should be *marketable* so that it can be motivated to have <a onmouseover="showValue(this)" onmouseout="hideValue()">value</a>, and prioritised correctly.
 
+> - The smallest thing that can be shipped to production
+
 Of course you don't have to make features minimal as you collect them. You will be given the possibility of splitting them later.
 
 When you work, you should focus on one feature until it is completed before starting another feature.
@@ -11,7 +13,7 @@ When you work, you should focus on one feature until it is completed before star
         type="text"
         class="item-title"
         placeholder="What does the business need?">
-    <button class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</button>
+    <div class="add-button no-select">+</div>
   </div>
 
   <div class="item epic feature no-select disclosed">
@@ -22,7 +24,7 @@ When you work, you should focus on one feature until it is completed before star
       <div class="flex">
         <input type="text" class="item-title"
           placeholder="What are the MMFs?">
-        <button class="add-button">+</button>
+        <div class="add-button no-select">+</div>
       </div>
       <div class="item feature no-select">
         <div class="title">Add Users</div>
@@ -38,7 +40,7 @@ When you work, you should focus on one feature until it is completed before star
   <div class="item feature no-select">
     <div class="chevron">+</div>
     <div class="title">Redesign UI</div>
-    <div class="description">It's too hard to reticulate the spleens</div>
+    <div class="description">It's too hard to reticulate the splines</div>
   </div>
 
 <hr>
@@ -50,10 +52,10 @@ When you work, you should focus on one feature until it is completed before star
         type="text"
         class="item-title"
         placeholder="What needs to be done?">
-    <button class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</button>
+    <div class="add-button no-select" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</div>
   </div>
 
   <div class="item item-Task no-select">
     <label></label>
-    <span>Reticulate spleens</span>
+    <span>Reticulate splines</span>
   </div>

@@ -1,15 +1,9 @@
 .feature {
   margin-top: 3px;
-  background-color: rgb(53, 90, 70);
-}
-
-.feature.epic {
-  background-color: rgb(150 159 106);
 }
 
 .item-Task {
   border-radius: 3px;
-  background-color: rgb(53, 70, 90);
 }
 
 .feature > .title {
@@ -31,6 +25,27 @@ a {
   text-decoration: dotted underline;
 }
 
+.add-button {
+  height: 22px;
+  width: 22px;
+  padding: 0;
+  border: 1px solid silver;
+  border-radius: 22px;
+  font-size: 10pt;
+  text-align: center;
+  line-height: 20px;
+}
+
+.add-button:hover {
+  background-color: silver;
+  transform: translateY(-1px);
+}
+
+.add-button:active {
+  background-color: silver;
+  transform: translateY(1px);
+}
+
 #value {
   border-radius: 10px;
   padding: 10px;
@@ -38,3 +53,97 @@ a {
   background-color: blanchedalmond;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 15%);
 }
+
+/* Themes */
+
+/* Saddle */
+
+body.saddle-theme {
+  background-color: sienna;
+}
+
+.saddle-theme .feature {
+  background-color: peru;
+  color: rgb(60 45 40);
+}
+
+.saddle-theme .feature.epic {
+  background-color: saddlebrown;
+  color: sandybrown;
+}
+
+.saddle-theme .item-Task {
+  background-color: rgb(53, 70, 90);
+}
+
+.saddle-theme.button,
+.saddle-theme .add-button {
+  background-color: sandybrown;
+  color: saddlebrown;
+}
+
+/* Sea */
+
+.sea-theme .feature {
+  background-color: darkseagreen;
+  color: rgb(60 45 40);
+}
+
+.sea-theme .feature.epic {
+  background-color: seagreen;
+  color: darkseagreen;
+}
+
+.sea-theme .item-Task {
+  background-color: rgb(53, 70, 90);
+}
+
+.sea-theme.button,
+.sea-theme .add-button {
+  background-color: seagreen;
+  color: midnightblue;
+}
+
+/* Desert */
+
+.desert-theme .feature {
+  background-color: beige;
+  color: rgb(60 45 40);
+}
+
+.desert-theme .feature.epic {
+  background-color: burlywood;
+  color: blanchedalmond;
+}
+
+.desert-theme .item-Task {
+  background-color: rgb(53, 70, 90);
+}
+
+.desert-theme.button,
+.desert-theme .add-button {
+  background-color: blanchedalmond;
+  color: darkgoldenrod;
+}
+
+.desert-theme.button,
+.saddle-theme.button,
+.sea-theme.button {
+  cursor: hand;
+  margin: 10px;
+  display: inline;
+  box-shadow: 0 0 10px 0 black;
+
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.desert-theme .desert-theme.button,
+.saddle-theme .saddle-theme.button,
+.sea-theme .sea-theme.button {
+  border: 1px solid black;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+/* End Saddle theme */

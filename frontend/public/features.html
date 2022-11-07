@@ -7,7 +7,11 @@
   <link rel="mask-icon" href="../public/favicon.ico" color="#000000">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body>
+<body class="saddle-theme">
+
+  <div class="saddle-theme button" onmousedown="setTheme('saddle')">Saddle</div>
+  <div class="desert-theme button" onmousedown="setTheme('desert')">Desert</div>
+  <div class="sea-theme button" onmousedown="setTheme('sea')">Sea</div>
 
   <div id="content"></div>
   <div id="value" style="position: absolute; display: none"></div>
@@ -35,6 +39,11 @@
     function hideValue(element) {
       const style = document.getElementById('value').style
       style.display = 'none'
+    }
+
+    function setTheme(theme) {
+      console.log('theme', theme)
+      document.body.className = `${theme}-theme`
     }
   </script>
 </body>
