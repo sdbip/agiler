@@ -1,12 +1,10 @@
 # Features
 
-Prefer Minimal Marketable Features (MMFs). An MMF is a value brought to the business. It should be *minimal* so that it can be finished quickly. It should be *marketable* so that it can be motivated to have <a onmouseover="showValue(this)" onmouseout="hideValue()">value</a>, and prioritised correctly.
+A *Feature* is an increment that adds <a onmouseover="showValue(this)" onmouseout="hideValue()">business value</a> to the product. Prefer *Minimal Marketable Features* (MMFs). An MMF is the smallest thing that can be shipped to production and add meaningful value.
 
-> - The smallest thing that can be shipped to production
+It should be *minimal* so that it can be finished and deployed quickly. It should be *marketable* so that it can be prioritised over less important features. You don't have to make features minimal from the start, however. You shouldn't even try! Instead, your first focus should be on need, not feasibility. You will be given the opportunity to split them later.
 
-Of course you don't have to make features minimal as you collect them. You will be given the possibility of splitting them later.
-
-When you work, you should focus on one feature until it is completed before starting another feature.
+If your top prioritised feature is very small you can finish and deploy it before starting another. That allows you to deploy more frequently and with less risk.
 
   <div class="flex">
     <input
@@ -23,7 +21,7 @@ When you work, you should focus on one feature until it is completed before star
     <div class="collapsible">
       <div class="flex">
         <input type="text" class="item-title"
-          placeholder="What are the MMFs?">
+          placeholder="What's the next smallest valuable increment for this feature?">
         <div class="add-button no-select">+</div>
       </div>
       <div class="item feature no-select">

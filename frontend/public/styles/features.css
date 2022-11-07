@@ -58,10 +58,6 @@ a {
 
 /* Saddle */
 
-body.saddle-theme {
-  background-color: sienna;
-}
-
 .saddle-theme .feature {
   background-color: peru;
   color: rgb(60 45 40);
