@@ -1,0 +1,18 @@
+.feature {
+  margin-top: 3px;
+  background-color: hsl(179deg 54% 25%);
+}
+
+.feature > .title {
+  font-weight: bold;
+  font-size: 11pt;
+}
+
+.feature > .description {
+  font-style: italic;
+  font-size: 9pt;
+}
+
+.item-Task {
+  margin-top: 3px;
+}

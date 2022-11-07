@@ -2,8 +2,6 @@
 + Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 + Stories (business value, show progress to a stakeholder)
 * Features (business goals, marketable/testable/usable/lovable)
-  - Upgrade Story to Feature
-  - Split Feature
 - Objectives and goals?
 - Higher purpose of the product? Vision?
 - Unformed ideas/Ice box
@@ -18,13 +16,16 @@
   - Instructions that describe the purpose of stories
 - Select the current feature
   - Make the current feature the focus to adding stories and tasks
+- Split large feature
 
 # Tasks
 * Design a “public” HTML page for collecting features.
 - Add a frontend path that serves the features page
-- Add backend endpoints for featureas and adding to them
+- Add backend endpoints for features and adding to them
   - Make `Feature` a separate entity?
   - Maybe stories and tasks can remain as they are, except in the context pf a feature?
+- Serve copy-text using markdown
+  - `yarn install marked`
 
 # Ice Box
 - Build my own assertion library using domain language
