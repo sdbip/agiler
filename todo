@@ -1,7 +1,7 @@
 # Features
 + Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 + Stories (business value, show progress to a stakeholder)
-- Features (business goals, marketable/testable/usable/lovable)
+* Features (business goals, marketable/testable/usable/lovable)
   - Upgrade Story to Feature
   - Split Feature
 - Objectives and goals?
@@ -14,18 +14,24 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-- Remove promote-buttons from child tasks
-- Redesign promote-button
-  - Add new outlined button like the disclosure-button
-  - with separate “chevron”?
-- A bug made the asterisk appear next to the name after promotion.
-  Should it be kept like that?
+* New page thing for collecting features
+  - Instructions that describe the purpose of stories
+- Select the current feature
+  - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-* Migrate to MVC pattern
-  - Controller receives UI events and updates model
-  - Model emits events when their data is updated
-  - View only reads model data (and events) to display the stuff
+* Design a “public” HTML page for collecting features.
+- Add a frontend path that serves the features page
+- Add backend endpoints for featureas and adding to them
+  - Make `Feature` a separate entity?
+  - Maybe stories and tasks can remain as they are, except in the context pf a feature?
 
 # Ice Box
 - Build my own assertion library using domain language
+- Stories in task list
+  - Remove promote-buttons from child tasks
+  - Redesign promote-button
+    - Add new outlined button like the disclosure-button
+    - with separate “chevron”?
+  - A bug made the asterisk appear next to the name after promotion.
+    Should it be kept like that?
