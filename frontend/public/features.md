@@ -14,7 +14,7 @@ When you work, you should focus on one feature until it is completed before star
     <button class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</button>
   </div>
 
-  <div class="item feature no-select disclosed">
+  <div class="item epic feature no-select disclosed">
     <div class="chevron">+</div>
     <div class="title">Users</div>
     <div class="description">Users can have tasks assigned</div>

@@ -1,6 +1,15 @@
 .feature {
   margin-top: 3px;
-  background-color: hsl(179deg 54% 25%);
+  background-color: rgb(53, 90, 70);
+}
+
+.feature.epic {
+  background-color: rgb(150 159 106);
+}
+
+.item-Task {
+  border-radius: 3px;
+  background-color: rgb(53, 70, 90);
 }
 
 .feature > .title {
