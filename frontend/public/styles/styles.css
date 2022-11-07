@@ -8,10 +8,6 @@ body {
   margin-right: auto;
 }
 
-input[type='checkbox'] {
-  display: none;
-}
-
 .no-select {
   user-select: none;
   -webkit-user-select: none;
@@ -31,6 +27,7 @@ input[type='checkbox'] {
   border-radius: 10px;
 }
 
+/* TODO: Change this to a class instead */
 label {
   cursor: hand;
 }
@@ -113,6 +110,7 @@ label {
   display: flex;
 }
 
+/* TODO: Change this to a class instead */
 input[type="text"] {
   flex: 1;
   margin-right: 6px;
@@ -127,6 +125,7 @@ input[type="text"] {
   outline-color: white;
 }
 
+/* TODO: Change this to a class instead */
 button {
   height: 23px;
   width: 23px;
@@ -165,6 +164,7 @@ button:active {
   width: 0;
 }
 
+/* TODO: Change this to .measure > div */
 #measure {
   position: absolute;
   top: 10px;
