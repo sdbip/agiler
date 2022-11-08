@@ -19,14 +19,13 @@
 - Split large feature
 
 # Tasks
-* Design a “public” HTML page for collecting features.
-  - Add a frontend path that serves the features page
-  - Delete the spike
-- Add backend endpoints for features and adding to them
+- The index.html "env" script is wrong!
+- Add backend endpoints for features and adding stories to them
   - Make `Feature` a separate entity?
   - Maybe stories and tasks can remain as they are, except in the context of a feature?
 - Serve copy-text using markdown
-  - `yarn install marked`
+- Add a frontend path that serves the features page
+- Delete the spike
 
 # Ice Box
 - Build my own assertion library using domain language
