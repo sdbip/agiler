@@ -9,12 +9,10 @@
 </head>
 <body class="saddle-theme">
 
-  <div class="saddle-theme button" onmousedown="setTheme('saddle')">Saddle</div>
-  <div class="desert-theme button" onmousedown="setTheme('desert')">Desert</div>
-  <div class="sea-theme button" onmousedown="setTheme('sea')">Sea</div>
-
   <div id="content"></div>
-  <div id="value" style="position: absolute; display: none"></div>
+  <div id="value" class="pop-up"></div>
+  <div id="mmf" class="pop-up"></div>
+  <div id="feature" class="pop-up"></div>
   <script>
     (async () => {
       const response = await fetch('features.md')
@@ -28,17 +26,41 @@
       document.getElementById('value').innerHTML = html
     })();
 
-    function showValue(element) {
-      const style = document.getElementById('value').style
-      const box = element.getBoundingClientRect()
-      style.top = `${box.top + box.height + 10}px`
-      style.left = `${box.left + 10}px`
-      style.display = ''
+    (async () => {
+      const response = await fetch('mmf.md')
+      const html = marked.parse(await response.text())
+      document.getElementById('mmf').innerHTML = html
+    })();
+
+    (async () => {
+      const response = await fetch('feature.md')
+      const html = marked.parse(await response.text())
+      document.getElementById('feature').innerHTML = html
+    })();
+
+    function show(id, targetElement) {
+      const targetBox = targetElement.getBoundingClientRect()
+      const position = {
+        x: targetBox.left + 10,
+        y: targetBox.top + targetBox.height + 10,
+      }
+
+      const popup = document.getElementById(id)
+      const style = popup.style
+      style.display = 'revert'
+
+      const popupBox = popup.getBoundingClientRect()
+      const maxWidth = document.documentElement.clientWidth
+      if (position.x + popupBox.width + 10 > maxWidth)
+        position.x = maxWidth - (popupBox.width + 10)
+
+      style.top = `${position.y}px`
+      style.left = `${position.x}px`
     }
 
-    function hideValue(element) {
-      const style = document.getElementById('value').style
-      style.display = 'none'
+    function hide(id, element) {
+      const style = document.getElementById(id).style
+      style.display = ''
     }
 
     function setTheme(theme) {
@@ -46,5 +68,11 @@
       document.body.className = `${theme}-theme`
     }
   </script>
+
+  <div style="padding: 20px">
+    <div class="saddle-theme button" onmousedown="setTheme('saddle')">Saddle</div>
+    <div class="desert-theme button" onmousedown="setTheme('desert')">Desert</div>
+    <div class="sea-theme button" onmousedown="setTheme('sea')">Sea</div>
+  </div>
 </body>
 </html>

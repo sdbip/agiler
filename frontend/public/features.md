@@ -1,10 +1,10 @@
 # Features
 
-A *Feature* is an increment that adds <a onmouseover="showValue(this)" onmouseout="hideValue()">business value</a> to the product. Prefer *Minimal Marketable Features* (MMFs). An MMF is the smallest thing that can be shipped to production and add meaningful value.
+Collect your <a onmouseover="show('feature', this)" onmouseout="hide('feature')">features</a> here.
 
-It should be *minimal* so that it can be finished and deployed quickly. It should be *marketable* so that it can be prioritised over less important features. You don't have to make features minimal from the start, however. You shouldn't even try! Instead, your first focus should be on need, not feasibility. You will be given the opportunity to split them later.
-
-If your top prioritised feature is very small you can finish and deploy it before starting another. That allows you to deploy more frequently and with less risk.
+> **Guideline:** Prefer *Minimal Marketable Features* (<a onmouseover="show('mmf', this)" onmouseout="hide('mmf')">MMFs</a>).
+> 1. Start by focusing on <a onmouseover="show('value', this)" onmouseout="hide('value')">value and need</a>. What is currently lacking from a business perspective?
+> 2. Next: split the features into <a onmouseover="show('mmf', this)" onmouseout="hide('mmf')">MMFs</a>. What's the smallest incremental step that would serve some of that need?
 
   <div class="flex">
     <input
@@ -16,7 +16,7 @@ If your top prioritised feature is very small you can finish and deploy it befor
 
   <div class="item epic feature no-select disclosed">
     <div class="chevron">+</div>
-    <div class="title">Users</div>
+    <div class="title">User Management</div>
     <div class="description">Users can have tasks assigned</div>
     <div class="collapsible">
       <div class="flex">
