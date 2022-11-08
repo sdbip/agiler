@@ -19,6 +19,13 @@ describe('server', () => {
     assert.equal(response.content[0], '<')
   })
 
+  it('responds to get /features', async () => {
+    const response = await get('http://localhost:9090/features')
+    assert.equal(response.statusCode, 200)
+    assert.exists(response.content)
+    assert.equal(response.content[0], '<')
+  })
+
   it('yields an error if stopping twice', async () => {
     let isFailure = true
     try {

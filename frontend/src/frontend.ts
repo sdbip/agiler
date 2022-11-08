@@ -23,6 +23,13 @@ server.get('/', async () => {
   }
 })
 
+server.get('/features', async () => {
+  return {
+    statusCode: 200,
+    content: '<html><body>/features works!!</body></html>',
+  }
+})
+
 const s = server.finalize()
 export function setReadModelURL(url: string) {readModelURL = url}
 export function setWriteModelURL(url: string) {writeModelURL = url}
