@@ -20,10 +20,11 @@
 
 # Tasks
 * Design a “public” HTML page for collecting features.
-- Add a frontend path that serves the features page
+  - Add a frontend path that serves the features page
+  - Delete the spike
 - Add backend endpoints for features and adding to them
   - Make `Feature` a separate entity?
-  - Maybe stories and tasks can remain as they are, except in the context pf a feature?
+  - Maybe stories and tasks can remain as they are, except in the context of a feature?
 - Serve copy-text using markdown
   - `yarn install marked`
 
