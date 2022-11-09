@@ -4,9 +4,9 @@ extends:
 parser: '@typescript-eslint/parser'
 root: true
 ignorePatterns:
-  - frontend/public/bundle.js
   - webpack.config.cjs
   - frontend/src/webpack_env.ts
+  - frontend/public/*.bundle.js
 
 parserOptions:
   ecmaVersion: latest

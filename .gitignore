@@ -7,5 +7,5 @@ yarn-error.log
 
 ## Output from build
 lazy_tasks/
-frontend/public/bundle.js
-frontend/public/bundle.js.LICENSE.txt
+frontend/public/*.bundle.js
+frontend/public/*.js.LICENSE.txt
