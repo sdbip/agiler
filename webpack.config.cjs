@@ -2,7 +2,7 @@ const path = require('path')
 const Dotenv = require('dotenv-webpack')
 
 module.exports = {
-  entry: './frontend/src/index.ts',
+  entry: './frontend/browser-src/index.ts',
   mode: 'production',
   stats: 'minimal',
   module: {

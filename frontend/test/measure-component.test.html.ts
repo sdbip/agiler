@@ -1,6 +1,6 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
-import { MeasureComponent } from '../src/measure-component'
+import { MeasureComponent } from '../browser-src/measure-component'
 
 runTests(() => {
   it('measures explicitly sized element to its parameters', () => {

@@ -87,7 +87,7 @@ desc('Run all tests')
 task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
-lazyTask('browser_tests', deglob('frontend/**/*', '**/*.spec.ts'), async () => {
+lazyTask('browser_tests', deglob([ 'frontend/browser-*/**/*', 'frontend/**/*' ], '**/*.spec.ts'), async () => {
   log.startTask('Testing browser code')
 
   await new Promise((resolve, reject) => {

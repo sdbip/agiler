@@ -1,6 +1,6 @@
 import { assert } from '@esm-bundle/chai'
-import { ClassSelector, TagSelector, toSelector } from '../src/class-name'
-import { DOMElement } from '../src/dom-element'
+import { ClassSelector, TagSelector, toSelector } from '../browser-src/class-name'
+import { DOMElement } from '../browser-src/dom-element'
 
 describe(DOMElement.name, () => {
 

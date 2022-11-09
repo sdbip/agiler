@@ -1,10 +1,10 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
-import { ItemComponent } from '../src/item-component'
-import { render, setBaseURL } from '../src/Templates'
-import { PageComponent } from '../src/page-component'
-import { ClassName } from '../src/class-name'
-import { DOMElement } from '../src/dom-element'
+import { ItemComponent } from '../browser-src/item-component'
+import { render, setBaseURL } from '../browser-src/Templates'
+import { PageComponent } from '../browser-src/page-component'
+import { ClassName } from '../browser-src/class-name'
+import { DOMElement } from '../browser-src/dom-element'
 
 runTests(() => {
   before(async () => {

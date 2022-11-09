@@ -5,6 +5,7 @@ export default {
   files: [
     'frontend/test/**/*.html',
     '**/*.test.ts',
+    'frontend/browser-test/**/*',
     '!node_modules/',
   ],
   reporters: [ dotReporter() ],

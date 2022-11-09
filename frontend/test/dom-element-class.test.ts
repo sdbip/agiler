@@ -1,6 +1,6 @@
 import { assert } from '@esm-bundle/chai'
-import { ClassName } from '../src/class-name'
-import { DOMElement } from '../src/dom-element'
+import { ClassName } from '../browser-src/class-name'
+import { DOMElement } from '../browser-src/dom-element'
 
 describe(DOMElement.name, () => {
 

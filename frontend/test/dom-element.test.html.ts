@@ -1,6 +1,6 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
-import { DOMElement } from '../src/dom-element'
+import { DOMElement } from '../browser-src/dom-element'
 
 runTests(() => {
   it('can be created from HTML', () => {

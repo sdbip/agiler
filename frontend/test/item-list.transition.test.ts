@@ -1,6 +1,6 @@
 import { assert } from '@esm-bundle/chai'
-import { DOMElement } from '../src/dom-element'
-import { ItemListTransition } from '../src/item-list-transition'
+import { DOMElement } from '../browser-src/dom-element'
+import { ItemListTransition } from '../browser-src/item-list-transition'
 
 describe(ItemListTransition.name, () => {
 

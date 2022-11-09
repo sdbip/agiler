@@ -1,10 +1,10 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
-import { PageComponent } from '../src/page-component'
-import { render, setBaseURL } from '../src/Templates'
-import { ClassName } from '../src/class-name'
-import { ItemComponent } from '../src/item-component'
-import { DOMElement } from '../src/dom-element'
+import { PageComponent } from '../browser-src/page-component'
+import { render, setBaseURL } from '../browser-src/Templates'
+import { ClassName } from '../browser-src/class-name'
+import { ItemComponent } from '../browser-src/item-component'
+import { DOMElement } from '../browser-src/dom-element'
 
 runTests(() => {
   let titleInputElement: HTMLInputElement
