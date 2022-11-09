@@ -1,7 +1,7 @@
 import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import globals from './globals'
+import { env } from './webpack_env'
 
-const baseURL = globals.READ_MODEL_URL
+const baseURL = env.readModelURL
 
 export const fetchItems = async () => {
   const response = await fetch(`${baseURL}/item`)

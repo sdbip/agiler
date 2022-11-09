@@ -1,6 +1,6 @@
-import globals from './globals'
+import { env } from './webpack_env'
 
-const baseURL = globals.WRITE_MODEL_URL
+const baseURL = env.writeModelURL
 
 export const addTask = async (title: string, parentId?: string) => {
   const url = parentId

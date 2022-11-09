@@ -1,4 +1,5 @@
 const path = require('path')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
   entry: './frontend/src/index.ts',
@@ -16,6 +17,9 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
+  plugins: [
+    new Dotenv()
+  ],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, './frontend/public'),

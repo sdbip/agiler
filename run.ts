@@ -22,15 +22,13 @@ const schemaDDL = await fs.readFile('./schema/schema.sql')
 await database.query(schemaDDL.toString('utf-8'))
 
 readModel.setRepository(new PGItemRepository(database))
-readModel.listenAtPort(8000)
+readModel.listenAtPort(Number(env['READ_MODEL_PORT']))
 
 writeModel.setEventProjection(new PGItemProjection(database))
 writeModel.setEventRepository(new PGEventRepository(repository))
 writeModel.setPublisher(new PGEventPublisher(repository))
-writeModel.listenAtPort(9000)
+writeModel.listenAtPort(Number(env['WRITE_MODEL_PORT']))
 
-frontend.setReadModelURL('http://localhost:8000')
-frontend.setWriteModelURL('http://localhost:9000')
 frontend.listenAtPort(80)
 
 process.on('SIGINT', async () => {

@@ -1,11 +1,12 @@
-extends: 
+extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
 parser: '@typescript-eslint/parser'
 root: true
-ignorePatterns: 
+ignorePatterns:
   - frontend/public/bundle.js
   - webpack.config.cjs
+  - frontend/src/webpack_env.ts
 
 parserOptions:
   ecmaVersion: latest
