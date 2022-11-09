@@ -1,0 +1,51 @@
+<div class="flex">
+  <input
+      type="text"
+      class="item-title"
+      placeholder="What does the business need?">
+  <div class="add-button no-select">+</div>
+</div>
+
+<div class="item epic feature no-select disclosed">
+  <div class="chevron">+</div>
+  <div class="title">User Management</div>
+  <div class="description">Users can have tasks assigned</div>
+  <div class="collapsible">
+    <div class="flex">
+      <input type="text" class="item-title"
+        placeholder="What's the next smallest valuable increment for this feature?">
+      <div class="add-button no-select">+</div>
+    </div>
+    <div class="item feature no-select">
+      <div class="title">Add Users</div>
+    </div>
+    <div class="item feature no-select">
+      <div class="title">Delete Users</div>
+    </div>
+    <div class="item feature no-select">
+      <div class="title">Assign tasks to Users</div>
+    </div>
+  </div>
+</div>
+<div class="item feature no-select">
+  <div class="chevron">+</div>
+  <div class="title">Redesign UI</div>
+  <div class="description">It's too hard to reticulate the splines</div>
+</div>
+
+<hr>
+
+<h1>Tasks</h1>
+
+<div class="flex">
+  <input
+      type="text"
+      class="item-title"
+      placeholder="What needs to be done?">
+  <div class="add-button no-select" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</div>
+</div>
+
+<div class="item item-Task no-select">
+  <label></label>
+  <span>Reticulate splines</span>
+</div>

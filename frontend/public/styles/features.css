@@ -1,9 +1,18 @@
 .feature {
   margin-top: 3px;
+  background-color: beige;
+  color: rgb(60 45 40);
+}
+
+.feature.epic {
+  background-color: burlywood;
+  color: blanchedalmond;
 }
 
 .item-Task {
+  margin-top: 3px;
   border-radius: 3px;
+  background-color: rgb(53, 70, 90);
 }
 
 .feature > .title {
@@ -14,10 +23,6 @@
 .feature > .description {
   font-style: italic;
   font-size: 9pt;
-}
-
-.item-Task {
-  margin-top: 3px;
 }
 
 a {
@@ -56,94 +61,3 @@ a {
   width: 200px;
   display: none;
 }
-
-/* Themes */
-
-/* Saddle */
-
-.saddle-theme .feature {
-  background-color: peru;
-  color: rgb(60 45 40);
-}
-
-.saddle-theme .feature.epic {
-  background-color: saddlebrown;
-  color: sandybrown;
-}
-
-.saddle-theme .item-Task {
-  background-color: rgb(53, 70, 90);
-}
-
-.saddle-theme.button,
-.saddle-theme .add-button {
-  background-color: sandybrown;
-  color: saddlebrown;
-}
-
-/* Sea */
-
-.sea-theme .feature {
-  background-color: darkseagreen;
-  color: rgb(60 45 40);
-}
-
-.sea-theme .feature.epic {
-  background-color: seagreen;
-  color: darkseagreen;
-}
-
-.sea-theme .item-Task {
-  background-color: rgb(53, 70, 90);
-}
-
-.sea-theme.button,
-.sea-theme .add-button {
-  background-color: seagreen;
-  color: midnightblue;
-}
-
-/* Desert */
-
-.desert-theme .feature {
-  background-color: beige;
-  color: rgb(60 45 40);
-}
-
-.desert-theme .feature.epic {
-  background-color: burlywood;
-  color: blanchedalmond;
-}
-
-.desert-theme .item-Task {
-  background-color: rgb(53, 70, 90);
-}
-
-.desert-theme.button,
-.desert-theme .add-button {
-  background-color: blanchedalmond;
-  color: darkgoldenrod;
-}
-
-.desert-theme.button,
-.saddle-theme.button,
-.sea-theme.button {
-  cursor: hand;
-  margin: 10px;
-  display: inline;
-  box-shadow: 0 0 10px 0 black;
-
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.desert-theme .desert-theme.button,
-.saddle-theme .saddle-theme.button,
-.sea-theme .sea-theme.button {
-  padding: 5px;
-  border: 1px solid black;
-  border-radius: 3px;
-  box-shadow: none;
-}
-
-/* End Saddle theme */

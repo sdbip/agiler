@@ -4,6 +4,7 @@ const Dotenv = require('dotenv-webpack')
 module.exports = {
   entry: {
     index: './frontend/browser-src/index.ts',
+    features: './frontend/browser-src/features.ts',
   },
   mode: 'production',
   stats: 'minimal',
