@@ -44,9 +44,11 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "@types/jsdom": "^20.0.1",
     "@types/marked": "^4.0.7",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "happy-dom": "^7.6.7",
     "marked": "^4.2.2",
     "pg": "^8.8.0"
   }
