@@ -6,7 +6,7 @@
 
 .feature.epic {
   background-color: burlywood;
-  color: blanchedalmond;
+  color: saddlebrown;
 }
 
 .item-Task {
@@ -18,6 +18,21 @@
 .feature > .title {
   font-weight: bold;
   font-size: 11pt;
+}
+
+.feature.epic > .title > sup {
+  content: 'EPIC';
+  padding: 0 2px;
+  color: lavender;
+  background-color: darkblue;
+  font-family: cursive;
+  font-weight: bold;
+  font-size: 6pt;
+  top: -7px;
+}
+
+.feature.epic input::placeholder {
+  color: beige;
 }
 
 .feature > .description {
@@ -42,7 +57,7 @@ a {
 }
 
 .add-button:hover {
-  background-color: silver;
+  background-color: peru;
   transform: translateY(-1px);
 }
 
