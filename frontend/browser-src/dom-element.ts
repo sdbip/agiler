@@ -1,6 +1,12 @@
 import { failFast } from '../../shared/src/failFast'
 import { ClassName, ClassSelector, Selector, TagSelector } from './class-name'
 
+export type DOMEvent = {
+  name: string
+  element: DOMElement
+  eventData: Event
+}
+
 export class DOMElement {
   static BODY = new DOMElement(document.body)
   static DOCUMENT = new DOMElement(document.documentElement)
@@ -70,6 +76,12 @@ export class DOMElement {
       ? root.getElementsByClassName(selector.className.name)
       : root.getElementsByTagName(selector.tagName)
     return [ ...elements ].map(e => new DOMElement(e as HTMLElement))
+  }
+
+  on(eventName: string, handler: (event: DOMEvent) => void) {
+    this.element.addEventListener(eventName, event => {
+      handler({ name: eventName, element: this, eventData: event })
+    })
   }
 
   setHeight(height: number) {
