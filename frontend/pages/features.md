@@ -8,4 +8,3 @@ Collect your <a class="hover-help" data-snippet="feature">features</a> here.
 > 2. Next: split the features into <a class="hover-help" data-snippet="mmf">MMFs</a>. What's the smallest incremental step that would serve some of that need?
 
   <div id="page-container"></div>
-  <div id="popup"></div>

@@ -19,15 +19,14 @@
 - Split large feature
 
 # Tasks
-- Split code into contexts (one folder per page)
-  - Move PageComponent, StoryComponent, ItemComponent to the index context
-  - Copy PageComponent and TaskComponent to the features context
-  - Add FeatureComponent to the features context
-  - Move Popup to the features context
-- Split TaskComponent and StoryComponent in two
 - Add backend endpoints for features and adding stories to them
   - Make `Feature` a separate entity?
-  - Maybe stories and tasks can remain as they are, except in the context of a feature?
+  - Maybe stories and tasks can remain as they are?
+- Add components to the features context
+  - `FeatureComponent`
+  - `PageComponent`
+  - `TaskComponent`
+- Split `TaskComponent` and `StoryComponent` in two
 
 # Ice Box
 - Build my own assertion library using domain language
