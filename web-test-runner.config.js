@@ -3,9 +3,9 @@ import { dotReporter } from '@web/test-runner'
 
 export default {
   files: [
-    'frontend/test/**/*.html',
     '**/*.test.ts',
-    'frontend/browser-test/**/*',
+    '**/*.test.html',
+    '!**/*.html.ts',
     '!node_modules/',
   ],
   reporters: [ dotReporter() ],

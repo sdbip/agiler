@@ -1,5 +1,5 @@
 import { marked } from 'marked'
-import { DOMElement } from './dom-element'
+import { DOMElement } from '../dom-element'
 
 export class Popup {
   constructor(readonly element: DOMElement) { }

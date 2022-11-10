@@ -1,4 +1,4 @@
-import { ItemDTO } from '../../backend/src/dtos/item-dto'
+import { ItemDTO } from '../../../backend/src/dtos/item-dto'
 import { env } from './webpack_env'
 
 const baseURL = env.readModelURL

@@ -1,7 +1,7 @@
-import globals from './globals'
-import { render } from './Templates'
-import { UIEventArgs } from './ui-event-args'
-import { DOMElement } from './dom-element'
+import globals from '../globals'
+import { render } from '../Templates'
+import { UIEventArgs } from '../index/ui-event-args'
+import { DOMElement } from '../dom-element'
 import { Popup } from './popup'
 
 (async () => {

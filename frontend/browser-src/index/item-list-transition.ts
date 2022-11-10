@@ -1,7 +1,7 @@
-import { ClassName } from './class-name'
-import { delay } from './delay'
-import { DOMElement } from './dom-element'
-import { render } from './Templates'
+import { ClassName } from '../class-name'
+import { delay } from '../delay'
+import { DOMElement } from '../dom-element'
+import { render } from '../Templates'
 
 export class ItemListTransition {
   private get itemElements() { return this.itemListElement.children }

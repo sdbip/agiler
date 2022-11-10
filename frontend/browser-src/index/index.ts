@@ -1,12 +1,12 @@
-import globals from './globals'
-import readModel from './readModel'
-import writeModel from './writeModel'
-import { delay } from './delay'
+import globals from '../globals'
+import readModel from '../backend/readModel'
+import writeModel from '../backend/writeModel'
+import { delay } from '../delay'
 import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
-import { ClassName } from './class-name'
+import { ClassName } from '../class-name'
 import { UIEventArgs } from './ui-event-args'
-import { render } from './Templates'
+import { render } from '../Templates'
 
 (async () => {
   const pageContainer = document.getElementById('page-container')

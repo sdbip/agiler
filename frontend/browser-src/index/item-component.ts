@@ -1,10 +1,10 @@
-import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import { failFast } from '../../shared/src/failFast'
-import { ClassName, Selector, toSelector } from './class-name'
-import { CollapsibleElement } from './collapsible-dom-element'
-import { DOMElement } from './dom-element'
+import { ItemDTO } from '../../../backend/src/dtos/item-dto'
+import { failFast } from '../../../shared/src/failFast'
+import { ClassName, Selector, toSelector } from '../class-name'
+import { CollapsibleElement } from '../collapsible-dom-element'
+import { DOMElement } from '../dom-element'
 import { ItemListTransition } from './item-list-transition'
-import { MeasureComponent } from './measure-component'
+import { MeasureComponent } from '../measure-component'
 
 export class ItemComponent {
 

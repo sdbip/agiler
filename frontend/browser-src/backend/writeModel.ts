@@ -1,4 +1,4 @@
-import { env } from '../browser-src/webpack_env'
+import { env } from './webpack_env'
 
 const baseURL = env.writeModelURL
 

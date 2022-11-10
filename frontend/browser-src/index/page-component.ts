@@ -1,6 +1,6 @@
-import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import { ClassName, Selector } from './class-name'
-import { DOMElement } from './dom-element'
+import { ItemDTO } from '../../../backend/src/dtos/item-dto'
+import { ClassName, Selector } from '../class-name'
+import { DOMElement } from '../dom-element'
 import { ItemListTransition } from './item-list-transition'
 
 export class PageComponent {
