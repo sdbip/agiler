@@ -19,3 +19,8 @@ export const reconstituteTaskWithParent = (parentId: string, id: string) =>
   Item.reconstitute(id, EntityVersion.new, [
     new PublishedEvent('ParentChanged', JSON.stringify({ parent: parentId })),
   ])
+
+export const reconstituteFeature = (id: string) =>
+  Item.reconstitute(id, EntityVersion.new, [
+    new PublishedEvent('Created', JSON.stringify({ type: ItemType.Feature })),
+  ])

@@ -1,6 +1,6 @@
 import { assert } from 'chai'
-import { Item } from '../../src/domain/item'
-import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
+import { Item, ItemType } from '../../src/domain/item'
+import { reconstituteFeature, reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.add', () => {
 
@@ -18,6 +18,30 @@ describe('Item.add', () => {
     story.add(task)
     const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
     assert.equal(event?.details.parent, story.id)
+  })
+
+  it('adds an MMF to a Feature', () => {
+    const epic = reconstituteFeature('epic_id')
+    const mmf = reconstituteFeature('mmf_id')
+    epic.add(mmf)
+    const event = epic.unpublishedEvents.find(e => e.name === 'ChildrenAdded')
+    assert.deepEqual(event?.details.children, [ mmf.id ])
+  })
+
+  it('sets the parent of an MMF', () => {
+    const epic = reconstituteFeature('epic_id')
+    const mmf = reconstituteFeature('mmf_id')
+    epic.add(mmf)
+    const event = mmf.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    assert.equal(event?.details.parent, epic.id)
+  })
+
+  it('converts the parent Feature to an Epic', () => {
+    const epic = reconstituteFeature('epic_id')
+    const mmf = reconstituteFeature('mmf_id')
+    epic.add(mmf)
+    const event = epic.unpublishedEvents.find(e => e.name === 'TypeChanged')
+    assert.equal(event?.details.type, ItemType.Epic)
   })
 
   it('only updates parent once', () => {

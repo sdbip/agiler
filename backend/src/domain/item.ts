@@ -3,6 +3,7 @@ import { failFast } from '../../../shared/src/failFast.js'
 import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent, PublishedEvent } from '../es/source.js'
 
 export enum ItemType {
+  Epic = 'Epic',
   Feature = 'Feature',
   Story = 'Story',
   Task = 'Task',
@@ -19,15 +20,18 @@ export class Item extends Entity {
     this.addEvent(new UnpublishedEvent('TypeChanged', { type: ItemType.Story }))
   }
 
-  add(task: Item) {
-    failFast.unless(this.itemType === ItemType.Story, `Only ${ItemType.Story} items may have children`)
-    failFast.unless(task.itemType === ItemType.Task, `Only ${ItemType.Task} items may be added`)
-    failFast.unless(task.parent === undefined, 'Task must not have other parent')
+  add(item: Item) {
+    failFast.unless(this.itemType !== ItemType.Task, `${ItemType.Task} items may not have children`)
+    failFast.unless(item.parent === undefined, 'Item must not have other parent')
+    if (this.itemType === ItemType.Story)
+      failFast.unless(item.itemType === ItemType.Task, `Only ${ItemType.Task} items may be added`)
 
-    this.addEvent(new UnpublishedEvent('ChildrenAdded', { children: [ task.id ] }))
+    this.addEvent(new UnpublishedEvent('ChildrenAdded', { children: [ item.id ] }))
+    if (this.itemType === ItemType.Feature)
+      this.addEvent(new UnpublishedEvent('TypeChanged', { type: ItemType.Epic }))
 
-    task.removeEventMatching(e => e.name === 'ParentChanged')
-    task.addEvent(new UnpublishedEvent('ParentChanged', { parent: this.id }))
+    item.removeEventMatching(e => e.name === 'ParentChanged')
+    item.addEvent(new UnpublishedEvent('ParentChanged', { parent: this.id }))
   }
 
   remove(task: Item) {
