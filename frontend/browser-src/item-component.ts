@@ -1,5 +1,7 @@
 import { ItemDTO } from '../../backend/src/dtos/item-dto'
+import { failFast } from '../../shared/src/failFast'
 import { ClassName, Selector, toSelector } from './class-name'
+import { CollapsibleElement } from './collapsible-dom-element'
 import { DOMElement } from './dom-element'
 import { ItemListTransition } from './item-list-transition'
 import { MeasureComponent } from './measure-component'
@@ -32,9 +34,6 @@ export class ItemComponent {
   }
   get addButtonElement() {
     return this.getElement({ className:{ name: 'add-button' } })
-  }
-  get collapsible() {
-    return this.getElement({ className:{ name: 'collapsible' } })
   }
 
   get itemListElement() {
@@ -93,23 +92,19 @@ export class ItemComponent {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const transition = new ItemListTransition(this.itemListElement!, items)
     await transition.replaceChildItems()
-    const collapsible = this.collapsible
-    if (!collapsible) throw new Error('where is my collapsible element?')
-    const intrinsicSize = MeasureComponent.instance.measure(collapsible.innerHTML)
-    collapsible.setHeight(intrinsicSize.height)
+    const intrinsicSize = MeasureComponent.instance.measure(getCollapsible(this).innerHTML)
+    getCollapsible(this).setHeight(intrinsicSize.height)
   }
 
   private collapse() {
     this.element.removeClass(ClassName.disclosed)
-    this.collapsible?.setHeight(0)
+    getCollapsible(this).setHeight(0)
   }
 
   private disclose() {
     this.element.addClass(ClassName.disclosed)
-    const collapsible = this.collapsible
-    if (!collapsible) throw new Error('where is my collapsible element?')
-    const intrinsicSize = MeasureComponent.instance.measure(collapsible.innerHTML)
-    collapsible.setHeight(intrinsicSize.height)
+    const intrinsicSize = MeasureComponent.instance.measure(getCollapsible(this).innerHTML)
+    getCollapsible(this).setHeight(intrinsicSize.height)
   }
 
   private startSpinner() {
@@ -131,4 +126,10 @@ export class ItemComponent {
     const buttonElement = this.addButtonElement
     buttonElement?.removeClass(ClassName.default)
   }
+}
+
+function getCollapsible(storyComponent: ItemComponent) {
+  const element = CollapsibleElement.find({ className: { name: 'collapsible' } }, storyComponent.element)
+  failFast.unless(element instanceof CollapsibleElement, `Collapsible element for story ${storyComponent.itemId} is missing`)
+  return element as CollapsibleElement
 }
