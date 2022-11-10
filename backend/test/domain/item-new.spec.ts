@@ -29,6 +29,13 @@ describe('Item.new', () => {
     assert.equal(event?.details.type, ItemType.Task)
   })
 
+  it('can be created as a Feature', () => {
+    const item = Item.new('Get it done', ItemType.Feature)
+    assert.equal(item.unpublishedEvents.length, 1)
+    const event = item.unpublishedEvents.find(e => e.name === 'Created')
+    assert.equal(event?.details.type, ItemType.Feature)
+  })
+
   it('is created with a title', () => {
     const item = Item.new('Get it done')
     assert.equal(item.unpublishedEvents.length, 1)

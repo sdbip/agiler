@@ -3,8 +3,9 @@ import { failFast } from '../../../shared/src/failFast.js'
 import { Entity, CanonicalEntityId, EntityVersion, UnpublishedEvent, PublishedEvent } from '../es/source.js'
 
 export enum ItemType {
-  Task = 'Task',
+  Feature = 'Feature',
   Story = 'Story',
+  Task = 'Task',
 }
 
 export class Item extends Entity {
@@ -49,9 +50,9 @@ export class Item extends Entity {
     this.addEvent(new UnpublishedEvent('ProgressChanged', { progress: Progress.inProgress }))
   }
 
-  static new(title: string): Item {
+  static new(title: string, type?: ItemType): Item {
     const item = new Item(randomUUID(), EntityVersion.new)
-    item.addEvent(new UnpublishedEvent('Created', { title, type: ItemType.Task }))
+    item.addEvent(new UnpublishedEvent('Created', { title, type: type ?? ItemType.Task }))
     return item
   }
 
