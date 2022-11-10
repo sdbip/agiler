@@ -6,6 +6,8 @@ import { ItemListTransition } from './item-list-transition'
 export class PageComponent {
   static instance = new PageComponent()
 
+  readonly itemId = undefined
+
   get title() { return this.titleInputElement?.inputElementValue }
   get addButtonElement() {
     return this.getElement({ id: 'add-button' })
