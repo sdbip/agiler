@@ -1,7 +1,7 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
 import { PageComponent } from '../../browser-src/index/page-component'
-import { render, setBaseURL } from '../../browser-src/Templates'
+import { render, setBaseURL } from '../../browser-src/templates'
 import { ClassName } from '../../browser-src/class-name'
 import { ItemComponent } from '../../browser-src/index/item-component'
 import { DOMElement } from '../../browser-src/dom-element'

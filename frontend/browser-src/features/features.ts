@@ -1,5 +1,5 @@
 import globals from '../globals'
-import { render } from '../Templates'
+import { render } from '../templates'
 import { UIEventArgs } from '../index/ui-event-args'
 import { DOMElement } from '../dom-element'
 import { Popup } from './popup'

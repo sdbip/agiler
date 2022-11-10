@@ -6,7 +6,7 @@ import { ItemComponent } from './item-component'
 import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
 import { UIEventArgs } from './ui-event-args'
-import { render } from '../Templates'
+import { render } from '../templates'
 
 (async () => {
   const pageContainer = document.getElementById('page-container')
