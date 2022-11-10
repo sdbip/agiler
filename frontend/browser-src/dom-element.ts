@@ -45,7 +45,7 @@ export class DOMElement {
     return this.inputElement.value
   }
 
-  constructor(private readonly element: HTMLElement) { }
+  constructor(readonly element: HTMLElement) { }
 
   static fromHTML(html: string) {
     const tempElement = document.createElement('div')
