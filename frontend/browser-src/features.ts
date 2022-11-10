@@ -1,41 +1,54 @@
+import globals from './globals'
 import { marked } from 'marked'
 import { render } from './Templates'
+import { UIEventArgs } from './ui-event-args'
+import { DOMElement } from './dom-element'
 
 (async () => {
-  const pageContainer = document.getElementById('page-container')
+  const pageContainer = DOMElement.single({ id: 'page-container' })
   if (!pageContainer) throw Error('page container not found')
-  pageContainer.innerHTML = await render('feature-page-component', {})
+  pageContainer.setInnerHTML(await render('feature-page-component', {}))
 
-  const hoverElements = document.getElementsByClassName('hover-help')
-  for (const element of hoverElements as HTMLCollectionOf<HTMLElement>) {
-    element.addEventListener('mouseover', async event => {
-      const eventTarget = event.target as HTMLElement
-      const snippet = eventTarget.dataset.snippet
-
-      const elementId = `popup:${snippet}`
-      const existingPopupElement = document.getElementById(elementId)
-      const popupElement = existingPopupElement ?? document.createElement('div')
-      if (!existingPopupElement) {
-        popupElement.className = 'pop-up'
-        popupElement.id = elementId
-        document.body.append(popupElement)
-
-        const response = await fetch(`public/popups/${snippet}.md`)
-        const html = marked.parse(await response.text())
-        popupElement.innerHTML = html
-      }
-
-      showPopup(popupElement, eventTarget)
+  const helpElements = DOMElement.all({ className: { name: 'hover-help' } })
+  for (const helpElement of helpElements) {
+    helpElement.on('mouseover', async event => {
+      globals.emitUIEvent('help-mouseover', { event, element: event.eventData.target })
     })
 
-    element.addEventListener('mouseout', async event => {
-      const eventTarget = event.target as HTMLElement
-      const snippet = eventTarget.dataset.snippet
-      const popupElement = document.getElementById(`popup:${snippet}`)
-      if (popupElement) hidePopup(popupElement)
+    helpElement.on('mouseout', async event => {
+      globals.emitUIEvent('help-mouseout', { event, element: event.eventData.target })
     })
   }
 })()
+
+globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
+  switch (name) {
+    case 'help-mouseover': {
+      const popup = await getOrCreatePopup(args.element.dataset.snippet)
+      showPopup(popup, args.element)
+      break
+    }
+    case 'help-mouseout': {
+      const popup = document.getElementById(`popup:${args.element.dataset.snippet}`)
+      if (popup) hidePopup(popup)
+      break
+    }
+  }
+}
+
+async function getOrCreatePopup(snippet: string | undefined) {
+  const existingPopupElement = document.getElementById(`popup:${snippet}`)
+  const popupElement = existingPopupElement ?? document.createElement('div')
+  if (!existingPopupElement) {
+    popupElement.className = 'pop-up'
+    popupElement.id = `popup:${snippet}`
+    document.body.append(popupElement)
+
+    const response = await fetch(`public/popups/${snippet}.md`)
+    popupElement.innerHTML = marked.parse(await response.text())
+  }
+  return popupElement
+}
 
 function showPopup(popup: HTMLElement, targetElement: HTMLElement) {
   const targetBox = targetElement.getBoundingClientRect()
@@ -59,4 +72,3 @@ function showPopup(popup: HTMLElement, targetElement: HTMLElement) {
 function hidePopup(popup: HTMLElement) {
   popup.style.display = ''
 }
-
