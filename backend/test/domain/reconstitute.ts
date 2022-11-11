@@ -24,3 +24,11 @@ export const reconstituteFeature = (id: string) =>
   Item.reconstitute(id, EntityVersion.new, [
     new PublishedEvent('Created', JSON.stringify({ type: ItemType.Feature })),
   ])
+
+export const reconstitute = {
+  feature: reconstituteFeature,
+  story: reconstituteStory,
+  storyWithChildren: reconstituteStoryWithChildren,
+  task: reconstituteTask,
+  taskWithParent: reconstituteTaskWithParent,
+}
