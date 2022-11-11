@@ -13,13 +13,10 @@
 
 # Stories
 * New page thing for collecting features
-  - Instructions that describe the purpose of stories
 - Select the current feature
   - Make the current feature the focus to adding stories and tasks
-- Split large feature
 
 # Tasks
-- Add backend endpoint for adding stories to an MMF
 - Add components to the features context
   - `FeatureComponent`
   - `PageComponent`

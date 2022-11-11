@@ -7,7 +7,7 @@ import { Popup } from './popup'
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
   if (!pageContainer) throw Error('page container not found')
-  pageContainer.setInnerHTML(await render('feature-page-component', {}))
+  pageContainer.setInnerHTML(await render('features/page-component', {}))
 
   const helpElements = DOMElement.all({ className: { name: 'hover-help' } })
   for (const helpElement of helpElements) {

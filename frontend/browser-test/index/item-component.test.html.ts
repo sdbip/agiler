@@ -240,7 +240,7 @@ function getElementById<T extends HTMLElement>(id: string): T {
 }
 
 async function renderPageComponent() {
-  const html = await render('page-component', {})
+  const html = await render('index/page-component', {})
   document.body.innerHTML = html
 }
 

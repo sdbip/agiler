@@ -27,7 +27,7 @@ export class ItemListTransition {
     for (const element of obsoleteElements) element.addClass(ClassName.hidden)
     await delay(500)
 
-    this.itemListElement.setInnerHTML(await render('item-list', {
+    this.itemListElement.setInnerHTML(await render('index/item-list', {
       items: this.taggedItems,
       canComplete: () => function (this: any, text: string, render: any) {
         return this.type === 'Task' ? render(text) : ''

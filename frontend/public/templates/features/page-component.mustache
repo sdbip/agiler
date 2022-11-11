@@ -1,10 +1,12 @@
 <div class="flex">
-  <input
-      type="text"
-      class="item-title"
-      placeholder="What does the business need?">
-  <div class="add-button no-select">+</div>
+  <input type="text" id="item-title"
+    onfocus="emitUIEvent('focus', {element: this, event})"
+    oninput="emitUIEvent('input', {element: this, event})"
+    onblur="emitUIEvent('blur', {element: this, event})"
+    onkeydown="emitUIEvent('title-keydown', {element: this, event})" placeholder="What does the business need?">
+  <button id="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event})">+</button>
 </div>
+<div id="item-list" class="item-list"></div>
 
 <div class="item epic feature no-select disclosed">
   <div class="chevron">+</div>
