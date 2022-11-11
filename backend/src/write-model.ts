@@ -1,5 +1,5 @@
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
-import { Item, ItemType } from './domain/item.js'
+import { Item } from './domain/item.js'
 import { EventProjection } from './es/projection.js'
 import { EventPublisher, EventRepository } from './es/source.js'
 import { ImmediateSyncSystem } from './immediate-sync-system.js'
@@ -19,27 +19,13 @@ server.post('/item', async (request) => {
   return { id: item.id }
 })
 
-server.post('/item/:id/task', async (request) => {
-
-  const story = await reconstituteItem(request.params.id)
-  if (!story) return NOT_FOUND
-
-  const command = await readBody(request)
-  const item = Item.new(command.title)
-  story.add(item)
-
-  await publishChanges(story)
-  await publishChanges(item)
-  return { id: item.id }
-})
-
-server.post('/item/:id/mmf', async (request) => {
+server.post('/item/:id/child', async (request) => {
 
   const epic = await reconstituteItem(request.params.id)
   if (!epic) return NOT_FOUND
 
   const command = await readBody(request)
-  const item = Item.new(command.title, ItemType.Feature)
+  const item = Item.new(command.title, command.type)
   epic.add(item)
 
   await publishChanges(epic)

@@ -104,14 +104,14 @@ describe('write model', () => {
     })
   })
 
-  describe('post /item/mmf', () => {
+  describe('post /item/child', () => {
 
     it('publishes "ChildrenAdded" and "ParentChanged" events', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
         new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Feature })),
       ])
 
-      const response = await post(`${TEST_DOMAIN}/item/epic_id/mmf`, { title: 'Produce some value' })
+      const response = await post(`${TEST_DOMAIN}/item/epic_id/child`, { title: 'Produce some value', type: ItemType.Feature })
 
       assert.equal(response.statusCode, 200)
       assert.equal(eventRepository.lastRequestedEntityId, 'epic_id')
@@ -146,7 +146,7 @@ describe('write model', () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
         new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Story })),
       ])
-      const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Produce some value' })
+      const response = await post(`${TEST_DOMAIN}/item/story_id/child`, { title: 'Produce some value' })
 
       assert.equal(response.statusCode, 200)
 
@@ -163,20 +163,20 @@ describe('write model', () => {
     })
 
     it('returns 404 if story not found', async () => {
-      const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Produce some value' })
+      const response = await post(`${TEST_DOMAIN}/item/story_id/child`, { title: 'Produce some value' })
 
       assert.equal(response.statusCode, 404)
     })
   })
 
-  describe('post /item/task', () => {
+  describe('post /item/child', () => {
 
     it('publishes "ChildrenAdded" and "ParentChanged" events', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
         new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Story })),
       ])
 
-      const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
+      const response = await post(`${TEST_DOMAIN}/item/story_id/child`, { title: 'Get Shit Done' })
 
       assert.equal(response.statusCode, 200)
       assert.equal(eventRepository.lastRequestedEntityId, 'story_id')
@@ -211,7 +211,7 @@ describe('write model', () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
         new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Story })),
       ])
-      const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
+      const response = await post(`${TEST_DOMAIN}/item/story_id/child`, { title: 'Get Shit Done' })
 
       assert.equal(response.statusCode, 200)
 
@@ -228,7 +228,7 @@ describe('write model', () => {
     })
 
     it('returns 404 if story not found', async () => {
-      const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
+      const response = await post(`${TEST_DOMAIN}/item/story_id/child`, { title: 'Get Shit Done' })
 
       assert.equal(response.statusCode, 404)
     })
