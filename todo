@@ -19,9 +19,7 @@
 - Split large feature
 
 # Tasks
-- Add backend endpoints for features and adding stories to them
-  - Make `Feature` a separate entity?
-  - Maybe stories and tasks can remain as they are?
+- Add backend endpoint for adding stories to an MMF
 - Add components to the features context
   - `FeatureComponent`
   - `PageComponent`

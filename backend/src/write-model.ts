@@ -1,5 +1,5 @@
 import { NOT_FOUND, Request, setupServer } from '../../shared/src/server.js'
-import { Item } from './domain/item.js'
+import { Item, ItemType } from './domain/item.js'
 import { EventProjection } from './es/projection.js'
 import { EventPublisher, EventRepository } from './es/source.js'
 import { ImmediateSyncSystem } from './immediate-sync-system.js'
@@ -14,7 +14,7 @@ export function setPublisher(p: EventPublisher) { publisher = p }
 export const server = setupServer({})
 server.post('/item', async (request) => {
   const command = await readBody(request)
-  const item = Item.new(command.title)
+  const item = Item.new(command.title, command.type)
   await publishChanges(item)
   return { id: item.id }
 })
@@ -29,6 +29,20 @@ server.post('/item/:id/task', async (request) => {
   story.add(item)
 
   await publishChanges(story)
+  await publishChanges(item)
+  return { id: item.id }
+})
+
+server.post('/item/:id/mmf', async (request) => {
+
+  const epic = await reconstituteItem(request.params.id)
+  if (!epic) return NOT_FOUND
+
+  const command = await readBody(request)
+  const item = Item.new(command.title, ItemType.Feature)
+  epic.add(item)
+
+  await publishChanges(epic)
   await publishChanges(item)
   return { id: item.id }
 })
