@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { patch } from '../../shared/src/http'
-import { Progress } from '../src/domain/item'
+import { ItemEvent, Progress } from '../src/domain/item'
 import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
@@ -45,7 +45,7 @@ describe('write model', () => {
         {
           actor: 'system_actor',
           event: {
-            name: 'ProgressChanged',
+            name: ItemEvent.ProgressChanged,
             details: { progress: Progress.completed },
           },
         })
@@ -60,7 +60,7 @@ describe('write model', () => {
       assert.lengthOf(eventProjection.projectedEvents, 1)
       assert.deepInclude(
         eventProjection.projectedEvents[0],
-        { name: 'ProgressChanged', details: { progress: Progress.completed } })
+        { name: ItemEvent.ProgressChanged, details: { progress: Progress.completed } })
     })
 
     it('returns 404 if not found [patch /item/complete]', async () => {

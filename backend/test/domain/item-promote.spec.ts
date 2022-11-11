@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { Item, ItemType } from '../../src/domain/item'
+import { Item, ItemEvent, ItemType } from '../../src/domain/item'
 import { EntityVersion } from '../../src/es/source'
 import { reconstituteStory } from './reconstitute'
 
@@ -10,7 +10,7 @@ describe('Item.promote', () => {
     item.promote()
     assert.equal(item.unpublishedEvents.length, 1)
 
-    const event = item.unpublishedEvents.find(e => e.name === 'TypeChanged')
+    const event = item.unpublishedEvents.find(e => e.name === ItemEvent.TypeChanged)
     assert.equal(event?.details.type, ItemType.Story)
   })
 

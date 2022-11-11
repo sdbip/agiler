@@ -4,6 +4,7 @@ import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
 import { TEST_DOMAIN, TEST_PORT } from './test-defaults'
+import { ItemEvent } from '../src/domain/item'
 
 describe('write model', () => {
 
@@ -44,7 +45,7 @@ describe('write model', () => {
         {
           actor: 'system_actor',
           event: {
-            name: 'AssigneeChanged',
+            name: ItemEvent.AssigneeChanged,
             details: { assignee: 'Johan' },
           },
         })
@@ -58,7 +59,7 @@ describe('write model', () => {
       assert.equal(response.statusCode, 200)
       assert.lengthOf(eventProjection.projectedEvents, 2)
       assert.includeDeepMembers(eventProjection.projectedEvents.map(e => ({ name: e.name, details: e.details })),
-        [ { name: 'AssigneeChanged', details: { assignee: 'Johan' } } ])
+        [ { name: ItemEvent.AssigneeChanged, details: { assignee: 'Johan' } } ])
     })
 
     it('returns 404 if the id is not found', async () => {

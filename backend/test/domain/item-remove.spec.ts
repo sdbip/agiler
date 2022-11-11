@@ -1,4 +1,5 @@
 import { assert } from 'chai'
+import { ItemEvent } from '../../src/domain/item'
 import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.remove', () => {
@@ -10,7 +11,7 @@ describe('Item.remove', () => {
     const story = reconstituteStoryWithChildren([ taskId ], storyId)
     const task = reconstituteTaskWithParent(storyId, taskId)
     story.remove(task)
-    const event = story.unpublishedEvents.find(e => e.name === 'ChildrenRemoved')
+    const event = story.unpublishedEvents.find(e => e.name === ItemEvent.ChildrenRemoved)
     assert.deepEqual(event?.details.children, [ taskId ])
   })
 
@@ -21,7 +22,7 @@ describe('Item.remove', () => {
     const story = reconstituteStoryWithChildren([ taskId ], storyId)
     const task = reconstituteTaskWithParent(storyId, taskId)
     story.remove(task)
-    const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    const event = task.unpublishedEvents.find(e => e.name === ItemEvent.ParentChanged)
     assert.isNull(event?.details.parent)
   })
 

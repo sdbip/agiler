@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { patch } from '../../shared/src/http'
-import { ItemType } from '../src/domain/item'
+import { ItemEvent, ItemType } from '../src/domain/item'
 import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
@@ -44,7 +44,7 @@ describe('write model', () => {
         {
           actor: 'system_actor',
           event: {
-            name: 'TypeChanged',
+            name: ItemEvent.TypeChanged,
             details: { type: ItemType.Story },
           },
         })
@@ -59,7 +59,7 @@ describe('write model', () => {
       assert.lengthOf(eventProjection.projectedEvents, 1)
       assert.deepInclude(
         eventProjection.projectedEvents[0],
-        { name: 'TypeChanged', details: { type: ItemType.Story } })
+        { name: ItemEvent.TypeChanged, details: { type: ItemType.Story } })
     })
 
     it('returns 404 if not found [patch /item/promote]', async () => {

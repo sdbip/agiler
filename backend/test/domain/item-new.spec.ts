@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { Item, ItemType } from '../../src/domain/item'
+import { Item, ItemEvent, ItemType } from '../../src/domain/item'
 import { EntityVersion } from '../../src/es/source'
 
 describe('Item.new', () => {
@@ -25,21 +25,21 @@ describe('Item.new', () => {
   it('is created as a Task', () => {
     const item = Item.new('Get it done')
     assert.equal(item.unpublishedEvents.length, 1)
-    const event = item.unpublishedEvents.find(e => e.name === 'Created')
+    const event = item.unpublishedEvents.find(e => e.name === ItemEvent.Created)
     assert.equal(event?.details.type, ItemType.Task)
   })
 
   it('can be created as a Feature', () => {
     const item = Item.new('Get it done', ItemType.Feature)
     assert.equal(item.unpublishedEvents.length, 1)
-    const event = item.unpublishedEvents.find(e => e.name === 'Created')
+    const event = item.unpublishedEvents.find(e => e.name === ItemEvent.Created)
     assert.equal(event?.details.type, ItemType.Feature)
   })
 
   it('is created with a title', () => {
     const item = Item.new('Get it done')
     assert.equal(item.unpublishedEvents.length, 1)
-    const event = item.unpublishedEvents.find(e => e.name === 'Created')
+    const event = item.unpublishedEvents.find(e => e.name === ItemEvent.Created)
     assert.equal(event?.details.title, 'Get it done')
   })
 })

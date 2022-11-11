@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { Progress } from '../../src/domain/item'
+import { ItemEvent, Progress } from '../../src/domain/item'
 import { reconstituteStory, reconstituteTask } from './reconstitute'
 
 describe('Item.assign', () => {
@@ -8,7 +8,7 @@ describe('Item.assign', () => {
     const task = reconstituteTask('id')
     task.assign('Johan')
 
-    const event = task.unpublishedEvents.find(e => e.name === 'AssigneeChanged')
+    const event = task.unpublishedEvents.find(e => e.name === ItemEvent.AssigneeChanged)
     assert.equal(event?.details.assignee, 'Johan')
   })
 
@@ -16,7 +16,7 @@ describe('Item.assign', () => {
     const task = reconstituteTask('id')
     task.assign('Johan')
 
-    const event = task.unpublishedEvents.find(e => e.name === 'ProgressChanged')
+    const event = task.unpublishedEvents.find(e => e.name === ItemEvent.ProgressChanged)
     assert.equal(event?.details.progress, Progress.inProgress)
   })
 

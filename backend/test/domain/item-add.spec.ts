@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { Item, ItemType } from '../../src/domain/item'
+import { Item, ItemEvent, ItemType } from '../../src/domain/item'
 import { reconstitute } from './reconstitute'
 
 describe('Item.add', () => {
@@ -8,7 +8,7 @@ describe('Item.add', () => {
     const story = reconstitute.story('story_id')
     const task = reconstitute.task('task_id')
     story.add(task)
-    const event = story.unpublishedEvents.find(e => e.name === 'ChildrenAdded')
+    const event = story.unpublishedEvents.find(e => e.name === ItemEvent.ChildrenAdded)
     assert.deepEqual(event?.details.children, [ task.id ])
   })
 
@@ -16,7 +16,7 @@ describe('Item.add', () => {
     const story = reconstitute.story('story_id')
     const task = reconstitute.task('task_id')
     story.add(task)
-    const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    const event = task.unpublishedEvents.find(e => e.name === ItemEvent.ParentChanged)
     assert.equal(event?.details.parent, story.id)
   })
 
@@ -24,7 +24,7 @@ describe('Item.add', () => {
     const epic = reconstitute.feature('epic_id')
     const mmf = reconstitute.feature('mmf_id')
     epic.add(mmf)
-    const event = epic.unpublishedEvents.find(e => e.name === 'ChildrenAdded')
+    const event = epic.unpublishedEvents.find(e => e.name === ItemEvent.ChildrenAdded)
     assert.deepEqual(event?.details.children, [ mmf.id ])
   })
 
@@ -32,7 +32,7 @@ describe('Item.add', () => {
     const epic = reconstitute.feature('epic_id')
     const mmf = reconstitute.feature('mmf_id')
     epic.add(mmf)
-    const event = mmf.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    const event = mmf.unpublishedEvents.find(e => e.name === ItemEvent.ParentChanged)
     assert.equal(event?.details.parent, epic.id)
   })
 
@@ -40,7 +40,7 @@ describe('Item.add', () => {
     const epic = reconstitute.feature('epic_id')
     const mmf = reconstitute.feature('mmf_id')
     epic.add(mmf)
-    const event = epic.unpublishedEvents.find(e => e.name === 'TypeChanged')
+    const event = epic.unpublishedEvents.find(e => e.name === ItemEvent.TypeChanged)
     assert.equal(event?.details.type, ItemType.Epic)
   })
 
@@ -56,7 +56,7 @@ describe('Item.add', () => {
     const newParent = reconstitute.story(newParentId)
     newParent.add(task)
 
-    const events = task.unpublishedEvents.filter(e => e.name === 'ParentChanged')
+    const events = task.unpublishedEvents.filter(e => e.name === ItemEvent.ParentChanged)
     assert.lengthOf(events, 1)
   })
 
@@ -67,7 +67,7 @@ describe('Item.add', () => {
     const story = reconstitute.story(storyId)
     story.add(task)
 
-    const events = task.unpublishedEvents.filter(e => e.name === 'Created')
+    const events = task.unpublishedEvents.filter(e => e.name === ItemEvent.Created)
     assert.lengthOf(events, 1)
   })
 
@@ -83,7 +83,7 @@ describe('Item.add', () => {
     const newParent = reconstitute.story(newParentId)
     newParent.add(task)
 
-    const event = task.unpublishedEvents.find(e => e.name === 'ParentChanged')
+    const event = task.unpublishedEvents.find(e => e.name === ItemEvent.ParentChanged)
     assert.equal(event?.details.parent, newParentId)
   })
 

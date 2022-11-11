@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { post } from '../../shared/src/http'
-import { ItemType } from '../src/domain/item'
+import { ItemEvent, ItemType } from '../src/domain/item'
 import { CanonicalEntityId, EntityHistory, EntityVersion, PublishedEvent } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
@@ -42,7 +42,7 @@ describe('write model', () => {
       assert.deepInclude(publisher.publishedEvents[0], {
         actor: 'system_actor',
         event: {
-          name: 'Created',
+          name: ItemEvent.Created,
           details: { title: 'Get Shit Done', type: ItemType.Task },
         },
       })
@@ -58,7 +58,7 @@ describe('write model', () => {
       assert.lengthOf(eventProjection.projectedEvents, 1)
       assert.deepInclude(
         eventProjection.projectedEvents[0],
-        { name: 'Created', details: { title: 'Get Shit Done', type: ItemType.Task } })
+        { name: ItemEvent.Created, details: { title: 'Get Shit Done', type: ItemType.Task } })
     })
 
     it('returns task id', async () => {
@@ -74,7 +74,7 @@ describe('write model', () => {
 
     it('publishes "ChildrenAdded" and "ParentChanged" events', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
-        new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
+        new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Story })),
       ])
 
       const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
@@ -82,27 +82,27 @@ describe('write model', () => {
       assert.equal(response.statusCode, 200)
       assert.equal(eventRepository.lastRequestedEntityId, 'story_id')
 
-      const createdEvent = publisher.publishedEvents.find(e => e.event.name === 'Created')
-      const childrenAddedEvent = publisher.publishedEvents.find(e => e.event.name === 'ChildrenAdded')
-      const parentChangedEvent = publisher.publishedEvents.find(e => e.event.name === 'ParentChanged')
+      const createdEvent = publisher.publishedEvents.find(e => e.event.name === ItemEvent.Created)
+      const childrenAddedEvent = publisher.publishedEvents.find(e => e.event.name === ItemEvent.ChildrenAdded)
+      const parentChangedEvent = publisher.publishedEvents.find(e => e.event.name === ItemEvent.ParentChanged)
       assert.deepInclude(childrenAddedEvent, {
         actor: 'system_actor',
         event: {
-          name: 'ChildrenAdded',
+          name: ItemEvent.ChildrenAdded,
           details: { children: [ JSON.parse(response.content).id ] },
         },
       })
       assert.deepInclude(parentChangedEvent, {
         actor: 'system_actor',
         event: {
-          name: 'ParentChanged',
+          name: ItemEvent.ParentChanged,
           details: { parent: 'story_id' },
         },
       })
       assert.deepInclude(createdEvent, {
         actor: 'system_actor',
         event: {
-          name: 'Created',
+          name: ItemEvent.Created,
           details: { title: 'Get Shit Done', type: ItemType.Task },
         },
       })
@@ -110,15 +110,15 @@ describe('write model', () => {
 
     it('projects "ChildrenAdded" and "ParentChanged" events', async () => {
       eventRepository.nextHistory = new EntityHistory(EntityVersion.of(0), [
-        new PublishedEvent('TypeChanged', JSON.stringify({ type: ItemType.Story })),
+        new PublishedEvent(ItemEvent.TypeChanged, JSON.stringify({ type: ItemType.Story })),
       ])
       const response = await post(`${TEST_DOMAIN}/item/story_id/task`, { title: 'Get Shit Done' })
 
       assert.equal(response.statusCode, 200)
 
-      const createdEvent = eventProjection.projectedEvents.find(e => e.name === 'Created')
-      const childrenAddedEvent = eventProjection.projectedEvents.find(e => e.name === 'ChildrenAdded')
-      const parentChangedEvent = eventProjection.projectedEvents.find(e => e.name === 'ParentChanged')
+      const createdEvent = findProjectedEvent(ItemEvent.Created)
+      const childrenAddedEvent = findProjectedEvent(ItemEvent.ChildrenAdded)
+      const parentChangedEvent = findProjectedEvent(ItemEvent.ParentChanged)
       assert.deepInclude(childrenAddedEvent, { details: { children: [ JSON.parse(response.content).id ] } })
       assert.deepInclude(parentChangedEvent, { details: { parent: 'story_id' } })
       assert.deepInclude(createdEvent, { details: { title: 'Get Shit Done', type: ItemType.Task } })
@@ -134,4 +134,7 @@ describe('write model', () => {
       assert.equal(response.statusCode, 404)
     })
   })
+
+  const findProjectedEvent = (event: ItemEvent) =>
+    eventProjection.projectedEvents.find(e => e.name === event)
 })
