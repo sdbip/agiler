@@ -70,7 +70,7 @@ describe('read model', () => {
     })
   })
 
-  describe('get /item/task', () => {
+  describe('get /item/child', () => {
 
     it('returns child items', async () => {
       itemRepository.itemsToReturn = [
@@ -87,7 +87,7 @@ describe('read model', () => {
           progress: Progress.notStarted,
         },
       ]
-      const response = await get(_ + '/item/id/task')
+      const response = await get(_ + '/item/id/child')
 
       assert.equal(response.statusCode, 200)
 
@@ -100,7 +100,7 @@ describe('read model', () => {
     })
 
     it('requests open items only', async () => {
-      const response = await get(_ + '/item/id/task')
+      const response = await get(_ + '/item/id/child')
 
       assert.equal(response.statusCode, 200)
       assert.deepInclude(
@@ -109,7 +109,7 @@ describe('read model', () => {
     })
 
     it('requests the expected children only', async () => {
-      const response = await get(_ + '/item/id/task')
+      const response = await get(_ + '/item/id/child')
 
       assert.equal(response.statusCode, 200)
       assert.deepInclude(

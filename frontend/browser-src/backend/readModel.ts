@@ -9,7 +9,7 @@ export const fetchItems = async () => {
 }
 
 export const fetchChildItems = async (parentId: string): Promise<ItemDTO[]> => {
-  const response = await fetch(`${baseURL}/item/${parentId}/task`)
+  const response = await fetch(`${baseURL}/item/${parentId}/child`)
   return await response.json()
 }
 
