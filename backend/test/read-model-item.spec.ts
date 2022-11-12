@@ -68,6 +68,16 @@ describe('read model', () => {
         itemRepository.lastRequestedSpecfication,
         { parent: null })
     })
+
+    it('requests only items of the specified type', async () => {
+      itemRepository.itemsToReturn = []
+      const response = await get(_ + '/item?type=Feature|Epic')
+      assert.equal(response.statusCode, 200)
+
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { type: [ ItemType.Feature, ItemType.Epic ] })
+    })
   })
 
   describe('get /item/child', () => {
@@ -115,6 +125,16 @@ describe('read model', () => {
       assert.deepInclude(
         itemRepository.lastRequestedSpecfication,
         { parent: 'id' })
+    })
+
+    it('requests only items of the specified type', async () => {
+      itemRepository.itemsToReturn = []
+      const response = await get(_ + '/item/id/child?type=Feature|Epic')
+      assert.equal(response.statusCode, 200)
+
+      assert.deepInclude(
+        itemRepository.lastRequestedSpecfication,
+        { type: [ ItemType.Feature, ItemType.Epic ] })
     })
   })
 })
