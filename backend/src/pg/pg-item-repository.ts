@@ -33,13 +33,21 @@ export class PGItemRepository implements ItemRepository {
 }
 
 const whereClause = (specification: ItemSpecification) => {
+  const parameters = [ '' ] // Create a 1-based array by placing nonsense in position 0
+  if (specification.progress) parameters.push('progress')
+  if (specification.parent) parameters.push('parent')
+  if (specification.type)  parameters.push('type')
+
   const result = []
-  if (specification.progress) result.push('progress = $1')
+  if (specification.progress) result.push(`progress = $${parameters.indexOf('progress')}`)
   if (specification.parent === null) result.push('parent_id IS NULL')
-  if (specification.parent) result.push('parent_id = $' + (specification.progress ? 2 : 1))
+  if (specification.parent) result.push(`parent_id = $${parameters.indexOf('parent')}`)
+  if (specification.type) result.push(`type = ANY($${parameters.indexOf('type')}::TEXT[])`)
   return result.join(' AND ')
 }
 
 const parameters = (specification: ItemSpecification) => {
-  return [ specification.progress, specification.parent ].filter(p => p)
+  const typeIn = typeof specification.type === 'string'
+    ? [ specification.type ] : specification.type
+  return [ specification.progress, specification.parent, typeIn ].filter(p => p)
 }
