@@ -10,19 +10,24 @@
 - Add a description/subtitle?
 - Let tasks depend on other tasks
 - Assign developers to tasks (we don't have developers yet)
-- Items should have a prioritisation order
   - And be listed in the UI in that order
   - It should be possible to drag/drop to change the order
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-* New page thing for collecting features
+* New page for collecting features
+- Items should have a prioritisation order
 - Select the current feature
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
+* Create a model on the frontend
 - Split `TaskComponent` and `StoryComponent` in two
 - Split `MMFComponent` and `FeatureComponent` in two
+- Remove duplication in index vs features
+- When a Feature is converted into an Epic, it should change colour immediately.
+- Problem: If a Story or Epic is expanded when a new task/feature is added or completed, the animation doesn't play.
+- The add button should be unhighlighted after a task is added
 - The expanded feature item-list is too tall
 
 # Ice Box
