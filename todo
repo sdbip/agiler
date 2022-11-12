@@ -23,6 +23,7 @@
 # Tasks
 - Split `TaskComponent` and `StoryComponent` in two
 - Split `MMFComponent` and `FeatureComponent` in two
+- The expanded feature item-list is too tall
 
 # Ice Box
 - Build my own assertion library using domain language
