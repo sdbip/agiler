@@ -90,7 +90,7 @@ export class FeatureComponent {
 
   async replaceChildItems(items: ItemDTO[]) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const transition = new ItemListTransition(this.itemListElement!, items)
+    const transition = new ItemListTransition(false, this.itemListElement!, items)
     await transition.replaceChildItems()
     const intrinsicSize = MeasureComponent.instance.measure(getCollapsible(this).innerHTML)
     getCollapsible(this).setHeight(intrinsicSize.height)

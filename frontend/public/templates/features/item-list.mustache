@@ -1,9 +1,10 @@
 {{#items}}
 <div id="item-{{id}}" class="item item-{{type}} no-select {{#isNew}} hidden {{/isNew}}">
-  <div class="title">{{title}}{{#hasChildren}} <sup>EPIC</sup>{{/hasChildren}}</div>
+  <div class="title">{{title}}{{#isEpic}} <sup>EPIC</sup>{{/isEpic}}</div>
   {{#hasDescription}}
   <div class="description">xx {{description}} yy</div>
   {{/hasDescription}}
+  {{#hasChildren}}
   <div class="chevron">+</div>
   <div class="disclosure-button" onclick="emitUIEvent('disclosure-button-clicked', {element: this, event, itemId: '{{id}}'})"></div>
   <img class="spinner inactive" src="public/images/spinner.gif">
@@ -18,5 +19,6 @@
     </div>
     <div class="item-list"></div>
   </div>
+  {{/hasChildren}}
 </div>
 {{/items}}

@@ -1,3 +1,4 @@
+import { ItemDTO } from '../../../backend/src/dtos/item-dto'
 import { ClassName } from '../class-name'
 import { delay } from '../delay'
 import { DOMElement } from '../dom-element'
@@ -17,6 +18,7 @@ export class ItemListTransition {
     return this.items.map(i => ({ ...i, isNew: existingIds.indexOf(i.id) < 0 }))
   }
   constructor(
+    readonly hasChildren: boolean,
     readonly itemListElement: DOMElement,
     readonly items: {id: string}[],
   ) { }
@@ -27,10 +29,14 @@ export class ItemListTransition {
     for (const element of obsoleteElements) element.addClass(ClassName.hidden)
     await delay(500)
 
+    const hasChildren = this.hasChildren
     this.itemListElement.setInnerHTML(await render('features/item-list', {
       items: this.taggedItems,
-      hasChildren: () => function (this: any, text: string, render: any) {
+      isEpic: () => function (this: ItemDTO, text: string, render: any) {
         return this.type === 'Epic' ? render(text) : ''
+      },
+      hasChildren: () => function (this: ItemDTO, text: string, render: any) {
+        return hasChildren ? render(text): ''
       },
     }))
     await delay(1)

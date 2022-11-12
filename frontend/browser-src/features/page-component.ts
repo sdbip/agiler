@@ -49,7 +49,7 @@ export class PageComponent {
     const itemListElement = this.itemListElement
     if (!itemListElement) return
 
-    const transition = new ItemListTransition(itemListElement, items)
+    const transition = new ItemListTransition(true, itemListElement, items)
     await transition.replaceChildItems()
   }
 
