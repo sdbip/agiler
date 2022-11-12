@@ -41,5 +41,6 @@ export const completeTask = async (id: string) => {
 export default {
   completeTask,
   addTask,
+  addFeature,
   promoteTask,
 }

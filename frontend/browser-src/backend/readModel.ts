@@ -23,4 +23,9 @@ export const fetchChildFeatures = async (parentId: string): Promise<ItemDTO[]> =
   return await response.json()
 }
 
-export default { fetchItems, fetchChildItems }
+export default {
+  fetchItems,
+  fetchChildItems,
+  fetchFeatures,
+  fetchChildFeatures,
+}
