@@ -1,9 +1,11 @@
+.item-Feature,
 .feature {
   margin-top: 3px;
   background-color: beige;
   color: rgb(60 45 40);
 }
 
+.item-Epic,
 .feature.epic {
   background-color: burlywood;
   color: saddlebrown;
@@ -15,13 +17,14 @@
   background-color: rgb(53, 70, 90);
 }
 
+.item-Feature > .title,
 .feature > .title {
   font-weight: bold;
   font-size: 11pt;
 }
 
+.item-Epic > .title > sup,
 .feature.epic > .title > sup {
-  content: 'EPIC';
   padding: 0 2px;
   color: lavender;
   background-color: darkblue;
@@ -31,10 +34,12 @@
   top: -7px;
 }
 
+.item-Epic input::placeholder,
 .feature.epic input::placeholder {
   color: beige;
 }
 
+.item-Feature > .description,
 .feature > .description {
   font-style: italic;
   font-size: 9pt;

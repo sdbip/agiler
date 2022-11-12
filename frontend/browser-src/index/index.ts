@@ -81,6 +81,7 @@ const promote = async ({ id }: { id: string }) => {
 }
 
 const toggleDisclosed = async ({ id }: { id: string }) => {
+  // TODO: notifyUI instead
   const storyComponent = ItemComponent.forId(id)
   if (!storyComponent) throw new Error(`Component for story with id ${id} not found`)
 

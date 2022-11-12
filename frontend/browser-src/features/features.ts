@@ -3,6 +3,11 @@ import { render } from '../templates'
 import { UIEventArgs } from '../index/ui-event-args'
 import { DOMElement } from '../dom-element'
 import { Popup } from './popup'
+import { FeatureComponent } from './feature-component'
+import { PageComponent } from './page-component'
+import { ClassName } from '../class-name'
+import writeModel from '../backend/writeModel'
+import readModel from '../backend/readModel'
 
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
@@ -19,7 +24,10 @@ import { Popup } from './popup'
       globals.emitUIEvent('help-mouseout', { event, element: event.eventData.target })
     })
   }
+  updateItems()
 })()
+
+// EVENT HANDLERS
 
 globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
   switch (name) {
@@ -33,5 +41,65 @@ globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
       popup?.hide()
       break
     }
+    case 'focus':
+    case 'input':
+    case 'blur':
+      notifyUI(name, args.itemId, args)
+      break
+    case 'title-keydown':
+      if (isEnterPressed(args.event as KeyboardEvent))
+        await addFeature({ id: args.itemId })
+      break
+    case 'add-button-clicked':
+      await addFeature({ id: args.itemId })
+      break
+    case 'disclosure-button-clicked':
+      await toggleDisclosed({ id: args.itemId })
+      break
+  }
+
+  function isEnterPressed(event: KeyboardEvent) {
+    if (event.metaKey || event.ctrlKey || event.altKey) return false
+    return event.key === 'Enter'
+  }
+}
+
+function notifyUI(event: string, itemId?: string, args?: any) {
+  const component = (itemId ? FeatureComponent.forId(itemId) : undefined) ?? PageComponent.instance
+  component.handleUIEvent(event, args)
+}
+
+const addFeature = async ({ id }: { id: string }) => {
+  const component = FeatureComponent.forId(id) ?? PageComponent.instance
+  const titleElement = component.titleInputElement
+  if (!component.title) return
+
+  console.log('add Feature', await writeModel.addFeature(component.title, id))
+  titleElement?.setInputElementValue('')
+
+  await updateItems(component.itemId)
+}
+
+const toggleDisclosed = async ({ id }: { id: string }) => {
+  // TODO: notifyUI instead
+  const epicComponent = FeatureComponent.forId(id)
+  if (!epicComponent) throw new Error(`Component for story with id ${id} not found`)
+
+  const wasDisclosed = epicComponent.element.hasClass(ClassName.disclosed)
+  if (!wasDisclosed) await updateItems(id)
+  notifyUI(wasDisclosed ? 'collapse' : 'disclose', id)
+}
+
+// END EVENT HANDLERS
+
+async function updateItems(epicId?: string) {
+  notifyUI('loading')
+  try {
+    const items = epicId
+      ? await readModel.fetchChildFeatures(epicId)
+      : await readModel.fetchFeatures()
+    notifyUI('items-fetched', epicId, { items })
+  } finally {
+    notifyUI('loading-done')
   }
 }
