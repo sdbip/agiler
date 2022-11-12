@@ -32,7 +32,7 @@ export class PGItemRepository implements ItemRepository {
   }
 }
 
-const whereClause = (specification: ItemSpecification) => {
+function whereClause(specification: ItemSpecification) {
   const parameters = [ '' ] // Create a 1-based array by placing nonsense in position 0
   if (specification.progress) parameters.push('progress')
   if (specification.parent) parameters.push('parent')
@@ -46,10 +46,12 @@ const whereClause = (specification: ItemSpecification) => {
   return result.join(' AND ')
 }
 
-const parameters = (specification: ItemSpecification) => {
-  const progressIn = typeof specification.progress === 'string'
-    ? [ specification.progress ] : specification.progress
-  const typeIn = typeof specification.type === 'string'
-    ? [ specification.type ] : specification.type
+function parameters(specification: ItemSpecification) {
+  const progressIn = toArray(specification.progress)
+  const typeIn = toArray(specification.type)
   return [ progressIn, specification.parent, typeIn ].filter(p => p)
+}
+
+function toArray(value?: string | string[]) {
+  return typeof value === 'string' ? [ value ] : value
 }
