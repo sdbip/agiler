@@ -6,9 +6,13 @@
 - Higher purpose of the product? Vision?
 - Unformed ideas/Ice box
 
+- Allow changing item title
+- Add a description/subtitle?
 - Let tasks depend on other tasks
 - Assign developers to tasks (we don't have developers yet)
-- Prioritise features and stories
+- Items should have a prioritisation order
+  - And be listed in the UI in that order
+  - It should be possible to drag/drop to change the order
 - Use socket.io to remove finished tasks automatically
 
 # Stories
@@ -17,11 +21,8 @@
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-- Add components to the features context
-  - `FeatureComponent`
-  - `PageComponent`
-  - `TaskComponent`
 - Split `TaskComponent` and `StoryComponent` in two
+- Split `MMFComponent` and `FeatureComponent` in two
 
 # Ice Box
 - Build my own assertion library using domain language
