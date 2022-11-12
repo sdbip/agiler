@@ -2,7 +2,7 @@ import { setupServer } from '../../shared/src/server.js'
 import { ItemDTO, ItemType, Progress } from './dtos/item-dto.js'
 
 export type ItemSpecification = {
-  progress?: Progress
+  progress?: Progress | Progress[]
   parent?: string | null
   type?: ItemType | ItemType[]
 }

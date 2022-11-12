@@ -39,7 +39,7 @@ const whereClause = (specification: ItemSpecification) => {
   if (specification.type)  parameters.push('type')
 
   const result = []
-  if (specification.progress) result.push(`progress = $${parameters.indexOf('progress')}`)
+  if (specification.progress) result.push(`progress = ANY($${parameters.indexOf('progress')}::TEXT[])`)
   if (specification.parent === null) result.push('parent_id IS NULL')
   if (specification.parent) result.push(`parent_id = $${parameters.indexOf('parent')}`)
   if (specification.type) result.push(`type = ANY($${parameters.indexOf('type')}::TEXT[])`)
@@ -47,7 +47,9 @@ const whereClause = (specification: ItemSpecification) => {
 }
 
 const parameters = (specification: ItemSpecification) => {
+  const progressIn = typeof specification.progress === 'string'
+    ? [ specification.progress ] : specification.progress
   const typeIn = typeof specification.type === 'string'
     ? [ specification.type ] : specification.type
-  return [ specification.progress, specification.parent, typeIn ].filter(p => p)
+  return [ progressIn, specification.parent, typeIn ].filter(p => p)
 }

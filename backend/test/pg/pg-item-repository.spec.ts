@@ -37,7 +37,14 @@ describe(PGItemRepository.name, () => {
     assert.include(storedRows.map(t => t.id), 'task')
   })
 
-  it('can be set to only include completed tasks', async () => {
+  it('can be set to only include not started tasks', async () => {
+    await repository.add({
+      id: 'notStarted',
+      type: ItemType.Task,
+      title: 'Not started Task',
+      progress: Progress.notStarted,
+    })
+
     await repository.add({
       id: 'completed',
       type: ItemType.Task,
@@ -47,6 +54,36 @@ describe(PGItemRepository.name, () => {
 
     const storedRows = await repository.itemsWithSpecification({ progress: Progress.notStarted })
     assert.exists(storedRows)
+    assert.notInclude(storedRows.map(t => t.id), 'completed')
+    assert.include(storedRows.map(t => t.id), 'notStarted')
+  })
+
+  it('can be set to only include not completed tasks', async () => {
+    await repository.add({
+      id: 'notStarted',
+      type: ItemType.Task,
+      title: 'Not started Task',
+      progress: Progress.notStarted,
+    })
+
+    await repository.add({
+      id: 'inProgress',
+      type: ItemType.Task,
+      title: 'In-progress Task',
+      progress: Progress.inProgress,
+    })
+
+    await repository.add({
+      id: 'completed',
+      type: ItemType.Task,
+      title: 'Completed Task',
+      progress: Progress.completed,
+    })
+
+    const storedRows = await repository.itemsWithSpecification({ progress: [ Progress.notStarted, Progress.inProgress ] })
+    assert.exists(storedRows)
+    assert.include(storedRows.map(t => t.id), 'inProgress')
+    assert.include(storedRows.map(t => t.id), 'notStarted')
     assert.notInclude(storedRows.map(t => t.id), 'completed')
   })
 
