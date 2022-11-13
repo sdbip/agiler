@@ -12,13 +12,6 @@ jake.addListener('complete', () => { console.log(c.green('\nBUILD OK!')) })
 const lazyTasksDirectory = 'lazy_tasks'
 directory(lazyTasksDirectory)
 
-const deglob = (glob, excludes) => {
-  const filelist = new jake.FileList(glob)
-  filelist.exclude('node_modules')
-  if (excludes) filelist.exclude(excludes)
-  return filelist.toArray()
-}
-
 const lazyTask = (name, dependencies, action) => {
   const outputPath = `${lazyTasksDirectory}/${name}.inc`
   task(name, [ outputPath ])
@@ -87,7 +80,7 @@ desc('Run all tests')
 task('test', [ 'backend_tests', 'browser_tests' ])
 
 desc('Run browser tests')
-lazyTask('browser_tests', deglob([ 'frontend/browser-*/**/*', 'frontend/test/**/*' ], '**/*.spec.ts'), async () => {
+lazyTask('browser_tests', deglob([ 'frontend/browser-*/**/*', 'frontend/test/**/*', '!**/*.spec.ts' ]), async () => {
   log.startTask('Testing browser code')
 
   await new Promise((resolve, reject) => {
@@ -182,4 +175,18 @@ const log = {
   text: text => {
     process.stdout.write(text)
   },
+}
+
+function deglob(glob) {
+  const [ paths, excludes ] = typeof glob === 'string'
+    ? [ [ glob ], [] ]
+    : [
+      glob.filter(g => g.match(/^[^!]/)),
+      glob.filter(g => g.match(/^!/)).map(g => g.substring(1)),
+    ]
+
+  const filelist = new jake.FileList(paths)
+  filelist.exclude('node_modules')
+  if (excludes) filelist.exclude(excludes)
+  return filelist.toArray()
 }
