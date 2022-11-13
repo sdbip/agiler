@@ -1,4 +1,5 @@
-import { Item, ItemEvent, ItemType } from '../../src/domain/item'
+import { Item } from '../../src/domain/item'
+import { ItemEvent, ItemType } from '../../src/domain/enums'
 import { EntityVersion, PublishedEvent } from '../../src/es/source'
 
 export const reconstituteStory = (id: string) =>

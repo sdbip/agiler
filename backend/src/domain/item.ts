@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto'
 import { failFast } from '../../../shared/src/failFast.js'
+import { ItemEvent, ItemType, Progress } from './enums.js'
 import {
   Entity,
   CanonicalEntityId,
@@ -7,23 +8,6 @@ import {
   UnpublishedEvent,
   PublishedEvent,
 } from '../es/source.js'
-
-export enum ItemType {
-  Epic = 'Epic',
-  Feature = 'Feature',
-  Story = 'Story',
-  Task = 'Task',
-}
-
-export enum ItemEvent {
-  Created = 'Created',
-  ChildrenAdded = 'ChildrenAdded',
-  ChildrenRemoved = 'ChildrenRemoved',
-  ParentChanged = 'ParentChanged',
-  ProgressChanged = 'ProgressChanged',
-  TypeChanged = 'TypeChanged',
-  AssigneeChanged = 'AssigneeChanged',
-}
 
 type AddEvent =
   ((this: Item, event: ItemEvent.Created, details: { title: string, type: ItemType }) => void)
@@ -113,10 +97,4 @@ export class Item extends Entity {
   private addNewEvent: AddEvent = (event, details) => {
     this.addEvent(new UnpublishedEvent(event, details))
   }
-}
-
-export enum Progress {
-  notStarted = 'notStarted',
-  inProgress = 'inProgress',
-  completed = 'completed',
 }

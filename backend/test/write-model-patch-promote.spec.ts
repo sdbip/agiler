@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { patch } from '../../shared/src/http'
-import { ItemEvent, ItemType } from '../src/domain/item'
+import { ItemEvent, ItemType } from '../src/domain/enums'
 import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'

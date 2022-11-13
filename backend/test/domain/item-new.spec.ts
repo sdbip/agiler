@@ -1,5 +1,6 @@
 import { assert } from 'chai'
-import { Item, ItemEvent, ItemType } from '../../src/domain/item'
+import { Item } from '../../src/domain/item'
+import { ItemEvent, ItemType } from '../../src/domain/enums'
 import { EntityVersion } from '../../src/es/source'
 
 describe('Item.new', () => {

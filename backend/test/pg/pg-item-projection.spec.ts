@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 import { promises as fs } from 'fs'
 import { Item } from '../../src/domain/item'
-import { Progress, ItemType } from '../../src/dtos/item-dto'
+import { ItemType, Progress } from '../../src/dtos/enums'
 import { PGDatabase } from '../../src/pg/pg-database'
 import { PGItemProjection } from '../../src/pg/pg-item-projection'
 import { ImmediateSyncSystem } from '../../src/immediate-sync-system'

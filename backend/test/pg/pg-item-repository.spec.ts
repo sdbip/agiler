@@ -2,7 +2,7 @@ import { assert } from 'chai'
 import { promises as fs } from 'fs'
 import { PGItemRepository } from '../../src/pg/pg-item-repository'
 import { PGDatabase } from '../../src/pg/pg-database'
-import { ItemType, Progress } from '../../src/dtos/item-dto'
+import { ItemType, Progress } from '../../src/dtos/enums'
 
 describe(PGItemRepository.name, () => {
   let repository: PGItemRepository

@@ -1,7 +1,6 @@
 import { Event, EventProjection } from '../es/projection'
-import { Progress } from '../dtos/item-dto.js'
 import { PGDatabase } from './pg-database'
-import { ItemEvent } from '../domain/item.js'
+import { ItemEvent, Progress } from '../domain/enums.js'
 
 export class PGItemProjection implements EventProjection {
   private readonly database: PGDatabase

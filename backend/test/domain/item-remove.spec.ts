@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { ItemEvent } from '../../src/domain/item'
+import { ItemEvent } from '../../src/domain/enums'
 import { reconstituteStory, reconstituteStoryWithChildren, reconstituteTask, reconstituteTaskWithParent } from './reconstitute'
 
 describe('Item.remove', () => {

@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { get } from '../../shared/src/http'
-import { ItemType, Progress } from '../src/dtos/item-dto'
+import { ItemType, Progress } from '../src/dtos/enums'
 import { MockItemRepository } from './mocks'
 import backend from '../src/read-model'
 import { TEST_DOMAIN as _, TEST_PORT } from './test-defaults'

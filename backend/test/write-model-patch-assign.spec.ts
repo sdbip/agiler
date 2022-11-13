@@ -4,7 +4,7 @@ import { EntityHistory, EntityVersion } from '../src/es/source'
 import { MockEventProjection, MockEventRepository, MockEventPublisher } from './mocks'
 import backend from '../src/write-model'
 import { TEST_DOMAIN, TEST_PORT } from './test-defaults'
-import { ItemEvent } from '../src/domain/item'
+import { ItemEvent } from '../src/domain/enums'
 
 describe('write model', () => {
 

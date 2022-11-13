@@ -1,6 +1,7 @@
 import { failFast } from '../../shared/src/failFast.js'
 import { setupServer } from '../../shared/src/server.js'
-import { ItemDTO, ItemType, Progress } from './dtos/item-dto.js'
+import { ItemDTO } from './dtos/item-dto.js'
+import { ItemType, Progress } from './dtos/enums.js'
 
 export type ItemSpecification = {
   progress?: Progress | Progress[]

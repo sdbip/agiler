@@ -1,5 +1,4 @@
-import { ItemType, Progress } from '../domain/item.js'
-export { ItemType, Progress } from '../domain/item.js'
+import { ItemType, Progress } from './enums'
 
 export type ItemDTO = {
   readonly id: string

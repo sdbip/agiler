@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { ItemEvent, Progress } from '../../src/domain/item'
+import { ItemEvent, Progress } from '../../src/domain/enums'
 import { reconstituteStory, reconstituteTask } from './reconstitute'
 
 describe('Item.complete', () => {
