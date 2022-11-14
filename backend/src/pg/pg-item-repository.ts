@@ -15,15 +15,16 @@ export class PGItemRepository implements ItemRepository {
     const res = await this.database.query(
       query,
       parameters(specification))
-    return res.rows
+    return res.rows.map(toDTO)
   }
 
   async get(id: string): Promise<ItemDTO | undefined> {
     const res = await this.database.query(
       'SELECT * FROM Items WHERE id = $1',
       [ id ])
-    return res.rows[0]
-  }
+    const row = res.rows[0]
+    return row && toDTO(row)
+}
 
   async add(item: ItemDTO) {
     await this.database.query(
@@ -32,11 +33,22 @@ export class PGItemRepository implements ItemRepository {
   }
 }
 
+function toDTO(row: any): ItemDTO {
+  return {
+    id: row.id,
+    progress: row.progress,
+    title: row.title,
+    type: row.type,
+    assignee: row.assignee ?? undefined,
+    parentId: row.parent_id ?? undefined,
+  }
+}
+
 function whereClause(specification: ItemSpecification) {
   const parameters = [ '' ] // Create a 1-based array by placing nonsense in position 0
   if (specification.progress) parameters.push('progress')
   if (specification.parent) parameters.push('parent')
-  if (specification.type)  parameters.push('type')
+  if (specification.type) parameters.push('type')
 
   const result = []
   if (specification.progress) result.push(`progress = ANY($${parameters.indexOf('progress')}::TEXT[])`)
