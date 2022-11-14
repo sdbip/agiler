@@ -146,29 +146,8 @@ runTests(() => {
         ]
 
         // TODO: This waits for a .5s animation
-        await storyComponent.handleUIEvent('items-fetched', { items })
+        await storyComponent.handleUIEvent('items_added', { items })
         assert.exists(ItemComponent.forId('subtask'), 'sutask component should exist after adding items')
-        assert.equal(itemListElement.childElementCount, 1)
-      })
-
-      it('only adds one copy of each item component', async () => {
-        // NOTE: Cannot refer to ItemType or Progress here.
-        // It freezes the test for unknown reason.
-        const items = [
-          {
-            id: '1',
-            type: 'Task',
-            title: 'a task',
-            progress: 'notStarted',
-          },
-        ]
-
-        // TODO: This waits for a .5s animation - twice!
-        await storyComponent.handleUIEvent('items-fetched', { items })
-        assert.exists(ItemComponent.forId('1'), 'component 1 should exist after adding items')
-        assert.equal(itemListElement.childElementCount, 1)
-        await storyComponent.handleUIEvent('items-fetched', { items })
-        assert.exists(ItemComponent.forId('1'), 'component 1 should exist after adding items again')
         assert.equal(itemListElement.childElementCount, 1)
       })
 
@@ -214,7 +193,7 @@ runTests(() => {
 describe('Subtask component', () => {
   before(async () => {
     const storyComponent = ItemComponent.forId('story')
-    await storyComponent?.replaceChildItems([ {
+    await storyComponent?.handleUIEvent('items_added', [ {
       id: 'subtask',
       progress: 'notStarted',
       title: 'Perform subtask',
@@ -246,5 +225,5 @@ async function renderPageComponent() {
 
 async function renderItems(items: any[]) {
   // TODO: This waits for a .5s animation
-  await PageComponent.instance.replaceChildItems(items)
+  await PageComponent.instance.handleUIEvent('items_added', { items })
 }

@@ -1,7 +1,8 @@
 import { ItemDTO } from '../../../backend/src/dtos/item-dto'
+import { failFast } from '../../../shared/src/failFast'
 import { ClassName, Selector } from '../class-name'
 import { DOMElement } from '../dom-element'
-import { ItemListTransition } from './item-list-transition'
+import { render } from '../templates'
 
 export class PageComponent {
   static instance = new PageComponent()
@@ -39,18 +40,39 @@ export class PageComponent {
       case 'blur':
         this.unhighlightAddButton()
         break
-      case 'items-fetched':
-        await this.replaceChildItems(args.items)
+      case 'items_added':
+        await this.addComponents(args.items)
         break
     }
   }
 
-  async replaceChildItems(items: ItemDTO[]) {
-    const itemListElement = this.itemListElement
-    if (!itemListElement) return
+  private async addComponents(items: ItemDTO[]) {
+    const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
 
-    const transition = new ItemListTransition(itemListElement, items)
-    await transition.replaceChildItems()
+    const html = await render('index/item-list', {
+      items,
+      canComplete: () => function (this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+      canPromote: () => function (this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+      hasChildren: () => function (this: any, text: string, render: any) {
+        return this.type !== 'Task' ? render(text) : ''
+      },
+    })
+    const newElements = DOMElement.fromHTML(`<div>${html}</div>`).children
+    for (const element of newElements) listElement.add(element)
+
+    for (const element of newElements) {
+      element.remove()
+      element.addClass(ClassName.hidden)
+    }
+
+    for (const element of newElements) {
+      listElement.add(element)
+      element.removeClass(ClassName.hidden)
+    }
   }
 
   private highlightAddButton() {

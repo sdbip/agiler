@@ -7,6 +7,7 @@ import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
 import { UIEventArgs } from './ui-event-args'
 import { render } from '../templates'
+import { ItemCache, ItemCacheEvent } from '../item-cache'
 
 (async () => {
   const pageContainer = document.getElementById('page-container')
@@ -15,7 +16,23 @@ import { render } from '../templates'
   updateItems()
 })()
 
+const cache = new ItemCache()
+
 // EVENT HANDLERS
+
+cache.on(ItemCacheEvent.ItemsAdded, items => {
+  notifyUI('items_added', items[0].parentId, { items })
+})
+
+cache.on(ItemCacheEvent.ItemsChanged, items => {
+  for (const item of items)
+    notifyUI('item_changed', item.id, { item })
+})
+
+cache.on(ItemCacheEvent.ItemsRemoved, items => {
+  for (const item of items)
+    notifyUI('item_removed', item.id, { item })
+})
 
 globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
   switch (name) {
@@ -98,7 +115,7 @@ async function updateItems(storyId?: string) {
     const items = storyId
       ? await readModel.fetchChildItems(storyId)
       : await readModel.fetchItems()
-    notifyUI('items-fetched', storyId, { items })
+    cache.update(storyId, items)
   } finally {
     notifyUI('loading-done')
   }

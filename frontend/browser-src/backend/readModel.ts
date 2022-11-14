@@ -4,12 +4,12 @@ import { env } from './webpack_env'
 const baseURL = env.readModelURL
 
 export const fetchItems = async () => {
-  const response = await fetch(`${baseURL}/item`)
+  const response = await fetch(`${baseURL}/item?type=Story|Task`)
   return await response.json()
 }
 
 export const fetchChildItems = async (parentId: string): Promise<ItemDTO[]> => {
-  const response = await fetch(`${baseURL}/item/${parentId}/child`)
+  const response = await fetch(`${baseURL}/item/${parentId}/child?type=Story|Task`)
   return await response.json()
 }
 

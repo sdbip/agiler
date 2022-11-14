@@ -102,31 +102,10 @@ runTests(() => {
       ]
 
       // TODO: This waits for a .5s animation
-      await PageComponent.instance.handleUIEvent('items-fetched', { items })
+      await PageComponent.instance.handleUIEvent('items_added', { items })
       assert.exists(ItemComponent.forId('1'), 'component 1 should exist after adding items')
       assert.equal(itemListElement.childElementCount, 1)
     })
-  })
-
-  it('only adds one copy of each item component', async () => {
-    // NOTE: Cannot refer to ItemType or Progress here.
-    // It freezes the test for unknown reason.
-    const items = [
-      {
-        id: '1',
-        type: 'Task',
-        title: 'a task',
-        progress: 'notStarted',
-      },
-    ]
-
-    // TODO: This waits for a .5s animation - twice!
-    await PageComponent.instance.handleUIEvent('items-fetched', { items })
-    assert.exists(ItemComponent.forId('1'), 'component 1 should exist after adding items')
-    assert.equal(itemListElement.childElementCount, 1)
-    await PageComponent.instance.handleUIEvent('items-fetched', { items })
-    assert.exists(ItemComponent.forId('1'), 'component 1 should exist after adding items again')
-    assert.equal(itemListElement.childElementCount, 1)
   })
 })
 
