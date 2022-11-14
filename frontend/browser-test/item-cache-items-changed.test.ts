@@ -20,14 +20,14 @@ describe(ItemCache.name, () => {
         title: 'Get it done',
         type: ItemType.Task,
       } ]
-      cache.update(items)
+      cache.update(undefined, items)
       assert.isFalse(changedItems)
     })
 
     it('notifies items with changed title', () => {
       const cache = new ItemCache()
 
-      cache.update([
+      cache.update(undefined, [
         {
           id: '1',
           progress: Progress.notStarted,
@@ -35,9 +35,9 @@ describe(ItemCache.name, () => {
           type: ItemType.Task,
         },
       ])
-      let addedItems = undefined as any as ItemDTO[]
+      let changedItems = undefined as any as ItemDTO[]
       cache.on(ItemCacheEvent.ItemsChanged, items => {
-        addedItems = items
+        changedItems = items
       })
 
       const items: ItemDTO[] = [ {
@@ -46,8 +46,8 @@ describe(ItemCache.name, () => {
         title: 'Item 1',
         type: ItemType.Task,
       } ]
-      cache.update(items)
-      assert.deepEqual(addedItems, items)
+      cache.update(undefined, items)
+      assert.deepEqual(changedItems, items)
     })
   })
 })

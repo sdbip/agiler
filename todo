@@ -22,6 +22,8 @@
 
 # Tasks
 * Create a model on the frontend
+  - Split items by parent.
+  - Only notify if items with a particular parent has changed/added/removed
 - Split `TaskComponent` and `StoryComponent` in two
 - Split `MMFComponent` and `FeatureComponent` in two
 - Remove duplication in index vs features
