@@ -123,6 +123,10 @@ export class DOMElement {
     this.element.appendChild(element.element)
   }
 
+  remove() {
+    this.element.remove()
+  }
+
   equals(other: DOMElement) {
     return other.element === this.element
   }

@@ -102,5 +102,12 @@ describe(DOMElement.name, () => {
       const htmls = new DOMElement(element).decendants(toSelector('.this-element') as ClassSelector)
       assert.lengthOf(htmls, 1)
     })
+
+    it('can remove itself', () => {
+      const element = document.createElement('div')
+      document.body.append(element)
+      new DOMElement(element).remove()
+      assert.notExists(element.parentElement)
+    })
   })
 })
