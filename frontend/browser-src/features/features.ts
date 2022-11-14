@@ -8,26 +8,32 @@ import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
 import writeModel from '../backend/writeModel'
 import readModel from '../backend/readModel'
+import { ItemCache, ItemCacheEvent } from '../item-cache'
 
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
   if (!pageContainer) throw Error('page container not found')
   pageContainer.setInnerHTML(await render('features/page-component', {}))
-
-  const helpElements = DOMElement.all({ className: { name: 'hover-help' } })
-  for (const helpElement of helpElements) {
-    helpElement.on('mouseover', async event => {
-      globals.emitUIEvent('help-mouseover', { event, element: event.eventData.target })
-    })
-
-    helpElement.on('mouseout', async event => {
-      globals.emitUIEvent('help-mouseout', { event, element: event.eventData.target })
-    })
-  }
   updateItems()
 })()
 
+const cache = new ItemCache()
+
 // EVENT HANDLERS
+
+cache.on(ItemCacheEvent.ItemsAdded, items => {
+  notifyUI('items_added', items[0].parentId, { items })
+})
+
+cache.on(ItemCacheEvent.ItemsChanged, items => {
+  for (const item of items)
+    notifyUI('item_changed', item.id, { item })
+})
+
+cache.on(ItemCacheEvent.ItemsRemoved, items => {
+  for (const item of items)
+    notifyUI('item_removed', item.id, { item })
+})
 
 globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
   switch (name) {
@@ -64,6 +70,17 @@ globals.emitUIEvent = async (name: string, args: UIEventArgs) => {
   }
 }
 
+const helpElements = DOMElement.all({ className: { name: 'hover-help' } })
+for (const helpElement of helpElements) {
+  helpElement.on('mouseover', async event => {
+    globals.emitUIEvent('help-mouseover', { event, element: event.eventData.target })
+  })
+
+  helpElement.on('mouseout', async event => {
+    globals.emitUIEvent('help-mouseout', { event, element: event.eventData.target })
+  })
+}
+
 function notifyUI(event: string, itemId?: string, args?: any) {
   const component = (itemId ? FeatureComponent.forId(itemId) : undefined) ?? PageComponent.instance
   component.handleUIEvent(event, args)
@@ -98,7 +115,7 @@ async function updateItems(epicId?: string) {
     const items = epicId
       ? await readModel.fetchChildFeatures(epicId)
       : await readModel.fetchFeatures()
-    notifyUI('items-fetched', epicId, { items })
+    cache.update(epicId, items)
   } finally {
     notifyUI('loading-done')
   }

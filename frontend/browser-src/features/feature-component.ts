@@ -3,8 +3,9 @@ import { failFast } from '../../../shared/src/failFast'
 import { ClassName, Selector, toSelector } from '../class-name'
 import { CollapsibleElement } from '../collapsible-dom-element'
 import { DOMElement } from '../dom-element'
-import { ItemListTransition } from './item-list-transition'
 import { MeasureComponent } from '../measure-component'
+import { delay } from '../delay'
+import { render } from '../templates'
 
 export class FeatureComponent {
 
@@ -76,24 +77,47 @@ export class FeatureComponent {
       case 'loading-done':
         this.stopSpinner()
         break
-      case 'items-fetched':
-        await this.replaceChildItems(args.items)
-        break
       case 'collapse':
         this.collapse()
         break
       case 'disclose':
         this.disclose()
         break
+      case 'items_added':
+        await this.addComponents(args.items)
+        break
+      case 'item_changed':
+        this.getElement({ className: { name: 'title' } })?.setInnerHTML(args.item.title)
+        break
+      case 'item_removed':
+        this.element.addClass(ClassName.hidden)
+        await delay(200)
+        this.element.remove()
+        break
     }
   }
 
-  async replaceChildItems(items: ItemDTO[]) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const transition = new ItemListTransition(false, this.itemListElement!, items)
-    await transition.replaceChildItems()
-    const intrinsicSize = MeasureComponent.instance.measure(getCollapsible(this).innerHTML)
-    getCollapsible(this).setHeight(intrinsicSize.height)
+  private async addComponents(items: ItemDTO[]) {
+    const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
+
+    const html = await render('features/new-items', { items })
+    const newElements = DOMElement.fromHTML(`<div>${html}</div>`).children
+    for (const element of newElements) listElement.add(element)
+
+    const collapsibleElement = getCollapsible(this)
+    const height = MeasureComponent.instance.measure(collapsibleElement.innerHTML).height
+
+    for (const element of newElements) {
+      element.remove()
+      element.addClass(ClassName.hidden)
+    }
+
+    for (const element of newElements) {
+      listElement.add(element)
+      element.removeClass(ClassName.hidden)
+    }
+
+    collapsibleElement.setHeight(height)
   }
 
   private collapse() {

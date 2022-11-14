@@ -2,8 +2,9 @@ const requireCondition = (condition: boolean, message: string) => {
   if (!condition) throw new Error(message)
 }
 
-const requireValueSet = (argument: any, name: string) => {
-  requireCondition(argument !== null && argument !== undefined, `${name} must be set`)
+function requireValueSet<T>(argument: T | null | undefined, name: string): T {
+  if (argument !== null && argument !== undefined) return argument
+  throw new Error(`${name} must be set`)
 }
 
 const requireValueSetWithType = (aType: string) => (argument: any, name: string) => {
@@ -46,6 +47,7 @@ const requireArrayOfEnum = (type: any, { argument, name }:{argument:any, name:st
 
 export const failFast = {
   unless: requireCondition,
+  unlessExists: requireValueSet,
   unlessNumber: requireNumber,
   unlessString: requireString,
   unlessObject: requireObject,

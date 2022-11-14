@@ -26,8 +26,7 @@ server.get('/item', async (request) => {
     type: types,
     parent: null,
   }
-  const items = await itemRepository.itemsWithSpecification(specification)
-  return items.map(t => ({ id: t.id, title: t.title, type: t.type }))
+  return await itemRepository.itemsWithSpecification(specification)
 })
 
 server.get('/item/:id/child', async (request) => {
@@ -39,8 +38,7 @@ server.get('/item/:id/child', async (request) => {
     type: types,
     parent: request.params.id,
   }
-  const items = await itemRepository.itemsWithSpecification(specification)
-  return items.map(t => ({ id: t.id, title: t.title, type: t.type }))
+  return await itemRepository.itemsWithSpecification(specification)
 })
 
 const s = server.finalize()

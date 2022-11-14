@@ -31,6 +31,7 @@
 - Problem: If a Story or Epic is expanded when a new task/feature is added or completed, the animation doesn't play.
 - The add button should be unhighlighted after a task is added
 - The expanded feature item-list is too tall
+  The measure-element is only 186px wide which makes the text wrap
 
 # Ice Box
 - Build my own assertion library using domain language
