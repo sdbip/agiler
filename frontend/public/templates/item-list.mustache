@@ -18,7 +18,7 @@
         oninput="emitUIEvent('input', {element: this, event, itemId: '{{id}}'})"
         onblur="emitUIEvent('blur', {element: this, event, itemId: '{{id}}'})"
         onkeydown="emitUIEvent('title-keydown', {element: this, event, itemId: '{{id}}'})" placeholder="What needs to be done?">
-      <button class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</button>
+      <div class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event, itemId: '{{id}}'})">+</div>
     </div>
     <div class="item-list"></div>
   </div>

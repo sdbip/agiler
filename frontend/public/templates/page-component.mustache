@@ -4,6 +4,6 @@
     oninput="emitUIEvent('input', {element: this, event})"
     onblur="emitUIEvent('blur', {element: this, event})"
     onkeydown="emitUIEvent('title-keydown', {element: this, event})" placeholder="What does the business need?">
-  <button id="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event})">+</button>
+  <div id="add-button" class="add-button" onclick="emitUIEvent('add-button-clicked', {element: this, event})">+</div>
 </div>
 <div id="item-list" class="item-list"></div>
