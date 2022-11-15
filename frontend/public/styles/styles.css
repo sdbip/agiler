@@ -32,38 +32,6 @@ label {
   cursor: hand;
 }
 
-.item-Story {
-  cursor: default;
-  background-color: hsl(179deg 54% 25%);
-}
-
-.item-Task {
-  height: 21px;
-  overflow-y: hidden;
-  transition: height .5s ease-out;
-}
-
-.item-Task.hidden {
-  height: 0;
-}
-
-.item-Task > label {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 20px;
-  height: 20px;
-  border: 1px solid gray;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.item-Task > .promote-button {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-}
-
 .disclosure-button {
   position: absolute;
   top: 6px;
@@ -111,8 +79,7 @@ label {
   display: flex;
 }
 
-/* TODO: Change this to a class instead */
-input[type="text"] {
+.flex > input[type="text"] {
   flex: 1;
   margin-right: 6px;
   padding: 5px;
@@ -126,34 +93,31 @@ input[type="text"] {
   outline-color: white;
 }
 
-/* TODO: Change this to a class instead */
-button {
+.add-button {
   height: 23px;
   width: 23px;
 
   padding: 0;
   border: 1px solid silver;
-  border-radius: 2px;
+  border-radius: 22px;
 
   font-size: 10pt;
   background-color: white;
+
+  text-align: center;
+  line-height: 20px;
 }
 
-button.default {
+.add-button.default {
   background-color: dodgerblue;
 }
 
-button:hover {
-  background-color: silver;
+.add-button:hover {
   transform: translateY(-1px);
 }
 
-button.default:hover {
+.add-button:active {
   background-color: dodgerblue;
-}
-
-button:active {
-  background-color: silver;
   transform: translateY(1px);
 }
 
@@ -170,4 +134,15 @@ button:active {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+.pop-up {
+  border-radius: 10px;
+  padding: 10px;
+  color: darkslategrey;
+  background-color: blanchedalmond;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 15%);
+  position: absolute;
+  width: 200px;
+  display: none;
 }
