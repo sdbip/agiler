@@ -1,12 +1,12 @@
 {{#items}}
-<div id="item-{{id}}" class="item item-{{type}} no-select {{#isNew}} hidden {{/isNew}}">
+<div id="item-{{id}}" class="item item-{{type}} no-select">
   {{#canPromote}}
   <span class="promote-button" onclick="emitUIEvent('promote-clicked', {element: this, event, itemId: '{{id}}'})">✵</span>
   {{/canPromote}}
   {{#canComplete}}
   <label onclick="emitUIEvent('complete-clicked', {element: this, event, itemId: '{{id}}'})"></label>
   {{/canComplete}}
-  <span>{{title}}</span>
+  <span class="title">{{title}}{{#isEpic}} <sup>EPIC</sup>{{/isEpic}}</span>
   {{#hasChildren}}
   <div class="chevron">+</div>
   <div class="disclosure-button" onclick="emitUIEvent('disclosure-button-clicked', {element: this, event, itemId: '{{id}}'})"></div>

@@ -12,7 +12,7 @@ import { ItemCache, ItemCacheEvent } from '../item-cache'
 (async () => {
   const pageContainer = document.getElementById('page-container')
   if (!pageContainer) throw Error('page container not found')
-  pageContainer.innerHTML = await render('index/page-component', {})
+  pageContainer.innerHTML = await render('page-component', {})
   updateItems()
 })()
 

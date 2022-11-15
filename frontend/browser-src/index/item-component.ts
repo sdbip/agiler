@@ -100,7 +100,7 @@ export class ItemComponent {
   private async addComponents(items: ItemDTO[]) {
     const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
 
-    const html = await render('index/item-list', {
+    const html = await render('item-list', {
       items,
       canComplete: () => function (this: any, text: string, render: any) {
         return this.type === 'Task' ? render(text) : ''

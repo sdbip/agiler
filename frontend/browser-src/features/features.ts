@@ -13,7 +13,7 @@ import { ItemCache, ItemCacheEvent } from '../item-cache'
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
   if (!pageContainer) throw Error('page container not found')
-  pageContainer.setInnerHTML(await render('features/page-component', {}))
+  pageContainer.setInnerHTML(await render('page-component', {}))
   updateItems()
 })()
 

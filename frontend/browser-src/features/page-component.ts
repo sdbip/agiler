@@ -49,7 +49,7 @@ export class PageComponent {
   private async addComponents(items: ItemDTO[]) {
     const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
 
-    const html = await render('features/item-list', {
+    const html = await render('item-list', {
       items,
       isEpic: () => function (this: ItemDTO, text: string, render: any) {
         return this.type === 'Epic' ? render(text) : ''

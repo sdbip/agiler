@@ -1,30 +1,22 @@
-.item-Feature,
-.feature {
+.item-Feature {
   margin-top: 3px;
   background-color: beige;
   color: rgb(60 45 40);
 }
 
-.item-Epic,
-.feature.epic {
+.item-Epic {
+  margin-top: 3px;
   background-color: burlywood;
   color: saddlebrown;
 }
 
-.item-Task {
-  margin-top: 3px;
-  border-radius: 3px;
-  background-color: rgb(53, 70, 90);
-}
-
-.item-Feature > .title,
-.feature > .title {
+.item-Epic > .title,
+.item-Feature > .title {
   font-weight: bold;
   font-size: 11pt;
 }
 
-.item-Epic > .title > sup,
-.feature.epic > .title > sup {
+.item-Epic > .title > sup {
   padding: 0 2px;
   color: lavender;
   background-color: darkblue;
@@ -34,8 +26,7 @@
   top: -7px;
 }
 
-.item-Epic input::placeholder,
-.feature.epic input::placeholder {
+.item-Epic input::placeholder {
   color: beige;
 }
 

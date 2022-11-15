@@ -100,7 +100,7 @@ export class FeatureComponent {
   private async addComponents(items: ItemDTO[]) {
     const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
 
-    const html = await render('features/new-items', { items })
+    const html = await render('item-list', { items })
     const newElements = DOMElement.fromHTML(`<div>${html}</div>`).children
     for (const element of newElements) listElement.add(element)
 
