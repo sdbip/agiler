@@ -84,6 +84,10 @@ export class DOMElement {
     })
   }
 
+  setMaxWidth(maxWidth: number | undefined) {
+    this.element.style.maxWidth = maxWidth === undefined ? '' : `${maxWidth}px`
+  }
+
   setHeight(height: number) {
     this.element.style.height = `${height}px`
   }

@@ -119,16 +119,13 @@ body {
 
 .measure {
   position: relative;
-
-  overflow: hidden;
   height: 0;
   width: 0;
 }
 
-/* TODO: Change this to .measure > div */
-#measure {
-  position: absolute;
-  top: 10px;
+.measure > * {
+  position: fixed;
+  bottom: 10px;
   left: 10px;
 }
 

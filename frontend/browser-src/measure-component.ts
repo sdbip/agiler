@@ -16,13 +16,16 @@ export class MeasureComponent {
     this.element = DOMElement.single({ id: 'measure' }) as DOMElement
   }
 
-  measure(html: string) {
+  measure(html: string, maxWidth?: number) {
+    this.element.setMaxWidth(maxWidth)
     this.element.setInnerHTML(html)
     for (const element of this.element.decendants({ className: ClassName.hidden }))
       element.removeClass(ClassName.hidden)
-    return {
+    const size = {
       height: this.element.offsetHeight,
       width: this.element.offsetWidth,
     }
+    this.element.setInnerHTML('')
+    return size
   }
 }
