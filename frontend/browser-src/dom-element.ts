@@ -94,6 +94,7 @@ export class DOMElement {
 
   setInputElementValue(value: string) {
     this.inputElement.value = value
+    this.inputElement.dispatchEvent(new InputEvent('input'))
   }
 
   setInnerHTML(html: string) {

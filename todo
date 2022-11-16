@@ -25,7 +25,6 @@
 - Remove duplication in index vs features
 - Test `FeatureComponent`
 - When a Feature is converted into an Epic, it should change colour immediately.
-- The add button should be unhighlighted after a task is added
 - Use Quixote to test CSS?
 - Use SCSS?
 

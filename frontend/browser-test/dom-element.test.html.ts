@@ -43,6 +43,21 @@ runTests(() => {
         assert.equal(handledEvent?.name, 'mouseout')
         assert.instanceOf(handledEvent?.eventData, MouseEvent)
       })
+
+      it('dispatches input when value changes', () => {
+        const htmlElement = document.createElement('input')
+        const element = new DOMElement(htmlElement)
+
+        let handledEvent: DOMEvent | undefined
+        element.on('input', event => { handledEvent = event })
+
+        element.setInputElementValue('a value')
+
+        assert.exists(handledEvent)
+        assert.equal(handledEvent?.element, element)
+        assert.equal(handledEvent?.name, 'input')
+        assert.instanceOf(handledEvent?.eventData, InputEvent)
+      })
     })
   })
 })
