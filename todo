@@ -1,7 +1,7 @@
 # Features
 + Tasks (simple todos, engineering tasks, decisions to be made, seeking external help...)
 + Stories (business value, show progress to a stakeholder)
-* Features (business goals, marketable/testable/usable/lovable)
++ Features (business goals, marketable/testable/usable/lovable)
 - Objectives and goals?
 - Higher purpose of the product? Vision?
 - Unformed ideas/Ice box
@@ -15,7 +15,6 @@
 - Use socket.io to remove finished tasks automatically
 
 # Stories
-* New page for collecting features
 - Items should have a prioritisation order
 - Select the current feature
   - Make the current feature the focus to adding stories and tasks
@@ -27,8 +26,8 @@
 - Test `FeatureComponent`
 - When a Feature is converted into an Epic, it should change colour immediately.
 - The add button should be unhighlighted after a task is added
-- The expanded feature item-list is too tall
-  The measure-element is only 186px wide which makes the text wrap
+- Use Quixote to test CSS?
+- Use SCSS?
 
 # Ice Box
 - Build my own assertion library using domain language
