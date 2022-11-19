@@ -1,6 +1,5 @@
 import { assert } from '@esm-bundle/chai'
-import { ItemDTO } from '../../backend/src/dtos/item-dto'
-import { ItemType, Progress } from '../../backend/src/dtos/enums'
+import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
 
 describe(ItemCache.name, () => {

@@ -1,4 +1,4 @@
-import { ItemDTO } from '../../backend/src/dtos/item-dto'
+import { ItemDTO } from './backend/dtos'
 
 type Handler = (items: ItemDTO[]) => void
 

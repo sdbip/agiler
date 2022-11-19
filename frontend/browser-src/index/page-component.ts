@@ -1,4 +1,4 @@
-import { ItemDTO } from '../../../backend/src/dtos/item-dto'
+import { ItemDTO } from '../backend/dtos'
 import { failFast } from '../../../shared/src/failFast'
 import { ClassName, Selector } from '../class-name'
 import { DOMElement } from '../dom-element'
