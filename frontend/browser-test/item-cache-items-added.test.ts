@@ -7,9 +7,9 @@ describe(ItemCache.name, () => {
   describe(ItemCacheEvent.ItemsAdded, () => {
 
     it('notifies new items', () => {
-      const model = new ItemCache()
+      const cache = new ItemCache()
       let addedItems: ItemDTO[] | undefined
-      model.on(ItemCacheEvent.ItemsAdded, items => {
+      cache.on(ItemCacheEvent.ItemsAdded, items => {
         addedItems = items
       })
 
@@ -19,14 +19,14 @@ describe(ItemCache.name, () => {
         title: 'Get it done',
         type: ItemType.Task,
       } ]
-      model.update(undefined, items)
+      cache.update(undefined, items)
       assert.deepEqual(addedItems, items)
     })
 
     it('does not notify existing items', () => {
-      const model = new ItemCache()
+      const cache = new ItemCache()
 
-      model.update(undefined, [
+      cache.update(undefined, [
         {
           id: '1',
           progress: Progress.notStarted,
@@ -35,7 +35,7 @@ describe(ItemCache.name, () => {
         },
       ])
       let addedItems = undefined as any as ItemDTO[]
-      model.on(ItemCacheEvent.ItemsAdded, items => {
+      cache.on(ItemCacheEvent.ItemsAdded, items => {
         addedItems = items
       })
 
@@ -50,15 +50,15 @@ describe(ItemCache.name, () => {
         title: 'Item 2',
         type: ItemType.Task,
       } ]
-      model.update(undefined, items)
+      cache.update(undefined, items)
       assert.notInclude(addedItems.map(i => i.id), '1')
     })
   })
 
   it('does not notify at all if no items added', () => {
-    const model = new ItemCache()
+    const cache = new ItemCache()
 
-    model.update(undefined, [
+    cache.update(undefined, [
       {
         id: '1',
         progress: Progress.notStarted,
@@ -67,7 +67,7 @@ describe(ItemCache.name, () => {
       },
     ])
     let addedItems = false
-    model.on(ItemCacheEvent.ItemsAdded, () => {
+    cache.on(ItemCacheEvent.ItemsAdded, () => {
       addedItems = true
     })
 
@@ -77,7 +77,7 @@ describe(ItemCache.name, () => {
       title: 'Item 1',
       type: ItemType.Task,
     } ]
-    model.update(undefined, items)
+    cache.update(undefined, items)
     assert.isFalse(addedItems)
   })
 })
