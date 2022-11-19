@@ -10,11 +10,11 @@ export enum ItemCacheEvent {
 
 export class ItemCache {
   private handlers: { [_ in ItemCacheEvent]?: Handler[] } = {}
-  private itemsByParent: { [id:string]: ItemDTO[] } = {}
+  private itemsByParent: { [id: string]: ItemDTO[] } = {}
 
   update(parentId: string | undefined, items: ItemDTO[]) {
-    const knownItems = this.itemsByParent[parentId ?? '$null'] ?? []
-    this.itemsByParent[parentId ?? '$null'] = items
+    const knownItems = this.getItems(parentId) ?? []
+    this.setItems(parentId, items)
 
     const addedItems = items.filter(i1 => !knownItems.find(i2 => i1.id === i2.id))
     const removedItems = knownItems.filter(i => items.findIndex(i2 => i2.id === i.id) < 0)
@@ -40,5 +40,13 @@ export class ItemCache {
 
     for (const handler of handlers)
       handler(items)
+  }
+
+  private getItems(parentId: string | undefined) {
+    return this.itemsByParent[parentId ?? '$null']
+  }
+
+  private setItems(parentId: string | undefined, items: ItemDTO[]) {
+    this.itemsByParent[parentId ?? '$null'] = items
   }
 }
