@@ -6,9 +6,9 @@ import { Popup } from './popup'
 import { FeatureComponent } from './feature-component'
 import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
-import writeModel from '../backend/writeModel'
-import readModel from '../backend/readModel'
 import { ItemCache, ItemCacheEvent } from '../item-cache'
+import { ReadModel, WriteModel } from '../backend/backend'
+import { ItemType } from '../backend/dtos'
 
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
@@ -17,6 +17,8 @@ import { ItemCache, ItemCacheEvent } from '../item-cache'
   updateItems()
 })()
 
+const readModel = new ReadModel()
+const writeModel = new WriteModel()
 const cache = new ItemCache()
 
 // EVENT HANDLERS
@@ -91,7 +93,7 @@ const addFeature = async ({ id }: { id: string }) => {
   const titleElement = component.titleInputElement
   if (!component.title) return
 
-  console.log('add Feature', await writeModel.addFeature(component.title, id))
+  console.log('add Feature', await writeModel.addItem(component.title, ItemType.Feature, id))
   titleElement?.setInputElementValue('')
 
   await updateItems(component.itemId)
@@ -112,9 +114,7 @@ const toggleDisclosed = async ({ id }: { id: string }) => {
 async function updateItems(epicId?: string) {
   notifyUI('loading')
   try {
-    const items = epicId
-      ? await readModel.fetchChildFeatures(epicId)
-      : await readModel.fetchFeatures()
+    const items = await readModel.fetchItems(epicId, [ ItemType.Epic, ItemType.Feature ])
     cache.update(epicId, items)
   } finally {
     notifyUI('loading-done')
