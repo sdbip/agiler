@@ -10,6 +10,14 @@ export class MockItemRepository implements ItemRepository {
   lastRequestedSpecfication?: ItemSpecification
   itemsToReturn: ItemDTO[] = []
 
+  lastRequestedItemId?: string
+  itemToReturn?: ItemDTO
+
+  async get(id: string) {
+    this.lastRequestedItemId = id
+    return this.itemToReturn
+  }
+
   async itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]> {
     this.lastRequestedSpecfication = specification
     return this.itemsToReturn

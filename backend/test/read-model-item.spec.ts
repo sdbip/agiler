@@ -24,6 +24,26 @@ describe('read model', () => {
 
   describe('get /item', () => {
 
+    it('returns the specified item', async () => {
+      itemRepository.itemToReturn = {
+        id: 'one',
+        type: ItemType.Task,
+        title: 'Task',
+        progress: Progress.notStarted,
+      }
+
+      const response = await get(_ + '/item/one')
+      const dto = JSON.parse(response.content)
+
+      assert.equal(itemRepository.lastRequestedItemId, 'one')
+      assert.deepEqual(dto, {
+        id: 'one',
+        type: ItemType.Task,
+        title: 'Task',
+        progress: Progress.notStarted,
+      })
+    })
+
     it('returns the items of the repository', async () => {
       itemRepository.itemsToReturn = [
         {

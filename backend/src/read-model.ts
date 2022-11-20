@@ -2,6 +2,7 @@ import { failFast } from '../../shared/src/failFast.js'
 import { setupServer } from '../../shared/src/server.js'
 import { ItemDTO } from './dtos/item-dto.js'
 import { ItemType, Progress } from './dtos/enums.js'
+import { NOTFOUND } from 'dns'
 
 export type ItemSpecification = {
   progress?: Progress | Progress[]
@@ -10,6 +11,7 @@ export type ItemSpecification = {
 }
 
 export interface ItemRepository {
+  get(id: string): Promise<ItemDTO | undefined>
   itemsWithSpecification(specification: ItemSpecification): Promise<ItemDTO[]>
 }
 
@@ -27,6 +29,10 @@ server.get('/item', async (request) => {
     parent: null,
   }
   return await itemRepository.itemsWithSpecification(specification)
+})
+
+server.get('/item/:id', async (request) => {
+  return await itemRepository.get(request.params.id) ?? NOTFOUND
 })
 
 server.get('/item/:id/child', async (request) => {
