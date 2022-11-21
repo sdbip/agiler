@@ -1,1 +1,1 @@
-export { ItemType, Progress } from '../domain/enums.js'
+export { ItemType, Progress } from '../domain/enums'

@@ -1,13 +1,18 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
+import { stubReadModel, stubWriteModel } from './stub-backend'
 
 describe(ItemCache.name, () => {
+
+  const readModel = stubReadModel()
+  const writeModel = stubWriteModel()
 
   describe(ItemCacheEvent.ItemsRemoved, () => {
 
     it('does not notify when only adding items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
+
       let removedItems = false
       cache.on(ItemCacheEvent.ItemsRemoved, () => {
         removedItems = true
@@ -24,7 +29,7 @@ describe(ItemCache.name, () => {
     })
 
     it('does not notify removed items with other parent', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
 
       cache.update(undefined, [
         {
@@ -52,7 +57,8 @@ describe(ItemCache.name, () => {
     })
 
     it('does notify removed items after update', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
+
       cache.update(undefined, [
         {
           id: '1',
@@ -87,7 +93,7 @@ describe(ItemCache.name, () => {
     })
 
     it('notifies removed items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
 
       cache.update(undefined, [
         {
@@ -108,7 +114,7 @@ describe(ItemCache.name, () => {
     })
 
     it('does not notify when only updating items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
 
       cache.update(undefined, [
         {

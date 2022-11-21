@@ -1,6 +1,17 @@
-import { ItemDTO } from './backend/dtos'
+import { ItemDTO, ItemType } from './backend/dtos'
 
 type Handler = (items: ItemDTO[]) => void
+
+export interface ReadModel {
+  fetchItem(id: string): Promise<ItemDTO | undefined>
+  fetchItems(parentId: string | undefined, types: ItemType[]): Promise<ItemDTO[]>
+}
+
+export interface WriteModel {
+  addItem(title: string, type: ItemType, parentId: string | undefined): Promise<{ id: string }>
+  promoteTask(id: string): Promise<void>
+  completeTask(id: string): Promise<void>
+}
 
 export enum ItemCacheEvent {
   ItemsAdded = 'items_added',
@@ -11,6 +22,8 @@ export enum ItemCacheEvent {
 export class ItemCache {
   private handlers: { [_ in ItemCacheEvent]?: Handler[] } = {}
   private itemsByParent: { [id: string]: ItemDTO[] } = {}
+
+  constructor(private readonly readModel: ReadModel, private readonly writeModel: WriteModel) { }
 
   update(parentId: string | undefined, items: ItemDTO[]) {
     const knownItems = this.getItems(parentId) ?? []

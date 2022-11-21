@@ -1,13 +1,18 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
+import { stubReadModel, stubWriteModel } from './stub-backend'
 
 describe(ItemCache.name, () => {
+
+  const readModel = stubReadModel()
+  const writeModel = stubWriteModel()
 
   describe(ItemCacheEvent.ItemsChanged, () => {
 
     it('does not notify if adding items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
+
       let changedItems = false
       cache.on(ItemCacheEvent.ItemsChanged, () => {
         changedItems = true
@@ -24,7 +29,7 @@ describe(ItemCache.name, () => {
     })
 
     it('notifies items with changed title', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
 
       cache.update(undefined, [
         {

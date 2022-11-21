@@ -1,13 +1,18 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
+import { stubReadModel, stubWriteModel } from './stub-backend'
 
 describe(ItemCache.name, () => {
+
+  const readModel = stubReadModel()
+  const writeModel = stubWriteModel()
 
   describe(ItemCacheEvent.ItemsAdded, () => {
 
     it('notifies new items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
+
       let addedItems: ItemDTO[] | undefined
       cache.on(ItemCacheEvent.ItemsAdded, items => {
         addedItems = items
@@ -24,7 +29,7 @@ describe(ItemCache.name, () => {
     })
 
     it('does not notify existing items', () => {
-      const cache = new ItemCache()
+      const cache = new ItemCache(readModel, writeModel)
 
       cache.update(undefined, [
         {
@@ -56,7 +61,7 @@ describe(ItemCache.name, () => {
   })
 
   it('does not notify at all if no items added', () => {
-    const cache = new ItemCache()
+    const cache = new ItemCache(readModel, writeModel)
 
     cache.update(undefined, [
       {

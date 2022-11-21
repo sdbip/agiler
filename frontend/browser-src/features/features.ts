@@ -19,7 +19,7 @@ import { ItemType } from '../backend/dtos'
 
 const readModel = new ReadModel()
 const writeModel = new WriteModel()
-const cache = new ItemCache()
+const cache = new ItemCache(readModel, writeModel)
 
 // EVENT HANDLERS
 
