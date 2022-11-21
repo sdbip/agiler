@@ -114,8 +114,7 @@ const toggleDisclosed = async ({ id }: { id: string }) => {
 async function updateItems(storyId?: string) {
   notifyUI('loading')
   try {
-    const items = await readModel.fetchItems(storyId, [ ItemType.Story, ItemType.Task ])
-    cache.update(storyId, items)
+    await cache.fetchItems(storyId, [ ItemType.Story, ItemType.Task ])
   } finally {
     notifyUI('loading-done')
   }

@@ -25,6 +25,18 @@ export class ItemCache {
 
   constructor(private readonly readModel: ReadModel, private readonly writeModel: WriteModel) { }
 
+  async fetchItems(storyId: string | undefined, types: ItemType[]) {
+    const items = await this.readModel.fetchItems(storyId, types)
+    this.update(storyId, items)
+    return items
+  }
+
+  addItem(item: ItemDTO) {
+    const items = this.getItems(item.parentId)
+    if (items) items.push(item)
+    else this.setItems(item.parentId, [ item ])
+  }
+
   update(parentId: string | undefined, items: ItemDTO[]) {
     const knownItems = this.getItems(parentId) ?? []
     this.setItems(parentId, items)
@@ -55,7 +67,7 @@ export class ItemCache {
       handler(items)
   }
 
-  private getItems(parentId: string | undefined) {
+  private getItems(parentId: string | undefined): ItemDTO[] | undefined {
     return this.itemsByParent[parentId ?? '$null']
   }
 

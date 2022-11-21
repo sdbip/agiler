@@ -114,8 +114,7 @@ const toggleDisclosed = async ({ id }: { id: string }) => {
 async function updateItems(epicId?: string) {
   notifyUI('loading')
   try {
-    const items = await readModel.fetchItems(epicId, [ ItemType.Epic, ItemType.Feature ])
-    cache.update(epicId, items)
+    await cache.fetchItems(epicId, [ ItemType.Epic, ItemType.Feature ])
   } finally {
     notifyUI('loading-done')
   }

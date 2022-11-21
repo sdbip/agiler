@@ -1,7 +1,7 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { stubReadModel, stubWriteModel } from './stub-backend'
+import { stubReadModel, stubWriteModel } from './mocks'
 
 describe(ItemCache.name, () => {
 
