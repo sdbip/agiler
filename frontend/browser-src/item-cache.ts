@@ -37,7 +37,7 @@ export class ItemCache {
     else this.setItems(item.parentId, [ item ])
   }
 
-  update(parentId: string | undefined, items: ItemDTO[]) {
+  private update(parentId: string | undefined, items: ItemDTO[]) {
     const knownItems = this.getItems(parentId) ?? []
     this.setItems(parentId, items)
 

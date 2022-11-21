@@ -122,4 +122,102 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       assert.deepEqual(changedItems, [ item ])
     })
   })
+
+  describe(ItemCacheEvent.ItemsRemoved, () => {
+
+    it('does not notify when only adding items', async () => {
+      readModel.itemsToReturn = [ {
+        id: 'addedItem',
+        progress: Progress.notStarted,
+        title: 'title',
+        type: ItemType.Task,
+      } ]
+
+      const cache = new ItemCache(readModel, writeModel)
+
+      let isNotified = false
+      cache.on(ItemCacheEvent.ItemsRemoved, () => { isNotified = true })
+
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      assert.isFalse(isNotified)
+    })
+
+    it('does notify removed items after update', async () => {
+      const item1 = {
+        id: 'item1',
+        progress: Progress.notStarted,
+        title: 'Get it done',
+        type: ItemType.Task,
+      }
+      const item2 = {
+        id: 'item2',
+        progress: Progress.notStarted,
+        title: 'Get it done',
+        type: ItemType.Task,
+      }
+      const itemWithParent = {
+        id: 'itemWithParent',
+        progress: Progress.notStarted,
+        title: 'Get it done',
+        type: ItemType.Task,
+        parentId: 'parent',
+      }
+
+      const cache = new ItemCache(readModel, writeModel)
+
+      readModel.itemsToReturn = [ item1 ]
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      readModel.itemsToReturn = [ itemWithParent ]
+      await cache.fetchItems('parent', [ ItemType.Task ])
+
+      let isNotified = false
+      cache.on(ItemCacheEvent.ItemsRemoved, () => {
+        isNotified = true
+      })
+
+      readModel.itemsToReturn = [ item2 ]
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+
+      assert.isTrue(isNotified)
+    })
+
+    it('notifies removed items', async () => {
+      const item = {
+        id: 'item',
+        progress: Progress.notStarted,
+        title: 'Get it done',
+        type: ItemType.Task,
+      }
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.addItem(item)
+
+      let notifiedItems: ItemDTO[] = []
+      cache.on(ItemCacheEvent.ItemsRemoved, items => {
+        notifiedItems = items
+      })
+
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      assert.include(notifiedItems.map(i => i.id), 'item')
+    })
+
+    it('does not notify when only updating items', async () => {
+      const item1 = {
+        id: 'item1',
+        progress: Progress.notStarted,
+        title: 'New title',
+        type: ItemType.Task,
+      }
+      readModel.itemsToReturn = [ item1 ]
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.addItem({ ...item1, title: 'Old title' })
+
+      let isNotified = false
+      cache.on(ItemCacheEvent.ItemsRemoved, () => { isNotified = true })
+
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      assert.isFalse(isNotified)
+    })
+  })
 })
