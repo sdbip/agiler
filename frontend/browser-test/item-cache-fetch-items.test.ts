@@ -3,15 +3,14 @@ import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
 import { MockReadModel, stubWriteModel } from './mocks'
 
-describe(ItemCache.name, () => {
+describe(`${ItemCache.name}.fetchItems`, () => {
 
   const writeModel = stubWriteModel()
   const readModel = new MockReadModel()
 
-  describe('fetchItems', () => {
+  describe(`${ItemCacheEvent.ItemsAdded} event`, () => {
 
     it('notifies when items are ready', async () => {
-      const cache = new ItemCache(readModel, writeModel)
       const item = {
         id: 'id',
         progress: Progress.notStarted,
@@ -19,6 +18,8 @@ describe(ItemCache.name, () => {
         type: ItemType.Task,
       }
       readModel.itemsToReturn = [ item ]
+
+      const cache = new ItemCache(readModel, writeModel)
 
       let notifiedItems: ItemDTO[] = []
       cache.on(ItemCacheEvent.ItemsAdded, (items) => {
@@ -76,6 +77,49 @@ describe(ItemCache.name, () => {
       const returnedItems = await cache.fetchItems(undefined, [ ItemType.Task ])
       assert.deepEqual(returnedItems, [ item ])
       assert.isFalse(isNotified)
+    })
+  })
+
+  describe(`${ItemCacheEvent.ItemsChanged} event`, () => {
+
+    it('does not notify if only adding items', async () => {
+      readModel.itemsToReturn = [ {
+        id: 'addedItem',
+        progress: Progress.notStarted,
+        title: 'title',
+        type: ItemType.Task,
+      } ]
+
+      const cache = new ItemCache(readModel, writeModel)
+
+      let isNotified = false
+      cache.on(ItemCacheEvent.ItemsChanged, () => {
+        isNotified = true
+      })
+
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      assert.isFalse(isNotified)
+    })
+
+    it('notifies items with changed title', async () => {
+      const item = {
+        id: 'item',
+        progress: Progress.notStarted,
+        title: 'New title',
+        type: ItemType.Task,
+      }
+      readModel.itemsToReturn = [ item ]
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.addItem({ ...item, title: 'Title before' })
+
+      let changedItems: ItemDTO[] | undefined
+      cache.on(ItemCacheEvent.ItemsChanged, items => {
+        changedItems = items
+      })
+
+      await cache.fetchItems(undefined, [ ItemType.Task ])
+      assert.deepEqual(changedItems, [ item ])
     })
   })
 })
