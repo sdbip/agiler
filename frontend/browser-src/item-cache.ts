@@ -1,4 +1,4 @@
-import { ItemDTO, ItemType } from './backend/dtos'
+import { ItemDTO, ItemType, Progress } from './backend/dtos'
 
 type Handler = (items: ItemDTO[]) => void
 
@@ -35,6 +35,21 @@ export class ItemCache {
     const items = this.getItems(item.parentId)
     if (items) items.push(item)
     else this.setItems(item.parentId, [ item ])
+  }
+
+  async postItem(type: ItemType, title: string, parentId?: string) {
+    const response = await this.writeModel.addItem('', ItemType.Story, 'parent')
+    const item: ItemDTO = {
+      id: response.id,
+      progress: Progress.notStarted,
+      title,
+      type: ItemType.Task,
+    }
+    this.notify(ItemCacheEvent.ItemsAdded, [ item ])
+
+    const parent = Object.values(this.itemsByParent).flat().find(i => i.id === parentId)
+    if (parent) (parent as any).type = ItemType.Epic // TODO: This is a hack. Replace it instead?
+    this.notify(ItemCacheEvent.ItemsChanged, [ parent! ])
   }
 
   private update(parentId: string | undefined, items: ItemDTO[]) {
