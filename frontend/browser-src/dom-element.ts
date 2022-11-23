@@ -9,7 +9,6 @@ export type DOMEvent = {
 
 export class DOMElement {
   static BODY = new DOMElement(document.body)
-  static DOCUMENT = new DOMElement(document.documentElement)
 
   get id() {
     return this.element.id
@@ -71,7 +70,7 @@ export class DOMElement {
   }
 
   private static findAll(selector: ClassSelector | TagSelector, rootElement?: DOMElement) {
-    const root = (rootElement ?? DOMElement.DOCUMENT).element
+    const root = rootElement?.element ?? document.documentElement
     const elements = 'className' in selector
       ? root.getElementsByClassName(selector.className.name)
       : root.getElementsByTagName(selector.tagName)
