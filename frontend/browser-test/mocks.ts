@@ -1,3 +1,4 @@
+import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType } from '../browser-src/backend/dtos'
 import { ReadModel, WriteModel } from '../browser-src/item-cache'
 
@@ -19,6 +20,30 @@ export class MockReadModel implements ReadModel {
     this.lastRequestedParentId = parentId
     this.lastRequestedTypes = types
     return this.itemsToReturn
+  }
+}
+
+export class MockWriteModel implements WriteModel {
+  lastRequestedTitle?: string
+  lastRequestedType?: ItemType
+  lastRequestedId?: string
+  lastRequestedParentId?: string
+  idToReturn?: string
+
+  async addItem(title: string, type: ItemType, parentId: string | undefined) {
+    const id = this.idToReturn
+    if (!id) assert.fail('idToReturn not set up')
+    this.lastRequestedTitle = title
+    this.lastRequestedType = type
+    this.lastRequestedParentId = parentId
+    return { id }
+  }
+
+  async promoteTask(id: string) {
+    this.lastRequestedId = id
+  }
+  async completeTask(id: string) {
+    this.lastRequestedId = id
   }
 }
 
