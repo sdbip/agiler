@@ -27,10 +27,6 @@
 - When a Feature is converted into an Epic, it should change colour immediately.
 - Use Quixote to test CSS?
 - Use SCSS?
-- Inconsistency with backend/src/dtos/enums.ts.
-  - jake bundle fails if the import specifies an extension.
-  - jake run fails if the import does *not* specify the .js extension.
-  - Updating the file triggers server tests but not browser tests.
 
 # Ice Box
 - Build my own assertion library using domain language
