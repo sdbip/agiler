@@ -20,7 +20,7 @@ describe(ItemCache.name, () => {
         notifiedItems = items
       })
 
-      await cache.postItem(ItemType.Task, 'title')
+      await cache.addItem(ItemType.Task, 'title')
 
       assert.deepEqual(notifiedItems, [ {
         id: 'id',
@@ -36,7 +36,7 @@ describe(ItemCache.name, () => {
       writeModel.idToReturn = 'id'
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem({
+      cache.cacheItem({
         id: 'epic',
         progress: Progress.notStarted,
         title: 'Epic Feature',
@@ -46,7 +46,7 @@ describe(ItemCache.name, () => {
         notifiedItems = items
       })
 
-      await cache.postItem(ItemType.Feature, 'MMF Title', 'epic')
+      await cache.addItem(ItemType.Feature, 'MMF Title', 'epic')
 
       assert.deepEqual(notifiedItems, [ {
         id: 'epic',
@@ -67,7 +67,7 @@ describe(ItemCache.name, () => {
         notifiedItems = items
       })
 
-      await cache.postItem(ItemType.Task, 'Title')
+      await cache.addItem(ItemType.Task, 'Title')
       await cache.fetchItems(undefined, [ ItemType.Task ])
 
       assert.lengthOf(notifiedItems, 0)

@@ -48,7 +48,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       readModel.itemsToReturn = [ item1, item2 ]
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem(item1)
+      cache.cacheItem(item1)
 
       let notifiedItems: ItemDTO[] = []
       cache.on(ItemCacheEvent.ItemsAdded, items => {
@@ -69,7 +69,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       readModel.itemsToReturn = [ item ]
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem(item)
+      cache.cacheItem(item)
 
       let isNotified = false
       cache.on(ItemCacheEvent.ItemsAdded, () => { isNotified = true })
@@ -111,7 +111,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       readModel.itemsToReturn = [ item ]
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem({ ...item, title: 'Title before' })
+      cache.cacheItem({ ...item, title: 'Title before' })
 
       let changedItems: ItemDTO[] | undefined
       cache.on(ItemCacheEvent.ItemsChanged, items => {
@@ -190,7 +190,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       }
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem(item)
+      cache.cacheItem(item)
 
       let notifiedItems: ItemDTO[] = []
       cache.on(ItemCacheEvent.ItemsRemoved, items => {
@@ -211,7 +211,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
       readModel.itemsToReturn = [ item1 ]
 
       const cache = new ItemCache(readModel, writeModel)
-      cache.addItem({ ...item1, title: 'Old title' })
+      cache.cacheItem({ ...item1, title: 'Old title' })
 
       let isNotified = false
       cache.on(ItemCacheEvent.ItemsRemoved, () => { isNotified = true })

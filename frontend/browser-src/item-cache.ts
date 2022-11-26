@@ -31,13 +31,13 @@ export class ItemCache {
     return items
   }
 
-  addItem(item: ItemDTO) {
+  cacheItem(item: ItemDTO) {
     const items = this.getItems(item.parentId)
     if (items) items.push(item)
     else this.setItems(item.parentId, [ item ])
   }
 
-  async postItem(type: ItemType, title: string, parentId?: string) {
+  async addItem(type: ItemType, title: string, parentId?: string) {
     const response = await this.writeModel.addItem('', ItemType.Story, 'parent')
     const item: ItemDTO = {
       id: response.id,
