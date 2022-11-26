@@ -56,6 +56,17 @@ describe(ItemCache.name, () => {
       } ])
     })
 
+    it('sends the correct properties to the backend', async () => {
+      writeModel.idToReturn = 'id'
+
+      const cache = new ItemCache(readModel, writeModel)
+      await cache.addItem(ItemType.Feature, 'MMF Title', 'epic')
+
+      assert.equal(writeModel.lastRequestedParentId, 'epic')
+      assert.equal(writeModel.lastRequestedTitle, 'MMF Title')
+      assert.equal(writeModel.lastRequestedType, ItemType.Feature)
+    })
+
     it('marks the item so it is not notified as removed', async () => {
       let notifiedItems: ItemDTO[] = []
 

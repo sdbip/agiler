@@ -38,7 +38,7 @@ export class ItemCache {
   }
 
   async addItem(type: ItemType, title: string, parentId?: string) {
-    const response = await this.writeModel.addItem('', ItemType.Story, 'parent')
+    const response = await this.writeModel.addItem(title, type, parentId)
     const item: ItemDTO = {
       id: response.id,
       progress: Progress.notStarted,
