@@ -67,6 +67,66 @@ describe(ItemCache.name, () => {
       assert.equal(writeModel.lastRequestedType, ItemType.Feature)
     })
 
+    it('triggers changed event if backend stores other data', async () => {
+      writeModel.idToReturn = 'id'
+      readModel.itemsToReturn = [ {
+        id: 'id',
+        progress: Progress.notStarted,
+        title: '',
+        type: ItemType.Feature,
+      } ]
+
+      let notifiedItems: ItemDTO[] = []
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.on(ItemCacheEvent.ItemsChanged, (items) => {
+        notifiedItems = items
+      })
+
+      await cache.addItem(ItemType.Feature, 'Feature Title')
+      await cache.fetchItems(undefined, [ ItemType.Feature ])
+
+      assert.lengthOf(notifiedItems, 1)
+    })
+
+    it('triggers removed event if backend removes it', async () => {
+      writeModel.idToReturn = 'id'
+      let notifiedItems: ItemDTO[] = []
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.on(ItemCacheEvent.ItemsRemoved, (items) => {
+        notifiedItems = items
+      })
+
+      await cache.addItem(ItemType.Feature, 'Feature Title')
+
+      readModel.itemsToReturn = [ {
+        id: 'id',
+        progress: Progress.notStarted,
+        title: '',
+        type: ItemType.Feature,
+      } ]
+      await cache.fetchItems(undefined, [ ItemType.Feature ])
+
+      readModel.itemsToReturn = []
+      await cache.fetchItems(undefined, [ ItemType.Feature ])
+
+      assert.lengthOf(notifiedItems, 1)
+    })
+
+    it('does not trigger removed event if it has not yet appeared in the read model', async () => {
+      writeModel.idToReturn = 'id'
+      readModel.itemsToReturn = []
+
+      const cache = new ItemCache(readModel, writeModel)
+      cache.on(ItemCacheEvent.ItemsRemoved, () => {
+        assert.fail('Item should not be removed if it is not yet known to exist')
+      })
+
+      await cache.addItem(ItemType.Feature, 'Feature Title')
+      await cache.fetchItems(undefined, [ ItemType.Feature ])
+    })
+
     it('marks the item so it is not notified as removed', async () => {
       let notifiedItems: ItemDTO[] = []
 

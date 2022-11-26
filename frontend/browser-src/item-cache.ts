@@ -45,11 +45,14 @@ export class ItemCache {
       title,
       type: ItemType.Task,
     }
+    this.cacheItem(markUnverified(item))
     this.notify(ItemCacheEvent.ItemsAdded, [ item ])
 
     const parent = Object.values(this.itemsByParent).flat().find(i => i.id === parentId)
-    if (parent) (parent as any).type = ItemType.Epic // TODO: This is a hack. Replace it instead?
-    this.notify(ItemCacheEvent.ItemsChanged, [ parent! ])
+    if (parent) {
+      (parent as any).type = ItemType.Epic // TODO: This is a hack. Replace it instead?
+      this.notify(ItemCacheEvent.ItemsChanged, [ parent ])
+    }
   }
 
   private update(parentId: string | undefined, items: ItemDTO[]) {
@@ -57,7 +60,7 @@ export class ItemCache {
     this.setItems(parentId, items)
 
     const addedItems = items.filter(i1 => !knownItems.find(i2 => i1.id === i2.id))
-    const removedItems = knownItems.filter(i => items.findIndex(i2 => i2.id === i.id) < 0)
+    const removedItems = knownItems.filter(i => !isUnverified(i) && items.findIndex(i2 => i2.id === i.id) < 0)
     const changedItems = items.filter(i1 => {
       const existing = knownItems.find(i2 => i1.id === i2.id)
       return existing && (existing.title !== i1.title)
@@ -89,4 +92,12 @@ export class ItemCache {
   private setItems(parentId: string | undefined, items: ItemDTO[]) {
     this.itemsByParent[parentId ?? '$null'] = items
   }
+}
+
+function markUnverified(item: ItemDTO) {
+  return { ...item, unverified: true } as any as ItemDTO
+}
+
+function isUnverified(item: ItemDTO) {
+  return (item as any).unverified
 }
