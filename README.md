@@ -43,6 +43,33 @@ cd client
 The optional `scan` argument starts a watch that will lint and test whenever a
 JavaScript file is saved.
 
+## CQRS/ES
+
+Agiler employs CQRS, meaning that the backend is split in two separate
+pipelines segregating Commands from Queries. The write model (command side)
+defines the domain model and enforces business rules. The read model (query
+side) knows nothing of business rules. It simply reads the current state as
+data.
+
+The write model employs event sourcing (ES) which means that each item in the
+system is stored as a list of state changes instead of just its current state.
+This is effective for enforcing rules, but not for reading the current state.
+The read model has a *projection* of the same data. It only tracks the current
+state, so it cannot tell what state an item has been in. Instead it will be
+very efficient at reading and searching the current state of all items.
+
+Since the read and write models are segregated, it is not guaranteed that they
+will always agree on the exact same state. The write model holds the “truth,”
+and the read model is a slightly delayed *projection* of that truth. We call
+this *Eventual Consistency*. Any change applied to the write model will
+eventually find its way to the read model. Normally that should take no more
+than a few seconds (depending on solution). In our case there is no significant
+delay at all.
+
+To maintain the projection we use a one-way sync system. Currently that is an
+`ImmediateSyncSystem` that is called by the write model. In a “normal” CQRS
+setup, the sync system should poll the write model database.
+
 ## Conventions
 
 Tests are named with two extensions:
@@ -148,18 +175,18 @@ a task before the parent feature is ready. This is a thing to think about.
 ## Assignees and Late Binding
 
 Many teams employ *early binding*. This means that they assign a developer to
-a task or even a story to make them responsible for its progress. This is not
-recommended for an agile team. In an agile team, the entire team is responsible
-for finishing the stories with high quality. Putting ht responsibility on an
-individual developer will create a group ofindividuals rather than a team, and
-that will impede progress in the long run.
+a task before they are ready to start it, or even to a story to make them
+responsible for its progress. This is not recommended for an agile team. In an
+agile team, the entire team is responsible for finishing the stories with high
+quality. Putting this responsibility on a single developer risks turning the
+team into a group of individuals, which will impede progress in the long run.
 
 Early binding makes it hard for idle hands to find the next task to work on as
 all tasks will be taken. *Late binding* means that any task that isn't yet
 started can be claimed immediately.
 
 Too many in-progress items at any time is ineffective. It is perhaps highly
-efficient, but efficiency is nothing ccompared to effectivity. A team that gets
+efficient, but efficiency is nothing compared to effectivity. A team that gets
 things done is effective. A team that performs a lot of work is efficient. Work
 is not valuable, however. Finishing is. You should optimise for effectivity
 over efficiency.

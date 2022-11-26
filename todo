@@ -20,7 +20,7 @@
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-- Change `.item-<type>` to `.item.<type>`
+- Change `.item-<type>` to `.item.<type>`?
 - Apply eventual consistency
   - Complete task
   - Promote task
