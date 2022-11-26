@@ -20,8 +20,7 @@
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-* When a Feature is converted into an Epic, it should change colour immediately.
-  - Use the IC instead of directly talking to the backend
+- Change `.item-<type>` to `.item.<type>`
 - Apply eventual consistency
   - Complete task
   - Promote task

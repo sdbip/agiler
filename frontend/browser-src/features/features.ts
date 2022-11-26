@@ -93,7 +93,7 @@ const addFeature = async ({ id }: { id: string }) => {
   const titleElement = component.titleInputElement
   if (!component.title) return
 
-  console.log('add Feature', await writeModel.addItem(component.title, ItemType.Feature, id))
+  console.log('add Feature', await cache.addItem(ItemType.Feature, component.title, id))
   titleElement?.setInputElementValue('')
 
   await updateItems(component.itemId)
