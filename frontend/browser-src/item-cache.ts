@@ -50,8 +50,13 @@ export class ItemCache {
 
     const parent = Object.values(this.itemsByParent).flat().find(i => i.id === parentId)
     if (parent) {
-      (parent as any).type = ItemType.Epic // TODO: This is a hack. Replace it instead?
-      this.notify(ItemCacheEvent.ItemsChanged, [ parent ])
+      const changedParent = { ...parent, type: ItemType.Epic }
+      const items = this.getItems(parent.parentId)
+      if (items) {
+        const index = items.indexOf(parent)
+        items[index] = changedParent
+        this.notify(ItemCacheEvent.ItemsChanged, [ changedParent ])
+      }
     }
   }
 
