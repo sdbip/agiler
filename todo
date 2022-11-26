@@ -21,18 +21,10 @@
 
 # Tasks
 * When a Feature is converted into an Epic, it should change colour immediately.
-  + Tell the IC to perform operation (eg add feature to other feature)
-  + IC calls backend, which responds with the added item ID
-  + IC adds the child to its cache
-  + IC notifies UI that the child has been added
-  - IC performs expected change to the parent
-  - IC notifies UI that the parent has changed
-  - Eventual Consistency!! The read model might not yet know about the change. Expect some time to pass.
-  - At some point IC might poll the backend and not yet find the new item. **It should not be removed!**
-  - Some time later, IC queries the backend and finds the new item.
-  - Maybe the item data is different. In that case it triggers a change event.
-  - Even later someone may have completed the task when IC queries the backend, to the item is not there.
-  - The items_removed event it triggered.
+  - Use the IC instead of directly talking to the backend
+- Apply eventual consistency
+  - Complete task
+  - Promote task
 - Split `TaskComponent` and `StoryComponent` in two
 - Split `MMFComponent` and `FeatureComponent` in two
 - Remove duplication in index vs features
