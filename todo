@@ -30,13 +30,3 @@
 - Rename the `ItemCache`?
 
 # Ice Box
-- Use Quixote to test CSS?
-- Use SCSS?
-- Build my own assertion library using domain language
-- Stories in task list
-  - Remove promote-buttons from child tasks
-  - Redesign promote-button
-    - Add new outlined button like the disclosure-button
-    - with separate “chevron”?
-  - A bug made the asterisk appear next to the name after promotion.
-    Should it be kept like that?
