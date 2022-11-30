@@ -1,19 +1,19 @@
-.item-Story {
+.item[data-type=Story] {
   cursor: default;
   background-color: hsl(179deg 54% 25%);
 }
 
-.item-Task {
+.item[data-type=Task] {
   height: 21px;
   overflow-y: hidden;
   transition: height .5s ease-out;
 }
 
-.item-Task.hidden {
+.item[data-type=Task].hidden {
   height: 0;
 }
 
-.item-Task > label {
+.item[data-type=Task] > label {
   position: absolute;
   top: 8px;
   left: 8px;
@@ -24,7 +24,7 @@
   cursor: pointer;
 }
 
-.item-Task > .promote-button {
+.item[data-type=Task] > .promote-button {
   position: absolute;
   top: 2px;
   right: 2px;

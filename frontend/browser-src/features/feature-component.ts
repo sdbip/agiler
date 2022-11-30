@@ -1,4 +1,4 @@
-import { ItemDTO, ItemType } from '../backend/dtos'
+import { ItemDTO } from '../backend/dtos'
 import { failFast } from '../../../shared/src/failFast'
 import { ClassName, Selector, toSelector } from '../class-name'
 import { CollapsibleElement } from '../collapsible-dom-element'
@@ -99,12 +99,7 @@ export class FeatureComponent {
 
   private updateDetails(args: any) {
     this.getElement({ className: { name: 'title' } })?.setInnerHTML(args.item.title)
-
-    // TODO: This is not very flexible
-    if (this.element.hasClass({ name: 'item-Feature' }) && args.item.type === ItemType.Epic) {
-      this.element.addClass({ name: 'item-Epic' })
-      this.element.removeClass({ name: 'item-Feature' })
-    }
+    this.element.setData('type', args.item.type)
   }
 
   private async addComponents(items: ItemDTO[]) {

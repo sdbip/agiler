@@ -123,6 +123,14 @@ export class DOMElement {
     return list.indexOf(className.name) >= 0
   }
 
+  getData(name: string) {
+    return this.element.getAttribute(`data-${name}`)
+  }
+
+  setData(name: string, value: string) {
+    this.element.setAttribute(`data-${name}`, value)
+  }
+
   add(element: DOMElement) {
     this.element.appendChild(element.element)
   }
