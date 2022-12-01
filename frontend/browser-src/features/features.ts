@@ -3,12 +3,12 @@ import { render } from '../templates'
 import { UIEventArgs } from '../index/ui-event-args'
 import { DOMElement } from '../dom-element'
 import { Popup } from './popup'
-import { FeatureComponent } from './feature-component'
 import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
 import { ItemCache, ItemCacheEvent } from '../item-cache'
 import { ReadModel, WriteModel } from '../backend/backend'
 import { ItemType } from '../backend/dtos'
+import { ItemComponent } from '../item-component'
 
 (async () => {
   const pageContainer = DOMElement.single({ id: 'page-container' })
@@ -84,12 +84,12 @@ for (const helpElement of helpElements) {
 }
 
 function notifyUI(event: string, itemId?: string, args?: any) {
-  const component = (itemId ? FeatureComponent.forId(itemId) : undefined) ?? PageComponent.instance
+  const component = (itemId ? ItemComponent.forId(itemId) : undefined) ?? PageComponent.instance
   component.handleUIEvent(event, args)
 }
 
 const addFeature = async ({ id }: { id: string }) => {
-  const component = FeatureComponent.forId(id) ?? PageComponent.instance
+  const component = ItemComponent.forId(id) ?? PageComponent.instance
   const titleElement = component.titleInputElement
   if (!component.title) return
 
@@ -101,7 +101,7 @@ const addFeature = async ({ id }: { id: string }) => {
 
 const toggleDisclosed = async ({ id }: { id: string }) => {
   // TODO: notifyUI instead
-  const epicComponent = FeatureComponent.forId(id)
+  const epicComponent = ItemComponent.forId(id)
   if (!epicComponent) throw new Error(`Component for story with id ${id} not found`)
 
   const wasDisclosed = epicComponent.element.hasClass(ClassName.disclosed)

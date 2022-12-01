@@ -1,6 +1,6 @@
 import globals from '../globals'
 import { delay } from '../delay'
-import { ItemComponent } from './item-component'
+import { ItemComponent } from '../item-component'
 import { PageComponent } from './page-component'
 import { ClassName } from '../class-name'
 import { UIEventArgs } from './ui-event-args'

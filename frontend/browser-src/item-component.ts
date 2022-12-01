@@ -1,11 +1,11 @@
-import { ItemDTO } from '../backend/dtos'
-import { failFast } from '../../../shared/src/failFast'
-import { ClassName, Selector, toSelector } from '../class-name'
-import { CollapsibleElement } from '../collapsible-dom-element'
-import { DOMElement } from '../dom-element'
-import { MeasureComponent } from '../measure-component'
-import { delay } from '../delay'
-import { render } from '../templates'
+import { ItemDTO } from './backend/dtos'
+import { failFast } from '../../shared/src/failFast'
+import { ClassName, Selector, toSelector } from './class-name'
+import { CollapsibleElement } from './collapsible-dom-element'
+import { DOMElement } from './dom-element'
+import { MeasureComponent } from './measure-component'
+import { delay } from './delay'
+import { render } from './templates'
 
 export class ItemComponent {
 
@@ -21,7 +21,7 @@ export class ItemComponent {
   }
 
   get itemId() {
-    return this.element.id.replace('item-', '')
+    return this.element.getData('id') as string
   }
 
   get title() { return this.titleInputElement?.inputElementValue }
@@ -77,24 +77,29 @@ export class ItemComponent {
       case 'loading-done':
         this.stopSpinner()
         break
-        case 'items_added':
-          await this.addComponents(args.items)
-          break
-        case 'item_changed':
-          this.getElement({ className: { name: 'title' } })?.setInnerHTML(args.item.title)
-          break
-        case 'item_removed':
-          this.element.addClass(ClassName.hidden)
-          await delay(200)
-          this.element.remove()
-          break
-        case 'collapse':
+      case 'items_added':
+        await this.addComponents(args.items)
+        break
+      case 'item_changed':
+        this.updateDetails(args)
+        break
+      case 'item_removed':
+        this.element.addClass(ClassName.hidden)
+        await delay(200)
+        this.element.remove()
+        break
+      case 'collapse':
         this.collapse()
         break
       case 'disclose':
         this.disclose()
         break
     }
+  }
+
+  private updateDetails(args: any) {
+    this.getElement({ className: { name: 'title' } })?.setInnerHTML(args.item.title)
+    this.element.setData('type', args.item.type)
   }
 
   private async addComponents(items: ItemDTO[]) {

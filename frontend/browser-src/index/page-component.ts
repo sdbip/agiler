@@ -47,7 +47,7 @@ export class PageComponent {
   }
 
   private async addComponents(items: ItemDTO[]) {
-    const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
+    const listElement = failFast.unlessExists(this.itemListElement, 'list element')
 
     const html = await render('item-list', {
       items,

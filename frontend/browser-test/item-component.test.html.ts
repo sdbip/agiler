@@ -1,14 +1,14 @@
 import { runTests } from '@web/test-runner-mocha'
 import { assert } from '@esm-bundle/chai'
-import { ItemComponent } from '../../browser-src/index/item-component'
-import { render, setBaseURL } from '../../browser-src/templates'
-import { PageComponent } from '../../browser-src/index/page-component'
-import { ClassName } from '../../browser-src/class-name'
-import { DOMElement } from '../../browser-src/dom-element'
+import { ItemComponent } from '../browser-src/item-component'
+import { render, setBaseURL } from '../browser-src/templates'
+import { PageComponent } from '../browser-src/index/page-component'
+import { ClassName } from '../browser-src/class-name'
+import { DOMElement } from '../browser-src/dom-element'
 
 runTests(() => {
   before(async () => {
-    setBaseURL('../..')
+    setBaseURL('..')
     await renderPageComponent()
     await renderItems([
       {
@@ -178,7 +178,7 @@ runTests(() => {
       it('discloses collapsible pane', () => {
         collapsibleElement.style.height = '0'
         storyComponent.handleUIEvent('disclose')
-        assert.equal(collapsibleElement.style.height, '27px')
+        assert.equal(collapsibleElement.style.height, '40px')
       })
 
       it('collapses the collapsible pane', () => {
