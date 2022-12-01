@@ -188,25 +188,25 @@ runTests(() => {
       })
     })
   })
-})
 
-describe('Subtask component', () => {
-  before(async () => {
-    const storyComponent = ItemComponent.forId('story')
-    await storyComponent?.handleUIEvent('items_added', [ {
-      id: 'subtask',
-      progress: 'notStarted',
-      title: 'Perform subtask',
-      type: 'Task',
-    } as any ])
-  })
+  describe('Subtask component', () => {
+    before(async () => {
+      const storyComponent = ItemComponent.forId('story')
+      await storyComponent?.handleUIEvent('items_added', { items: [ {
+        id: 'subtask',
+        progress: 'notStarted',
+        title: 'Perform subtask',
+        type: 'Task',
+      } as any ] })
+    })
 
-  it('finds itself', () => {
-    assert.exists(ItemComponent.forId('subtask'))
-  })
+    it('finds itself', () => {
+      assert.exists(ItemComponent.forId('subtask'))
+    })
 
-  it('finds parent component', () => {
-    assert.exists(ItemComponent.forId('subtask')?.parentComponent)
+    it('finds parent component', () => {
+      assert.exists(ItemComponent.forId('subtask')?.parentComponent)
+    })
   })
 })
 
