@@ -1,8 +1,8 @@
-import { ItemDTO } from '../backend/dtos'
-import { failFast } from '../../../shared/src/failFast'
-import { ClassName, Selector } from '../class-name'
-import { DOMElement } from '../dom-element'
-import { render } from '../templates'
+import { ItemDTO } from './backend/dtos'
+import { failFast } from '../../shared/src/failFast'
+import { ClassName, Selector } from './class-name'
+import { DOMElement } from './dom-element'
+import { render } from './templates'
 
 export class PageComponent {
   static instance = new PageComponent()
@@ -47,15 +47,21 @@ export class PageComponent {
   }
 
   private async addComponents(items: ItemDTO[]) {
-    const listElement = failFast.unlessExists(this.itemListElement, 'should have a list element')
+    const listElement = failFast.unlessExists(this.itemListElement, 'list element')
 
     const html = await render('item-list', {
       items,
       isEpic: () => function (this: ItemDTO, text: string, render: any) {
         return this.type === 'Epic' ? render(text) : ''
       },
-      hasChildren: () => function (this: ItemDTO, text: string, render: any) {
-        return render(text)
+      canComplete: () => function (this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+      canPromote: () => function (this: any, text: string, render: any) {
+        return this.type === 'Task' ? render(text) : ''
+      },
+      hasChildren: () => function (this: any, text: string, render: any) {
+        return this.type !== 'Task' ? render(text) : ''
       },
     })
     const newElements = DOMElement.fromHTML(`<div>${html}</div>`).children
