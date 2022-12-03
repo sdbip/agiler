@@ -1,21 +1,20 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { MockReadModel, MockWriteModel } from './mocks'
+import { MockBackend } from './mocks'
 
 describe(ItemCache.name, () => {
 
   describe('postItem', () => {
 
-    const writeModel = new MockWriteModel()
-    const readModel = new MockReadModel()
+    const backend = new MockBackend()
 
     it('assumes details for an added item', async () => {
       let notifiedItems: ItemDTO[] = []
 
-      writeModel.idToReturn = 'id'
+      backend.idToReturn = 'id'
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.on(ItemCacheEvent.ItemsAdded, (items) => {
         notifiedItems = items
       })
@@ -33,9 +32,9 @@ describe(ItemCache.name, () => {
     it('notifies if the parent changed', async () => {
       let notifiedItems: ItemDTO[] = []
 
-      writeModel.idToReturn = 'id'
+      backend.idToReturn = 'id'
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem({
         id: 'epic',
         progress: Progress.notStarted,
@@ -57,19 +56,19 @@ describe(ItemCache.name, () => {
     })
 
     it('sends the correct properties to the backend', async () => {
-      writeModel.idToReturn = 'id'
+      backend.idToReturn = 'id'
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       await cache.addItem(ItemType.Feature, 'MMF Title', 'epic')
 
-      assert.equal(writeModel.lastAddedParentId, 'epic')
-      assert.equal(writeModel.lastAddedTitle, 'MMF Title')
-      assert.equal(writeModel.lastAddedType, ItemType.Feature)
+      assert.equal(backend.lastAddedParentId, 'epic')
+      assert.equal(backend.lastAddedTitle, 'MMF Title')
+      assert.equal(backend.lastAddedType, ItemType.Feature)
     })
 
     it('triggers changed event if backend stores other data', async () => {
-      writeModel.idToReturn = 'id'
-      readModel.itemsToReturn = [ {
+      backend.idToReturn = 'id'
+      backend.itemsToReturn = [ {
         id: 'id',
         progress: Progress.notStarted,
         title: '',
@@ -78,7 +77,7 @@ describe(ItemCache.name, () => {
 
       let notifiedItems: ItemDTO[] = []
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.on(ItemCacheEvent.ItemsChanged, (items) => {
         notifiedItems = items
       })
@@ -90,17 +89,17 @@ describe(ItemCache.name, () => {
     })
 
     it('triggers removed event if backend removes it', async () => {
-      writeModel.idToReturn = 'id'
+      backend.idToReturn = 'id'
       let notifiedItems: ItemDTO[] = []
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.on(ItemCacheEvent.ItemsRemoved, (items) => {
         notifiedItems = items
       })
 
       await cache.addItem(ItemType.Feature, 'Feature Title')
 
-      readModel.itemsToReturn = [ {
+      backend.itemsToReturn = [ {
         id: 'id',
         progress: Progress.notStarted,
         title: '',
@@ -108,17 +107,17 @@ describe(ItemCache.name, () => {
       } ]
       await cache.fetchItems(undefined, [ ItemType.Feature ])
 
-      readModel.itemsToReturn = []
+      backend.itemsToReturn = []
       await cache.fetchItems(undefined, [ ItemType.Feature ])
 
       assert.lengthOf(notifiedItems, 1)
     })
 
     it('does not trigger removed event if it has not yet appeared in the read model', async () => {
-      writeModel.idToReturn = 'id'
-      readModel.itemsToReturn = []
+      backend.idToReturn = 'id'
+      backend.itemsToReturn = []
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.on(ItemCacheEvent.ItemsRemoved, () => {
         assert.fail('Item should not be removed if it is not yet known to exist')
       })
@@ -130,10 +129,10 @@ describe(ItemCache.name, () => {
     it('marks the item so it is not notified as removed', async () => {
       let notifiedItems: ItemDTO[] = []
 
-      writeModel.idToReturn = 'id'
-      readModel.itemsToReturn = []
+      backend.idToReturn = 'id'
+      backend.itemsToReturn = []
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.on(ItemCacheEvent.ItemsRemoved, (items) => {
         notifiedItems = items
       })

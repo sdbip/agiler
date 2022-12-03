@@ -1,7 +1,7 @@
 import { ItemDTO, ItemType } from './dtos'
 import { env } from './webpack_env'
 
-export class ReadModel {
+export class Backend {
   async fetchItem(id: string): Promise<ItemDTO | undefined> {
     const response = await fetch(`${env.readModelURL}/item/${id}`)
     if (!response.ok) throw new Error(`status ${response.status}\n${await response.text()}`)
@@ -16,9 +16,7 @@ export class ReadModel {
     if (!response.ok) throw new Error(`status ${response.status}\n${await response.text()}`)
     return await response.json()
   }
-}
 
-export class WriteModel {
   async addItem(title: string, type: ItemType, parentId: string | undefined): Promise<{ id: string }> {
     const url = parentId
       ? `${env.writeModelURL}/item/${parentId}/child`

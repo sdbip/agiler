@@ -6,7 +6,7 @@ import { Popup } from './popup'
 import { PageComponent } from '../page-component'
 import { ClassName } from '../class-name'
 import { ItemCache, ItemCacheEvent } from '../item-cache'
-import { ReadModel, WriteModel } from '../backend/backend'
+import { Backend } from '../backend/backend'
 import { ItemType } from '../backend/dtos'
 import { ItemComponent } from '../item-component'
 
@@ -17,9 +17,7 @@ import { ItemComponent } from '../item-component'
   updateItems()
 })()
 
-const readModel = new ReadModel()
-const writeModel = new WriteModel()
-const cache = new ItemCache(readModel, writeModel)
+const cache = new ItemCache(new Backend())
 
 // EVENT HANDLERS
 

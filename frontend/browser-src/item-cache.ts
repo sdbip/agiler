@@ -2,12 +2,10 @@ import { ItemDTO, ItemType, Progress } from './backend/dtos'
 
 type Handler = (items: ItemDTO[]) => void
 
-export interface ReadModel {
+export interface Backend {
   fetchItem(id: string): Promise<ItemDTO | undefined>
   fetchItems(parentId: string | undefined, types: ItemType[]): Promise<ItemDTO[]>
-}
 
-export interface WriteModel {
   addItem(title: string, type: ItemType, parentId: string | undefined): Promise<{ id: string }>
   promoteTask(id: string): Promise<void>
   completeTask(id: string): Promise<void>
@@ -23,10 +21,10 @@ export class ItemCache {
   private handlers: { [_ in ItemCacheEvent]?: Handler[] } = {}
   private itemsByParent: { [id: string]: ItemDTO[] } = {}
 
-  constructor(private readonly readModel: ReadModel, private readonly writeModel: WriteModel) { }
+  constructor(private readonly backend: Backend) { }
 
   async fetchItems(storyId: string | undefined, types: ItemType[]) {
-    const items = await this.readModel.fetchItems(storyId, types)
+    const items = await this.backend.fetchItems(storyId, types)
     this.update(storyId, items)
     return items
   }
@@ -38,7 +36,7 @@ export class ItemCache {
   }
 
   async addItem(type: ItemType, title: string, parentId?: string) {
-    const response = await this.writeModel.addItem(title, type, parentId)
+    const response = await this.backend.addItem(title, type, parentId)
     const item: ItemDTO = {
       id: response.id,
       progress: Progress.notStarted,
@@ -52,12 +50,12 @@ export class ItemCache {
   }
 
   async promoteTask(id: string) {
-    await this.writeModel.promoteTask(id)
+    await this.backend.promoteTask(id)
     this.updateItem(id, item => ({ ...item, type: ItemType.Story }))
   }
 
   async completeTask(id: string) {
-    await this.writeModel.completeTask(id)
+    await this.backend.completeTask(id)
     this.updateItem(id, item => ({ ...item, progress: Progress.completed }))
   }
 

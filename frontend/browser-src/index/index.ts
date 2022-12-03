@@ -6,7 +6,7 @@ import { ClassName } from '../class-name'
 import { UIEventArgs } from './ui-event-args'
 import { render } from '../templates'
 import { ItemCache, ItemCacheEvent } from '../item-cache'
-import { ReadModel, WriteModel } from '../backend/backend'
+import { Backend } from '../backend/backend'
 import { ItemType } from '../backend/dtos'
 
 (async () => {
@@ -16,9 +16,7 @@ import { ItemType } from '../backend/dtos'
   updateItems()
 })()
 
-const readModel = new ReadModel()
-const writeModel = new WriteModel()
-const cache = new ItemCache(readModel, writeModel)
+const cache = new ItemCache(new Backend())
 
 // EVENT HANDLERS
 

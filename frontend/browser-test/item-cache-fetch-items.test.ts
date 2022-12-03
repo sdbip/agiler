@@ -1,12 +1,11 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { MockReadModel, MockWriteModel } from './mocks'
+import { MockBackend } from './mocks'
 
 describe(`${ItemCache.name}.fetchItems`, () => {
 
-  const writeModel = new MockWriteModel()
-  const readModel = new MockReadModel()
+  const backend = new MockBackend()
 
   describe(`${ItemCacheEvent.ItemsAdded} event`, () => {
 
@@ -17,9 +16,9 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         title: 'title',
         type: ItemType.Task,
       }
-      readModel.itemsToReturn = [ item ]
+      backend.itemsToReturn = [ item ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
 
       let notifiedItems: ItemDTO[] = []
       cache.on(ItemCacheEvent.ItemsAdded, (items) => {
@@ -45,9 +44,9 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         title: 'Item 2',
         type: ItemType.Task,
       }
-      readModel.itemsToReturn = [ item1, item2 ]
+      backend.itemsToReturn = [ item1, item2 ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem(item1)
 
       let notifiedItems: ItemDTO[] = []
@@ -66,9 +65,9 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         title: 'Get it done',
         type: ItemType.Task,
       }
-      readModel.itemsToReturn = [ item ]
+      backend.itemsToReturn = [ item ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem(item)
 
       let isNotified = false
@@ -83,14 +82,14 @@ describe(`${ItemCache.name}.fetchItems`, () => {
   describe(`${ItemCacheEvent.ItemsChanged} event`, () => {
 
     it('does not notify if only adding items', async () => {
-      readModel.itemsToReturn = [ {
+      backend.itemsToReturn = [ {
         id: 'addedItem',
         progress: Progress.notStarted,
         title: 'title',
         type: ItemType.Task,
       } ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
 
       let isNotified = false
       cache.on(ItemCacheEvent.ItemsChanged, () => {
@@ -108,9 +107,9 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         title: 'New title',
         type: ItemType.Task,
       }
-      readModel.itemsToReturn = [ item ]
+      backend.itemsToReturn = [ item ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem({ ...item, title: 'Title before' })
 
       let changedItems: ItemDTO[] | undefined
@@ -126,14 +125,14 @@ describe(`${ItemCache.name}.fetchItems`, () => {
   describe(ItemCacheEvent.ItemsRemoved, () => {
 
     it('does not notify when only adding items', async () => {
-      readModel.itemsToReturn = [ {
+      backend.itemsToReturn = [ {
         id: 'addedItem',
         progress: Progress.notStarted,
         title: 'title',
         type: ItemType.Task,
       } ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
 
       let isNotified = false
       cache.on(ItemCacheEvent.ItemsRemoved, () => { isNotified = true })
@@ -163,11 +162,11 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         parentId: 'parent',
       }
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
 
-      readModel.itemsToReturn = [ item1 ]
+      backend.itemsToReturn = [ item1 ]
       await cache.fetchItems(undefined, [ ItemType.Task ])
-      readModel.itemsToReturn = [ itemWithParent ]
+      backend.itemsToReturn = [ itemWithParent ]
       await cache.fetchItems('parent', [ ItemType.Task ])
 
       let isNotified = false
@@ -175,7 +174,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         isNotified = true
       })
 
-      readModel.itemsToReturn = [ item2 ]
+      backend.itemsToReturn = [ item2 ]
       await cache.fetchItems(undefined, [ ItemType.Task ])
 
       assert.isTrue(isNotified)
@@ -189,7 +188,7 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         type: ItemType.Task,
       }
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem(item)
 
       let notifiedItems: ItemDTO[] = []
@@ -208,9 +207,9 @@ describe(`${ItemCache.name}.fetchItems`, () => {
         title: 'New title',
         type: ItemType.Task,
       }
-      readModel.itemsToReturn = [ item1 ]
+      backend.itemsToReturn = [ item1 ]
 
-      const cache = new ItemCache(readModel, writeModel)
+      const cache = new ItemCache(backend)
       cache.cacheItem({ ...item1, title: 'Old title' })
 
       let isNotified = false

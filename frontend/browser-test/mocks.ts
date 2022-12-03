@@ -1,13 +1,8 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType } from '../browser-src/backend/dtos'
-import { ReadModel, WriteModel } from '../browser-src/item-cache'
+import { Backend } from '../browser-src/item-cache'
 
-export class MockReadModel implements ReadModel {
-
-  lastRequestedParentId?: string
-  lastRequestedTypes?: ItemType[]
-  itemsToReturn: ItemDTO[] = []
-
+export class MockBackend implements Backend {
   lastRequestedId?: string
   itemToReturn?: ItemDTO
 
@@ -16,21 +11,20 @@ export class MockReadModel implements ReadModel {
     return this.itemToReturn
   }
 
+  lastRequestedParentId?: string
+  lastRequestedTypes?: ItemType[]
+  itemsToReturn: ItemDTO[] = []
+
   async fetchItems(parentId: string | undefined, types: ItemType[]): Promise<ItemDTO[]> {
     this.lastRequestedParentId = parentId
     this.lastRequestedTypes = types
     return this.itemsToReturn
   }
-}
 
-export class MockWriteModel implements WriteModel {
   lastAddedTitle?: string
   lastAddedType?: ItemType
   lastAddedParentId?: string
   idToReturn?: string
-
-  lastPromotedId?: string
-  lastCompletedId?: string
 
   async addItem(title: string, type: ItemType, parentId: string | undefined) {
     const id = this.idToReturn
@@ -41,9 +35,14 @@ export class MockWriteModel implements WriteModel {
     return { id }
   }
 
+  lastPromotedId?: string
+
   async promoteTask(id: string) {
     this.lastPromotedId = id
   }
+
+  lastCompletedId?: string
+
   async completeTask(id: string) {
     this.lastCompletedId = id
   }

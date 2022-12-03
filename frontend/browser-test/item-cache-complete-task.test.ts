@@ -1,23 +1,22 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { MockReadModel, MockWriteModel } from './mocks'
+import { MockBackend } from './mocks'
 
 describe(`${ItemCache.name}.completeTask`, () => {
 
-  const readModel = new MockReadModel()
-  const writeModel = new MockWriteModel()
+  const backend = new MockBackend()
 
   it('forwards to the backend', async () => {
-    const cache = new ItemCache(readModel, writeModel)
+    const cache = new ItemCache(backend)
     await cache.completeTask('task')
-    assert.equal(writeModel.lastCompletedId, 'task')
+    assert.equal(backend.lastCompletedId, 'task')
   })
 
   it('notifies that the item is now a Story', async () => {
     let notifiedItems: ItemDTO[] = []
 
-    const cache = new ItemCache(readModel, writeModel)
+    const cache = new ItemCache(backend)
     cache.cacheItem({
       id: 'task',
       progress: Progress.notStarted,
