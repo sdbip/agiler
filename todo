@@ -20,13 +20,15 @@
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-- Apply eventual consistency
-  - Complete task
-  - Promote task
-- Split `TaskComponent` and `StoryComponent` in two
-- Split `MMFComponent` and `FeatureComponent` in two
-- Remove duplication in index vs features
-- Test `FeatureComponent`
+* Merge Read and WriteModel into a single Backend class
 - Rename the `ItemCache`?
 
 # Ice Box
+- Should a Story work like an Epic?
+  - A Task becomes a Story if it has children
+  - It is good to have flexibility. Maybe even to reverse the operation.
+  - Note: OmniFocus 1 worked like that. They chose to abandon the idea.
+  - If there is a semantic difference between tasks and stories, it
+    should probably be a bit awkward to convert berween them.
+    - A Task should be ready to such a degree that you can just perform it without questions. A story is perhaps a bit more open?
+- Features/MMFs/Epics are not the same as Stories/Tasks.
