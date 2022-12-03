@@ -1,11 +1,11 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { MockReadModel, stubWriteModel } from './mocks'
+import { MockReadModel, MockWriteModel } from './mocks'
 
 describe(`${ItemCache.name}.fetchItems`, () => {
 
-  const writeModel = stubWriteModel()
+  const writeModel = new MockWriteModel()
   const readModel = new MockReadModel()
 
   describe(`${ItemCacheEvent.ItemsAdded} event`, () => {

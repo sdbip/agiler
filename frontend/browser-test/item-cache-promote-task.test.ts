@@ -1,11 +1,11 @@
 import { assert } from '@esm-bundle/chai'
 import { ItemDTO, ItemType, Progress } from '../browser-src/backend/dtos'
 import { ItemCache, ItemCacheEvent } from '../browser-src/item-cache'
-import { MockWriteModel, stubReadModel } from './mocks'
+import { MockReadModel, MockWriteModel } from './mocks'
 
 describe(`${ItemCache.name}.promoteTask`, () => {
 
-  const readModel = stubReadModel()
+  const readModel = new MockReadModel()
   const writeModel = new MockWriteModel()
 
   it('forwards to the backend', async () => {
