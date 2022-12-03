@@ -100,6 +100,7 @@ export class ItemComponent {
   private updateDetails(args: any) {
     this.getElement({ className: { name: 'title' } })?.setInnerHTML(args.item.title)
     this.element.setData('type', args.item.type)
+    this.element.setData('progress', args.item.progress)
   }
 
   private async addComponents(items: ItemDTO[]) {

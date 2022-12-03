@@ -72,10 +72,6 @@ function notifyUI(event: string, itemId?: string, args?: any) {
 const completeTask = async ({ id }: { id: string }) => {
 
   await cache.completeTask(id)
-
-  const itemComponent = ItemComponent.forId(id)
-  if (!itemComponent) throw new Error(`Component for task with id ${id} not found`)
-  await updateItems(itemComponent.parentComponent?.itemId)
 }
 
 const addTask = async ({ id }: { id: string }) => {

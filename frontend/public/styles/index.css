@@ -14,6 +14,18 @@
 }
 
 .item[data-type=Task] > label {
+  transition: background-size .2s ease-out;
+  background-size: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.item[data-type=Task][data-progress=completed] > label {
+  background-image: url(/public/images/check-mark.png);
+  background-size: 100%;
+}
+
+.item[data-type=Task] > label {
   position: absolute;
   top: 8px;
   left: 8px;
