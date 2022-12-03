@@ -48,16 +48,30 @@ export class ItemCache {
     this.cacheItem(markUnverified(item))
     this.notify(ItemCacheEvent.ItemsAdded, [ item ])
 
-    const parent = Object.values(this.itemsByParent).flat().find(i => i.id === parentId)
-    if (parent) {
-      const changedParent = { ...parent, type: ItemType.Epic }
-      const items = this.getItems(parent.parentId)
-      if (items) {
-        const index = items.indexOf(parent)
-        items[index] = changedParent
-        this.notify(ItemCacheEvent.ItemsChanged, [ changedParent ])
-      }
-    }
+    if (parentId) this.updateItem(parentId, item => ({ ...item, type: ItemType.Epic }))
+  }
+
+  async promoteTask(id: string) {
+    await this.writeModel.promoteTask(id)
+    this.updateItem(id, item => ({ ...item, type: ItemType.Story }))
+  }
+
+  async completeTask(id: string) {
+    await this.writeModel.completeTask(id)
+    this.updateItem(id, item => ({ ...item, progress: Progress.completed }))
+  }
+
+  private updateItem(id: string, applyChanges: (_: ItemDTO) => ItemDTO) {
+    const item = Object.values(this.itemsByParent).flat().find(i => i.id === id)
+    if (!item) return
+
+    const items = this.getItems(item.parentId)
+    if (!items) return
+
+    const index = items.indexOf(item)
+    const changedItem = applyChanges(item)
+    items[index] = changedItem
+    this.notify(ItemCacheEvent.ItemsChanged, [ changedItem ])
   }
 
   private update(parentId: string | undefined, items: ItemDTO[]) {

@@ -62,9 +62,9 @@ describe(ItemCache.name, () => {
       const cache = new ItemCache(readModel, writeModel)
       await cache.addItem(ItemType.Feature, 'MMF Title', 'epic')
 
-      assert.equal(writeModel.lastRequestedParentId, 'epic')
-      assert.equal(writeModel.lastRequestedTitle, 'MMF Title')
-      assert.equal(writeModel.lastRequestedType, ItemType.Feature)
+      assert.equal(writeModel.lastAddedParentId, 'epic')
+      assert.equal(writeModel.lastAddedTitle, 'MMF Title')
+      assert.equal(writeModel.lastAddedType, ItemType.Feature)
     })
 
     it('triggers changed event if backend stores other data', async () => {

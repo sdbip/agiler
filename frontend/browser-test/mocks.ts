@@ -24,26 +24,28 @@ export class MockReadModel implements ReadModel {
 }
 
 export class MockWriteModel implements WriteModel {
-  lastRequestedTitle?: string
-  lastRequestedType?: ItemType
-  lastRequestedId?: string
-  lastRequestedParentId?: string
+  lastAddedTitle?: string
+  lastAddedType?: ItemType
+  lastAddedParentId?: string
   idToReturn?: string
+
+  lastPromotedId?: string
+  lastCompletedId?: string
 
   async addItem(title: string, type: ItemType, parentId: string | undefined) {
     const id = this.idToReturn
     if (!id) assert.fail('idToReturn not set up')
-    this.lastRequestedTitle = title
-    this.lastRequestedType = type
-    this.lastRequestedParentId = parentId
+    this.lastAddedTitle = title
+    this.lastAddedType = type
+    this.lastAddedParentId = parentId
     return { id }
   }
 
   async promoteTask(id: string) {
-    this.lastRequestedId = id
+    this.lastPromotedId = id
   }
   async completeTask(id: string) {
-    this.lastRequestedId = id
+    this.lastCompletedId = id
   }
 }
 

@@ -74,7 +74,7 @@ function notifyUI(event: string, itemId?: string, args?: any) {
 
 const completeTask = async ({ id }: { id: string }) => {
 
-  await writeModel.completeTask(id)
+  await cache.completeTask(id)
   await delay(200)
   notifyUI('task-completed', id)
 
@@ -88,14 +88,14 @@ const addTask = async ({ id }: { id: string }) => {
   const titleElement = component.titleInputElement
   if (!component.title) return
 
-  console.log('add task', await writeModel.addItem(component.title, ItemType.Task, id))
+  console.log('add task', await cache.addItem(ItemType.Task, component.title, id))
   titleElement?.setInputElementValue('')
 
   await updateItems(component.itemId)
 }
 
 const promote = async ({ id }: { id: string }) => {
-  await writeModel.promoteTask(id)
+  await cache.promoteTask(id)
   await updateItems()
 }
 
