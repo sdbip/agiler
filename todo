@@ -20,8 +20,9 @@
   - Make the current feature the focus to adding stories and tasks
 
 # Tasks
-* Merge Read and WriteModel into a single Backend class
 - Rename the `ItemCache`?
+- Notify toggle_disclosed instead of looking up the state
+  - How to decide when to update?
 
 # Ice Box
 - Should a Story work like an Epic?

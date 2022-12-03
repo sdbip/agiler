@@ -98,7 +98,6 @@ const addFeature = async ({ id }: { id: string }) => {
 }
 
 const toggleDisclosed = async ({ id }: { id: string }) => {
-  // TODO: notifyUI instead
   const epicComponent = ItemComponent.forId(id)
   if (!epicComponent) throw new Error(`Component for story with id ${id} not found`)
 
@@ -110,10 +109,10 @@ const toggleDisclosed = async ({ id }: { id: string }) => {
 // END EVENT HANDLERS
 
 async function updateItems(epicId?: string) {
-  notifyUI('loading')
+  notifyUI('loading', epicId)
   try {
     await cache.fetchItems(epicId, [ ItemType.Epic, ItemType.Feature ])
   } finally {
-    notifyUI('loading-done')
+    notifyUI('loading-done', epicId)
   }
 }

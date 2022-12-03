@@ -1,5 +1,4 @@
 import globals from '../globals'
-import { delay } from '../delay'
 import { ItemComponent } from '../item-component'
 import { PageComponent } from '../page-component'
 import { ClassName } from '../class-name'
@@ -73,8 +72,6 @@ function notifyUI(event: string, itemId?: string, args?: any) {
 const completeTask = async ({ id }: { id: string }) => {
 
   await cache.completeTask(id)
-  await delay(200)
-  notifyUI('task-completed', id)
 
   const itemComponent = ItemComponent.forId(id)
   if (!itemComponent) throw new Error(`Component for task with id ${id} not found`)
@@ -98,7 +95,6 @@ const promote = async ({ id }: { id: string }) => {
 }
 
 const toggleDisclosed = async ({ id }: { id: string }) => {
-  // TODO: notifyUI instead
   const storyComponent = ItemComponent.forId(id)
   if (!storyComponent) throw new Error(`Component for story with id ${id} not found`)
 
@@ -110,10 +106,10 @@ const toggleDisclosed = async ({ id }: { id: string }) => {
 // END EVENT HANDLERS
 
 async function updateItems(storyId?: string) {
-  notifyUI('loading')
+  notifyUI('loading', storyId)
   try {
     await cache.fetchItems(storyId, [ ItemType.Story, ItemType.Task ])
   } finally {
-    notifyUI('loading-done')
+    notifyUI('loading-done', storyId)
   }
 }
