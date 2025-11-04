@@ -51,5 +51,6 @@
     "happy-dom": "^7.6.7",
     "marked": "^4.2.2",
     "pg": "^8.8.0"
-  }
+  },
+  "packageManager": "yarn@4.10.3"
 }
